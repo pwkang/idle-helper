@@ -44,9 +44,18 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
-          source: "apps/bot/dist/*,ecosystem.config.js,package.json,package-lock.json"
+          source: "*"
           target: ${{ vars.BOT_DEPLOY_DIR }}
 
-      - name: Copy env files
-        run: |
-          cp ${{ vars.ENV_FILE_PATH }} ${{ vars.BOT_DEPLOY_DIR }}/.env
+      - name: Start server
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd ${{ vars.BACKEND_DEPLOY_DIR }}
+            cp ${{ vars.ENV_FILE_PATH }} ${{ vars.BOT_DEPLOY_DIR }}/.env
+            pnpm install --frozen-lockfile
+            pm2 start ecosystem.config.js

@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'idle-helper',
-      script: '.apps/bot/dist/index.js',
+      script: './apps/bot/dist/index.js',
     },
   ],
 }
