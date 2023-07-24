@@ -1,4 +1,4 @@
-import {handlerRoot} from '../handler/on-start/constant';
+import {handlerFileFilter, handlerRoot} from '../handler/on-start/constant';
 import {SlashCommandBuilder} from 'discord.js';
 import {importFiles} from '@idle-helper/utils';
 
@@ -10,7 +10,9 @@ interface ISlashCommand {
 export const listSlashCommands = async (): Promise<ISlashCommand[]> => {
   const slashCommands: ISlashCommand[] = [];
   const commands = await importFiles<SlashCommand>({
-    options: {fileFilter: '*.ts'},
+    options: {
+      fileFilter: [handlerFileFilter],
+    },
     path: `./${handlerRoot}/commands/slash`,
   });
   commands.forEach(({data}) => {
