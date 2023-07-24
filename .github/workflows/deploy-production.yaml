@@ -1,12 +1,6 @@
 name: Deploy Production
 
 on:
-  push:
-    branches:
-      - feat/deployment
-    paths:
-      - 'apps/**'
-      - '.github/workflows/deploy-production.yaml'
   workflow_dispatch:
 
 jobs:
