@@ -46,6 +46,7 @@ jobs:
           port: ${{ secrets.PORT }}
           source: "apps/*,shared/*,package.json,ecosystem.config.js,pnpm-lock.yaml,pnpm-workspace.yaml,node_modules"
           target: ${{ vars.BOT_DEPLOY_DIR }}
+          rm: true
 
       - name: Start server
         uses: appleboy/ssh-action@v0.1.10
@@ -55,6 +56,6 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
-            cd ${{ vars.BACKEND_DEPLOY_DIR }}
+            cd ${{ vars.BOT_DEPLOY_DIR }}
             cp ${{ vars.ENV_FILE_PATH }} ${{ vars.BOT_DEPLOY_DIR }}/.env
-            pnpm run prod:bot
+            pm2 start ecosystem.config.js
