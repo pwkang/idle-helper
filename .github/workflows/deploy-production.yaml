@@ -1,0 +1,53 @@
+name: Deploy Production
+
+on:
+  push:
+    branches:
+      - feat/deployment
+    paths:
+      - 'apps/**'
+      - '.github/workflows/deploy-production.yaml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shared files
+        run: pnpm run build:shared
+
+      - name: Build Bot
+        run: pnpm run build:bot
+
+      - name: Copy built files to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          source: "apps/bot/dist/*,apps/shared/dist/*,ecosystem.config.js,package.json,package-lock.json"
+          target: ${{ vars.BOT_DEPLOY_DIR }}
+          strip_components: 1
+
+      - name: Copy env files
+        run: |
+          cp ${{ secrets.ENV_FILE_PATH }} ${{ secrets.BOT_DEPLOY_DIR }}/.env
