@@ -1,0 +1,16 @@
+{
+  "name": "@idle-helper/services",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build:shared": "tsc"
+  },
+  "dependencies": {
+    "@idle-helper/utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@idle-helper/tsconfig": "workspace:*"
+  }
+}

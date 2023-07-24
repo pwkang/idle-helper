@@ -1,0 +1,35 @@
+import readdirp, {EntryInfo, ReaddirpOptions} from 'readdirp';
+
+interface IImportFiles {
+  path: string;
+  options: ReaddirpOptions;
+}
+
+interface IReturn<T> {
+  data: T;
+  path: string;
+}
+
+export const importFiles = <T>({options, path}: IImportFiles): Promise<IReturn<T>[]> => {
+  return new Promise((resolve) => {
+    const files: Promise<IReturn<T>>[] = [];
+    readdirp(path, options)
+      .on('data', async (entry: EntryInfo) => {
+        const {fullPath, path} = entry;
+        files.push(
+          new Promise(async (resolve) => {
+            const file = await import(fullPath);
+            resolve({
+              data: file.default,
+              path,
+            });
+          })
+        );
+      })
+      .on('end', () => {
+        Promise.all(files).then((data) => {
+          resolve(data);
+        });
+      });
+  });
+};
