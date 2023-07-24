@@ -1,0 +1,21 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build:shared": {
+      "dependsOn": [
+        "^build:shared"
+      ],
+      "outputs": [
+        "dist/**"
+      ]
+    },
+    "build:bot": {
+      "dependsOn": [
+        "^build:shared"
+      ],
+      "outputs": [
+        "dist/**"
+      ]
+    }
+  }
+}

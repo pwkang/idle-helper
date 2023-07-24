@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "extends": "@idle-helper/tsconfig/tsconfig.base.json"
+}

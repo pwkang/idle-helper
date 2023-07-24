@@ -1,0 +1,19 @@
+{
+  "name": "@idle-helper/bot",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:bot": "tsc"
+  },
+  "dependencies": {
+    "@idle-helper/constants": "workspace:*",
+    "@idle-helper/models": "workspace:*",
+    "@idle-helper/services": "workspace:*",
+    "@idle-helper/utils": "workspace:*",
+    "@sentry/node": "^7.52.1"
+  },
+  "devDependencies": {
+    "@idle-helper/tsconfig": "workspace:*"
+  }
+}
