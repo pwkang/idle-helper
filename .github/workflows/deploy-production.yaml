@@ -44,10 +44,9 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
-          source: "apps/bot/dist/*,apps/shared/dist/*,ecosystem.config.js,package.json,package-lock.json"
+          source: "apps/bot/dist/*,ecosystem.config.js,package.json,package-lock.json"
           target: ${{ vars.BOT_DEPLOY_DIR }}
-          strip_components: 1
 
       - name: Copy env files
         run: |
-          cp ${{ secrets.ENV_FILE_PATH }} ${{ secrets.BOT_DEPLOY_DIR }}/.env
+          cp ${{ vars.ENV_FILE_PATH }} ${{ vars.BOT_DEPLOY_DIR }}/.env
