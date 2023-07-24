@@ -16,7 +16,8 @@
     "build:shared": "turbo run build:shared",
     "build:bot": "turbo run build:bot",
     "dev-shard:bot": "npm run build:bot && USE_PINO_PRETTY=true node apps/bot/dist/index.js",
-    "start:bot": "node apps/bot/dist/index.js"
+    "start:bot": "node apps/bot/dist/index.js",
+    "prod:bot": "pm2 start ecosystem.config.js"
   },
   "repository": {
     "type": "git",

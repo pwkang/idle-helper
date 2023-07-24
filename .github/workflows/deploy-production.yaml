@@ -57,4 +57,4 @@ jobs:
           script: |
             cd ${{ vars.BACKEND_DEPLOY_DIR }}
             cp ${{ vars.ENV_FILE_PATH }} ${{ vars.BOT_DEPLOY_DIR }}/.env
-            pm2 start ecosystem.config.js
+            pnpm run prod:bot
