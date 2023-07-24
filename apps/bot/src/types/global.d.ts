@@ -1,4 +1,4 @@
-import type {Client, ClientEvents, Message, SlashCommandBuilder, User} from 'discord.js';
+import type {Client, ClientEvents, Message, PermissionsBitField, SlashCommandBuilder, User} from 'discord.js';
 import {ChatInputCommandInteraction} from 'discord.js';
 import type {ScheduleOptions} from 'node-cron';
 import {
@@ -26,6 +26,7 @@ declare global {
     name: string;
     interactionType: T;
     execute: (client: Client, interaction: T) => Promise<void>;
+    permissions?: bigint[],
     preCheck: {
       userNotRegistered?: ValuesOf<typeof USER_NOT_REGISTERED_ACTIONS>;
       userAccOff?: ValuesOf<typeof USER_ACC_OFF_ACTIONS>;

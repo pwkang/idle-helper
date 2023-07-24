@@ -1,4 +1,4 @@
-import {SlashCommandBuilder} from 'discord.js';
+import {PermissionsBitField, SlashCommandBuilder} from 'discord.js';
 import {
   IDLE_FARM_RANDOM_EVENTS_NAME,
   USER_ACC_OFF_ACTIONS,
@@ -9,6 +9,7 @@ import {setRandomEventMessages} from './subcommand/set-random-event-messages';
 
 export default <SlashCommand>{
   name: 'server',
+  permissions: [PermissionsBitField.Flags.ManageGuild],
   builder: new SlashCommandBuilder()
     .setName('server')
     .setDescription('Server configuration')
