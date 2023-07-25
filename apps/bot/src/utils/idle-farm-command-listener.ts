@@ -1,10 +1,9 @@
 import {Client, Embed, Message, MessageCollector, TextChannel, User} from 'discord.js';
 import {TypedEventEmitter} from './typed-event-emitter';
-import ms from 'ms';
-import {sleep, typedObjectEntries} from '@idle-helper/utils';
+import {sleep} from '@idle-helper/utils';
 import {IDLE_FARM_ID} from '@idle-helper/constants';
 
-interface IRpgCommandListener {
+interface IIdleFarmCommandListener {
   client: Client;
   channelId: string;
   author: User;
@@ -27,11 +26,12 @@ type TExtraProps = {
 
 const filter = (m: Message) => m.author.id === IDLE_FARM_ID;
 
-export const createRpgCommandListener = ({
-  channelId,
-  client,
-  author,
-}: IRpgCommandListener) => {
+export const createIdleFarmCommandListener = (
+  {
+    channelId,
+    client,
+    author,
+  }: IIdleFarmCommandListener) => {
   const channel = client.channels.cache.get(channelId);
   if (!channel) return;
   let collector: MessageCollector | undefined;
@@ -83,6 +83,10 @@ export const createRpgCommandListener = ({
       event.emit('embed', embed, collected);
     } else if (!collected.embeds.length) {
       // Message Content
+      if (isBotMaintenance({collected, author})) {
+        event.stop();
+        return;
+      }
 
       event.emit('content', collected.content, collected);
     }
@@ -103,4 +107,11 @@ interface IChecker {
 
 function isSlashCommand({collected}: IChecker) {
   return collected.content === '' && collected.embeds.length === 0 && collected.interaction?.id;
+}
+
+
+function isBotMaintenance({author, collected}: IChecker) {
+  return (
+    collected.content.includes('The bot is under maintenance!') && collected.mentions.has(author.id)
+  );
 }
