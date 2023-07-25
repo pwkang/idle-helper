@@ -146,6 +146,9 @@ importers:
       '@idle-helper/constants':
         specifier: workspace:*
         version: link:../constants
+      '@idle-helper/utils':
+        specifier: workspace:*
+        version: link:../utils
     devDependencies:
       '@idle-helper/tsconfig':
         specifier: workspace:*

@@ -7,3 +7,5 @@ export * from './server/server.type';
 export * from './team-raid/team-raid.schema';
 export * from './team-raid/team-raid.type';
 
+export * from './user/user.schema';
+export * from './user/user.type';
