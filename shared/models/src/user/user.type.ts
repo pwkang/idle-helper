@@ -17,9 +17,16 @@ export interface IUser {
   toggle: IUserToggle;
   profile: {
     energy: number;
+    energyMax: number;
   };
   workers: Record<ValuesOf<typeof IDLE_FARM_WORKER_TYPE>, IUserWorker>;
   config: {
     onOff: boolean;
+  };
+  farms: {
+    lastClaimedAt: Date;
+  };
+  datetime: {
+    registerAt: Date;
   };
 }

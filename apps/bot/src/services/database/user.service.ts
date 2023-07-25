@@ -65,10 +65,27 @@ const turnOnAccount = async ({userId}: ITurnOnAccount): Promise<void> => {
   await user.save();
 };
 
+interface IClaimFarm {
+  userId: string;
+}
+
+const claimFarm = async ({userId}: IClaimFarm): Promise<IUser | null> => {
+  const user = await dbUser.findOneAndUpdate({userId}, {
+    $set: {
+      'farms.lastClaimedAt': new Date(),
+    },
+  }, {
+    new: true,
+  });
+
+  return user ?? null;
+};
+
 export const userService = {
   registerUser,
   findUser,
   deleteUser,
   turnOffAccount,
   turnOnAccount,
+  claimFarm,
 };

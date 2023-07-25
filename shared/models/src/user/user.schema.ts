@@ -31,6 +31,9 @@ export const userSchema = new Schema<IUser>({
     expert: workerSchema,
     masterful: workerSchema,
   },
+  farms: {
+    lastClaimedAt: Date,
+  },
   config: {
     onOff: {
       type: Boolean,

@@ -33,7 +33,7 @@ export default <BotEvent>{
         preCheck: result.command.preCheck,
       });
       if (!toExecute) return;
-      
+
       await result.command.execute(client, message, result.args);
     }
 
@@ -183,8 +183,8 @@ const preCheckPrefixCommand = async ({preCheck, message, client}: IPreCheckPrefi
         status.userAccOff = !!userAccount?.config.onOff;
         break;
       case USER_ACC_OFF_ACTIONS.askToTurnOn:
-        status.userAccOff = !!userAccount?.config.onOff;
-        if (!userAccount?.config.onOff)
+        status.userAccOff = !!userAccount && !!userAccount?.config.onOff;
+        if (!!userAccount && !userAccount?.config.onOff)
           await djsMessageHelper.send({
             client,
             channelId: message.channelId,
