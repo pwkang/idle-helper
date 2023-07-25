@@ -22,58 +22,6 @@ export default <SlashCommand>{
       subcommand.setName('off').setDescription('Turn off your account'),
     )
     .addSubcommand((subcommand) =>
-      subcommand
-        .setName('heal-reminder')
-        .setDescription('Set the heal reminder HP target')
-        .addNumberOption((input) =>
-          input.setName('hp').setDescription('Target HP to heal').setMinValue(1),
-        )
-        .addBooleanOption((option) =>
-          option.setName('remove').setDescription('Remove and disable heal reminder'),
-        ),
-    )
-    .addSubcommand((subcommand) =>
-      subcommand.setName('donor').setDescription('Set EPIC RPG donor tier'),
-    )
-    .addSubcommand((subcommand) =>
-      subcommand.setName('donor-partner').setDescription('Set EPIC RPG donor partner tier'),
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName('reminder-channel')
-        .setDescription('Customize the the channel for different reminders')
-        .addStringOption((option) =>
-          option
-            .setName('reminder-type')
-            .setDescription(
-              'Type of reminder, separate different type with space. e.g. hunt adv use',
-            )
-            .setRequired(true),
-        )
-        .addStringOption((option) =>
-          option.setName('action').setDescription('Action to perform').setRequired(true).setChoices(
-            {
-              name: 'Set',
-              value: 'set',
-            },
-            {
-              name: 'Remove',
-              value: 'remove',
-            },
-          ),
-        ),
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName('custom-messages')
-        .setDescription('Customize the reminder messages for different reminders'),
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName('enchant-tier')
-        .setDescription('Set the enchant tier for enchant mute helper'),
-    )
-    .addSubcommand((subcommand) =>
       subcommand.setName('delete').setDescription('Delete your account'),
     ),
   preCheck: {
