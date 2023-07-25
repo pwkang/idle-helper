@@ -1,6 +1,6 @@
 import djsInteractionHelper from '../../../../lib/discordjs/interaction';
-import commandHelper from '../../../../lib/epic-helper/command-helper';
-import {SERVER_SETTINGS_PAGE_TYPE} from '../../../../lib/epic-helper/command-helper/server-settings/constant';
+import commandHelper from '../../../../lib/idle-helper/command-helper';
+import {SERVER_SETTINGS_PAGE_TYPE} from '../../../../lib/idle-helper/command-helper/server-settings/constant';
 import {IServerConfig} from './type';
 
 export const viewServerSettings = async ({client, interaction}: IServerConfig) => {

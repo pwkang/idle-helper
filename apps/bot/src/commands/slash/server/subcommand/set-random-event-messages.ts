@@ -1,8 +1,8 @@
 import djsInteractionHelper from '../../../../lib/discordjs/interaction';
 import {serverService} from '../../../../services/database/server.service';
-import commandHelper from '../../../../lib/epic-helper/command-helper';
+import commandHelper from '../../../../lib/idle-helper/command-helper';
 import {IServerConfig} from './type';
-import {SERVER_SETTINGS_PAGE_TYPE} from '../../../../lib/epic-helper/command-helper/server-settings/constant';
+import {SERVER_SETTINGS_PAGE_TYPE} from '../../../../lib/idle-helper/command-helper/server-settings/constant';
 import {IDLE_FARM_RANDOM_EVENTS_NAME} from '@idle-helper/constants';
 
 export const setRandomEventMessages = async ({client, interaction}: IServerConfig) => {
