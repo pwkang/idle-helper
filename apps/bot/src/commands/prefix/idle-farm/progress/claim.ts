@@ -3,7 +3,7 @@ import {idleClaim} from '../../../../lib/idle-farm/farms/claim';
 
 export default <PrefixCommand>{
   name: 'idleFarmClaim',
-  commands: ['claim', 'claims'],
+  commands: ['claim', 'cl'],
   type: PREFIX_COMMAND_TYPE.idleFarm,
   preCheck: {
     userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
