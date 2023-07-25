@@ -8,7 +8,8 @@
     "build:shared": "tsc"
   },
   "dependencies": {
-    "@idle-helper/constants": "workspace:*"
+    "@idle-helper/constants": "workspace:*",
+    "@idle-helper/utils": "workspace:*"
   },
   "devDependencies": {
     "@idle-helper/tsconfig": "workspace:*"
