@@ -2,6 +2,7 @@ import {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import embedReaders from '../embed-readers';
 import {userService} from '../../../services/database/user.service';
+import {infoService} from '../../../services/database/info.service';
 
 interface IIdleWorker {
   client: Client;
@@ -37,6 +38,7 @@ const idleWorkerSuccess = async ({embed, author}: IIdleWorkerSuccess) => {
     userId: author.id,
     workers,
   });
+  await updateWorkersPower(workers);
 };
 
 interface IChecker {
@@ -46,3 +48,13 @@ interface IChecker {
 
 const isIdleWorker = ({author, embed}: IChecker) =>
   embed.author?.name === `${author.username} — workers`;
+
+const updateWorkersPower = async (userWorkers: ReturnType<typeof embedReaders.worker>) => {
+  for (let worker of userWorkers) {
+    await infoService.updateWorkerPower({
+      worker: worker.type,
+      power: worker.power,
+      level: worker.level,
+    });
+  }
+};

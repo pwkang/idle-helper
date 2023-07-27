@@ -7,6 +7,7 @@ import {
   USER_ACC_OFF_ACTIONS,
   USER_NOT_REGISTERED_ACTIONS,
 } from '@idle-helper/constants';
+import {ICommandPreCheck} from './utils';
 
 declare global {
   export type ValuesOf<T extends Record<string, unknown>> = T[keyof T];
@@ -15,10 +16,7 @@ declare global {
     name: string;
     commands: string[];
     execute: (client: Client, message: Message, args: string[]) => void | Promise<void>;
-    preCheck: {
-      userNotRegistered?: ValuesOf<typeof USER_NOT_REGISTERED_ACTIONS>;
-      userAccOff?: ValuesOf<typeof USER_ACC_OFF_ACTIONS>;
-    };
+    preCheck: ICommandPreCheck;
     type: ValuesOf<typeof PREFIX_COMMAND_TYPE>;
   }
 
@@ -27,10 +25,7 @@ declare global {
     interactionType: T;
     execute: (client: Client, interaction: T) => Promise<void>;
     permissions?: bigint[],
-    preCheck: {
-      userNotRegistered?: ValuesOf<typeof USER_NOT_REGISTERED_ACTIONS>;
-      userAccOff?: ValuesOf<typeof USER_ACC_OFF_ACTIONS>;
-    };
+    preCheck: ICommandPreCheck;
     builder: SlashCommandBuilder;
   }
 
@@ -38,6 +33,7 @@ declare global {
     name: string;
     commandName: string[];
     bot: ValuesOf<typeof SLASH_MESSAGE_BOT_TYPE>;
+    preCheck: ICommandPreCheck;
     execute: (client: Client, message: Message, author: User) => Promise<void>;
   }
 

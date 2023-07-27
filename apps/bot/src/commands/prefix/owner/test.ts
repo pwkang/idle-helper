@@ -1,5 +1,6 @@
 import {PREFIX_COMMAND_TYPE} from '@idle-helper/constants';
-import {userService} from '../../../services/database/user.service';
+import {djsMessageHelper} from '../../../lib/discordjs/message';
+import {idleRaid} from '../../../lib/idle-farm/progress/raid';
 
 export default <PrefixCommand>{
   name: 'test',
@@ -7,8 +8,12 @@ export default <PrefixCommand>{
   type: PREFIX_COMMAND_TYPE.dev,
   preCheck: {},
   execute: async (client, message) => {
-    await userService.claimFarm({
-      userId: message.author.id,
+    const fetched = await message.channel.messages.fetch('1134168165719478376');
+    await idleRaid({
+      author: message.author,
+      client,
+      isSlashCommand: true,
+      message: fetched,
     });
   },
 };
