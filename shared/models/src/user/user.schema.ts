@@ -1,5 +1,8 @@
 import {Schema} from 'mongoose';
 import {IUser, IUserWorker} from './user.type';
+import {typedObjectEntries} from '@idle-helper/utils';
+import {IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import {ValuesOf} from '../type';
 
 const workerSchema = new Schema<IUserWorker>({
   level: Number,
@@ -28,7 +31,7 @@ export const userSchema = new Schema<IUser>({
     useless: workerSchema,
     deficient: workerSchema,
     common: workerSchema,
-    talent: workerSchema,
+    talented: workerSchema,
     wise: workerSchema,
     expert: workerSchema,
     masterful: workerSchema,

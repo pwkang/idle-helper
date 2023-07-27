@@ -1,6 +1,6 @@
 import {mongoClient} from '@idle-helper/services';
 import {IUser, IUserWorker, userSchema} from '@idle-helper/models';
-import {IDLE_FARM_WORKER_TYPE, IDLE_HELPER_FARM_TYPE} from '@idle-helper/constants';
+import {IDLE_FARM_WORKER_TYPE, IDLE_FARM_FARM_TYPE} from '@idle-helper/constants';
 import {UpdateQuery} from 'mongoose';
 
 const dbUser = mongoClient.model<IUser>('users', userSchema);
@@ -89,7 +89,7 @@ interface IWorker {
   maxExp: number;
   exp: number;
   power: number;
-  farm: keyof typeof IDLE_HELPER_FARM_TYPE;
+  farm: keyof typeof IDLE_FARM_FARM_TYPE;
 }
 
 interface ISaveUserWorkers {
@@ -116,6 +116,14 @@ const saveUserWorkers = async ({userId, workers}: ISaveUserWorkers): Promise<IUs
   return user ?? null;
 };
 
+interface IGetUserWorkers {
+  userId: string;
+}
+
+const getUserWorkers = async ({userId}: IGetUserWorkers): Promise<IUser['workers']> => {
+  const user = await dbUser.findOne({userId});
+  return user?.workers ?? {} as IUser['workers'];
+};
 export const userService = {
   registerUser,
   findUser,
@@ -124,4 +132,5 @@ export const userService = {
   turnOnAccount,
   claimFarm,
   saveUserWorkers,
+  getUserWorkers,
 };

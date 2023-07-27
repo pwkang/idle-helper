@@ -1,4 +1,4 @@
-export const IDLE_HELPER_FARM_TYPE = {
+export const IDLE_FARM_FARM_TYPE = {
   forest: 'forest',
   waterPond: 'water pond',
   potatoFarm: 'potato farm',
