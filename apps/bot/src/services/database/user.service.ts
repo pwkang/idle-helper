@@ -1,5 +1,7 @@
 import {mongoClient} from '@idle-helper/services';
-import {IUser, userSchema} from '@idle-helper/models';
+import {IUser, IUserWorker, userSchema} from '@idle-helper/models';
+import {IDLE_FARM_WORKER_TYPE, IDLE_HELPER_FARM_TYPE} from '@idle-helper/constants';
+import {UpdateQuery} from 'mongoose';
 
 const dbUser = mongoClient.model<IUser>('users', userSchema);
 
@@ -81,6 +83,39 @@ const claimFarm = async ({userId}: IClaimFarm): Promise<IUser | null> => {
   return user ?? null;
 };
 
+interface IWorker {
+  type: ValuesOf<typeof IDLE_FARM_WORKER_TYPE>;
+  level: number;
+  maxExp: number;
+  exp: number;
+  power: number;
+  farm: keyof typeof IDLE_HELPER_FARM_TYPE;
+}
+
+interface ISaveUserWorkers {
+  userId: string;
+  workers: IWorker[];
+}
+
+const saveUserWorkers = async ({userId, workers}: ISaveUserWorkers): Promise<IUser | null> => {
+  const query: UpdateQuery<IUser> = {};
+  for (const worker of workers) {
+    query[`workers.${worker.type}`] = {
+      exp: worker.exp,
+      farm: worker.farm,
+      maxExp: worker.maxExp,
+      power: worker.power,
+      level: worker.level,
+    } as IUserWorker;
+  }
+  const user = await dbUser.findOneAndUpdate({userId}, {
+    $set: query,
+  }, {
+    new: true,
+  });
+  return user ?? null;
+};
+
 export const userService = {
   registerUser,
   findUser,
@@ -88,4 +123,5 @@ export const userService = {
   turnOffAccount,
   turnOnAccount,
   claimFarm,
+  saveUserWorkers,
 };

@@ -3,8 +3,10 @@ import {IUser, IUserWorker} from './user.type';
 
 const workerSchema = new Schema<IUserWorker>({
   level: Number,
-  power: Number,
+  maxExp: Number,
   exp: Number,
+  power: Number,
+  farm: String,
 });
 
 export const userSchema = new Schema<IUser>({

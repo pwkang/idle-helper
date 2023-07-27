@@ -80,10 +80,16 @@ export const createIdleFarmCommandListener = (
     if (collected.embeds.length) {
       const embed = collected.embeds[0];
 
+      if (isUserSpamming({collected, author})) {
+        event.stop();
+        return;
+      }
+
       event.emit('embed', embed, collected);
     } else if (!collected.embeds.length) {
       // Message Content
-      if (isBotMaintenance({collected, author})) {
+      if (isBotMaintenance({collected, author})
+      ) {
         event.stop();
         return;
       }
@@ -113,5 +119,13 @@ function isSlashCommand({collected}: IChecker) {
 function isBotMaintenance({author, collected}: IChecker) {
   return (
     collected.content.includes('The bot is under maintenance!') && collected.mentions.has(author.id)
+  );
+}
+
+function isUserSpamming({author, collected}: IChecker) {
+  const embed = collected.embeds[0];
+  if (!embed) return false;
+  return (
+    embed.author?.name === author.username && embed.fields[0]?.name.includes('please don\'t spam')
   );
 }
