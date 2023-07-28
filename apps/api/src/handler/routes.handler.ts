@@ -1,6 +1,6 @@
 import {handlerFileFilter, handlerRoot} from './constant';
 import {type Handler, Router} from 'express';
-import {importFiles, logger} from '@epic-helper/utils';
+import {importFiles, logger} from '@idle-helper/utils';
 
 const methods = {
   get: 'get',

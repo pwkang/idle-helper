@@ -110,7 +110,6 @@ function searchCommand(
       prefix: PREFIX.dev,
       message,
     });
-    console.log('hre', args);
     commandType = PREFIX_COMMAND_TYPE.dev;
   }
 
