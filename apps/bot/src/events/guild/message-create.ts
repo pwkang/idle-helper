@@ -110,6 +110,7 @@ function searchCommand(
       prefix: PREFIX.dev,
       message,
     });
+    console.log('hre', args);
     commandType = PREFIX_COMMAND_TYPE.dev;
   }
 
@@ -148,9 +149,9 @@ interface IGenerateArgs {
 
 const generateArgs = ({prefix, message, botId}: IGenerateArgs) => {
   const messageContent = trimWhitespace(message.content.toLowerCase());
-  let args: string[] = [];
+  let args: string[];
   if (messageContent.startsWith(prefix)) {
-    args = messageContent.split(' ').slice(1);
+    args = messageContent.slice(prefix.length).split(' ');
   } else if (botId && message.mentions.has(botId)) {
     args = messageContent
       .replace(`<@${botId}>`, '')

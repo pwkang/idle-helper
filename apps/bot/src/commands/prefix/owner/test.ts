@@ -1,5 +1,4 @@
 import {PREFIX_COMMAND_TYPE} from '@idle-helper/constants';
-import {djsMessageHelper} from '../../../lib/discordjs/message';
 import {idleRaid} from '../../../lib/idle-farm/progress/raid';
 
 export default <PrefixCommand>{
@@ -8,7 +7,7 @@ export default <PrefixCommand>{
   type: PREFIX_COMMAND_TYPE.dev,
   preCheck: {},
   execute: async (client, message) => {
-    const fetched = await message.channel.messages.fetch('1134168165719478376');
+    const fetched = await message.channel.messages.fetch('1134476410568847383');
     await idleRaid({
       author: message.author,
       client,
