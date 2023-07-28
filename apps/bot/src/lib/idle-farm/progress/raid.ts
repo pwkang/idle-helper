@@ -1,8 +1,8 @@
-import {ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Embed, EmbedBuilder, Message, User} from 'discord.js';
+import {ButtonStyle, Client, Embed, EmbedBuilder, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import embedReaders from '../embed-readers';
 import {userService} from '../../../services/database/user.service';
-import {IUser, IUserWorker} from '@idle-helper/models';
+import {IUser} from '@idle-helper/models';
 import {BOT_COLOR, BOT_EMOJI, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 import {djsMessageHelper} from '../../discordjs/message';
 import {typedObjectEntries} from '@idle-helper/utils';
@@ -42,6 +42,16 @@ const idleRaidSuccess = async ({embed, author, client, channelId}: IIdleWorkerSu
   const raidInfo = embedReaders.raid({embed});
   const userWorker = await userService.getUserWorkers({userId: author.id});
   const workersPower = await infoService.getWorkerPower();
+  const registeredWorkersAmount = Object.values(userWorker).filter(Boolean).length;
+  if (!registeredWorkersAmount) {
+    return djsMessageHelper.send({
+      client,
+      channelId,
+      options: {
+        content: 'You may need to register your workers to use raid helper',
+      },
+    });
+  }
   const guideEmbed = generateEmbed({
     enemyFarms: raidInfo,
     userWorkers: userWorker,
@@ -71,7 +81,7 @@ interface IGenerateEmbed {
 }
 
 const generateEmbed = ({workersPower, userWorkers, enemyFarms}: IGenerateEmbed) => {
-  const embed = new EmbedBuilder()
+  return new EmbedBuilder()
     .setColor(BOT_COLOR.embed)
     .addFields(
       {
@@ -91,6 +101,4 @@ const generateEmbed = ({workersPower, userWorkers, enemyFarms}: IGenerateEmbed) 
         inline: true,
       },
     );
-
-  return embed;
 };
