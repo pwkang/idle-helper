@@ -3,9 +3,9 @@ import {
   BOT_CLICKABLE_SLASH_COMMANDS,
   BOT_COLOR,
   IDLE_FARM_CLICKABLE_SLASH_COMMANDS,
+  PREFIX,
   SUPPORT_SERVER_INVITE_LINK,
 } from '@idle-helper/constants';
-import {typedObjectEntries} from '@idle-helper/utils';
 
 interface IHelp {
   client: Client;
@@ -28,7 +28,7 @@ export const _help = ({client}: IHelp) => {
 const getEmbed = (client: Client) => new EmbedBuilder()
   .setColor(BOT_COLOR.embed)
   .setTitle('IDLE Helper Help')
-  .setDescription('**Prefix:** `hw ` (not-customizable)')
+  .setDescription(`**Prefix:** \`${PREFIX.bot}\` (not-customizable)`)
   .setThumbnail(client.user?.avatarURL() ?? null)
   .addFields({
     name: 'Basic',
