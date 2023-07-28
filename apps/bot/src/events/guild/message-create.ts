@@ -56,11 +56,12 @@ const searchSlashMessages = (client: Client, message: Message) =>
 const trimWhitespace = (str: string) => str.split('\n').join('').replace(/\s+/g, ' ').trim();
 
 const isRpgCommand = (message: Message) =>
-  trimWhitespace(message.content).toLowerCase().startsWith(`${PREFIX.idleFarm.toLowerCase()} `) ||
+  trimWhitespace(message.content).toLowerCase().startsWith(PREFIX.idleFarm.toLowerCase()) ||
   message.mentions.has(IDLE_FARM_ID);
 
-const isBotCommand = (message: Message) =>
-  PREFIX.bot && trimWhitespace(message.content).toLowerCase().startsWith(PREFIX.bot.toLowerCase());
+const isBotCommand = (client: Client, message: Message) =>
+  PREFIX.bot && trimWhitespace(message.content).toLowerCase().startsWith(PREFIX.bot.toLowerCase()) ||
+  message.mentions.has(client.user!.id);
 
 const validateCommand = (commands: string[], args: string[]) => {
   return commands.some((cmd) =>
@@ -86,26 +87,29 @@ function searchCommand(
   let commandType: ValuesOf<typeof PREFIX_COMMAND_TYPE>;
 
   if (isRpgCommand(message)) {
-    if (messageContent.startsWith(`${PREFIX.idleFarm} `)) {
-      args = messageContent.split(' ').slice(1);
-    } else if (message.mentions.has(IDLE_FARM_ID)) {
-      args = messageContent
-        .replace(`<@${IDLE_FARM_ID}>`, '')
-        .split(' ')
-        .filter((arg) => arg !== '');
-    }
+    args = generateArgs({
+      botId: IDLE_FARM_ID,
+      prefix: PREFIX.idleFarm,
+      message,
+    });
 
     commandType = PREFIX_COMMAND_TYPE.idleFarm;
   }
 
-  if (PREFIX.bot && isBotCommand(message)) {
-    args = messageContent.slice(PREFIX.bot.length).trim().split(' ');
-
+  if (PREFIX.bot && isBotCommand(client, message)) {
+    args = generateArgs({
+      botId: client.user!.id,
+      prefix: PREFIX.bot,
+      message,
+    });
     commandType = PREFIX_COMMAND_TYPE.bot;
   }
-  if (DEVS_ID.includes(message.author.id) && PREFIX.dev && messageContent.startsWith(PREFIX.dev)) {
-    args = messageContent.slice(PREFIX.dev.length).trim().split(' ');
 
+  if (DEVS_ID.includes(message.author.id) && PREFIX.dev && messageContent.startsWith(PREFIX.dev)) {
+    args = generateArgs({
+      prefix: PREFIX.dev,
+      message,
+    });
     commandType = PREFIX_COMMAND_TYPE.dev;
   }
 
@@ -135,3 +139,25 @@ const isNotDeferred = (message: Message) => !(message.content === '' && !message
 
 const searchBotMatchedCommands = (client: Client, message: Message) =>
   client.botMessages.filter((cmd) => message.author.id === cmd.bot && cmd.match(message));
+
+interface IGenerateArgs {
+  prefix: string;
+  botId?: string;
+  message: Message;
+}
+
+const generateArgs = ({prefix, message, botId}: IGenerateArgs) => {
+  const messageContent = trimWhitespace(message.content.toLowerCase());
+  let args: string[] = [];
+  if (messageContent.startsWith(prefix)) {
+    args = messageContent.split(' ').slice(1);
+  } else if (botId && message.mentions.has(botId)) {
+    args = messageContent
+      .replace(`<@${botId}>`, '')
+      .split(' ')
+      .filter((arg) => arg !== '');
+  } else {
+    args = messageContent.split(' ').filter((arg) => arg !== '');
+  }
+  return args;
+};
