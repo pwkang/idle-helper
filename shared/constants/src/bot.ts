@@ -4,7 +4,7 @@ dotenv.config();
 export const PREFIX = {
   bot: process.env.BOT_PREFIX,
   dev: process.env.DEV_PREFIX,
-  idleFarm: 'idle',
+  idleFarm: 'idle ',
 } as const;
 
 export const PREFIX_COMMAND_TYPE = {

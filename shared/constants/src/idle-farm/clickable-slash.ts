@@ -1,3 +1,19 @@
-export const RPG_CLICKABLE_SLASH_COMMANDS = {
-
+export const IDLE_FARM_CLICKABLE_SLASH_COMMANDS = {
+  daily: '</daily:1128414211085717609>',
+  farmStats: '</farm stats:1128415242662203472>',
+  farmUpgrade: '</farm upgrade:1128415242662203472>',
+  guildStats: '</guild stats:1128414125433827348>',
+  leagueOverview: '</league overview:1128414209475104970>',
+  open: '</open:1128412596131872768>',
+  packing: '</packing:1128412427634090146>',
+  payday: '</payday:1128412422437343273>',
+  profile: '</profile:1128412334629589012>',
+  raid: '</raid:1128414124049698868>',
+  teamRaid: '</teamraid:1128414207428268123>',
+  upgrades: '</upgrades:1130229580884619274>',
+  use: '</use:1128412597327249569>',
+  workerStats: '</worker stats:1128412424630964314>',
+  workerHire: '</worker hire:1128412424630964314>',
+  workerAssign: '</worker assign:1128412424630964314>',
+  workerAutoAssign: '</worker autoassign:1128412424630964314>',
 } as const;
