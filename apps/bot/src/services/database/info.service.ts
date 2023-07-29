@@ -2,12 +2,22 @@ import {mongoClient} from '@idle-helper/services';
 import {infoSchema} from '@idle-helper/models/dist/info/info.schema';
 import {IInfo} from '@idle-helper/models/dist/info/info.type';
 import {IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import {infoRedis} from '../redis/info.redis';
+
+infoSchema.post('findOneAndUpdate', async function(doc) {
+  await infoRedis.setInfo(doc);
+});
 
 const dbInfo = mongoClient.model<IInfo>('Info', infoSchema);
 
 const getWorkerPower = async (): Promise<IInfo['workerPower']> => {
-  const info = await dbInfo.findOne();
-  return info?.workerPower ?? {} as IInfo['workerPower'];
+  const cachedInfo = await infoRedis.getInfo();
+  if (!cachedInfo) {
+    const info = await dbInfo.findOne();
+    info && await infoRedis.setInfo(info);
+    return info?.workerPower ?? {} as IInfo['workerPower'];
+  }
+  return cachedInfo.workerPower;
 };
 
 interface IUpdateWorkerPower {
@@ -27,6 +37,7 @@ const updateWorkerPower = async ({worker, level, power}: IUpdateWorkerPower) => 
     },
   }, {
     upsert: true,
+    new: true,
   });
 };
 
