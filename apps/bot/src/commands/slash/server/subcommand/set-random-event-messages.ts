@@ -7,16 +7,16 @@ import {IDLE_FARM_RANDOM_EVENTS_NAME} from '@idle-helper/constants';
 
 export const setRandomEventMessages = async ({client, interaction}: IServerConfig) => {
   const packing = interaction.options.getString(
-    IDLE_FARM_RANDOM_EVENTS_NAME.packing.replaceAll(' ', '-').toLowerCase()
+    IDLE_FARM_RANDOM_EVENTS_NAME.packing.replaceAll(' ', '-').toLowerCase(),
   );
   const worker = interaction.options.getString(
-    IDLE_FARM_RANDOM_EVENTS_NAME.worker.replaceAll(' ', '-').toLowerCase()
+    IDLE_FARM_RANDOM_EVENTS_NAME.worker.replaceAll(' ', '-').toLowerCase(),
   );
   const energy = interaction.options.getString(
-    IDLE_FARM_RANDOM_EVENTS_NAME.energy.replaceAll(' ', '-').toLowerCase()
+    IDLE_FARM_RANDOM_EVENTS_NAME.energy.replaceAll(' ', '-').toLowerCase(),
   );
-  const dice = interaction.options.getString(
-    IDLE_FARM_RANDOM_EVENTS_NAME.dice.replaceAll(' ', '-').toLowerCase()
+  const lucky = interaction.options.getString(
+    IDLE_FARM_RANDOM_EVENTS_NAME.lucky.replaceAll(' ', '-').toLowerCase(),
   );
 
   const serverAccount = await serverService.updateRandomEvents({
@@ -24,7 +24,7 @@ export const setRandomEventMessages = async ({client, interaction}: IServerConfi
     randomEvents: {
       worker: worker ? (worker === 'clear' ? null : worker) : undefined,
       energy: energy ? (energy === 'clear' ? null : energy) : undefined,
-      dice: dice ? (dice === 'clear' ? null : dice) : undefined,
+      lucky: lucky ? (lucky === 'clear' ? null : lucky) : undefined,
       packing: packing ? (packing === 'clear' ? null : packing) : undefined,
     },
   });

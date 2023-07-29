@@ -1,6 +1,6 @@
 import {EmbedBuilder} from 'discord.js';
 import {IServerSettings} from '../type';
-import {BOT_COLOR, IDLE_FARM_RANDOM_EVENTS} from '@idle-helper/constants';
+import {BOT_COLOR, IDLE_FARM_RANDOM_EVENTS_NAME} from '@idle-helper/constants';
 import {typedObjectEntries} from '@idle-helper/utils';
 
 export const _getRandomEventSettingsEmbed = ({serverAccount, guild}: IServerSettings) => {
@@ -11,7 +11,7 @@ export const _getRandomEventSettingsEmbed = ({serverAccount, guild}: IServerSett
     })
     .setColor(BOT_COLOR.embed);
 
-  for (let [key, label] of typedObjectEntries(IDLE_FARM_RANDOM_EVENTS)) {
+  for (let [key, label] of typedObjectEntries(IDLE_FARM_RANDOM_EVENTS_NAME)) {
     embed.addFields({
       name: label,
       value: serverAccount?.settings.randomEvent[key] ?? '-',
