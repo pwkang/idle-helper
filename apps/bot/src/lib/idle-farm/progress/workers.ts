@@ -2,7 +2,6 @@ import {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import embedReaders from '../embed-readers';
 import {userService} from '../../../services/database/user.service';
-import {infoService} from '../../../services/database/info.service';
 
 interface IIdleWorker {
   client: Client;

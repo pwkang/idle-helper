@@ -6,10 +6,11 @@ export default <BotMessage>{
   name: 'idle-rpg-worker',
   bot: IDLE_FARM_ID,
   match: (message) => {
-    const embed = message.embeds[0];
-    if (!embed) return false;
-    return embed.description?.includes('These are your workers') &&
-      embed.author?.name?.includes('— workers');
+    return false; // disable this feature
+    // const embed = message.embeds[0];
+    // if (!embed) return false;
+    // return embed.description?.includes('These are your workers') &&
+    //   embed.author?.name?.includes('— workers');
   },
   execute: async (client, message) => {
     const embed = message.embeds[0];
