@@ -38,7 +38,6 @@ const idleWorkerSuccess = async ({embed, author}: IIdleWorkerSuccess) => {
     userId: author.id,
     workers,
   });
-  await updateWorkersPower(workers);
 };
 
 interface IChecker {
@@ -48,13 +47,3 @@ interface IChecker {
 
 const isIdleWorker = ({author, embed}: IChecker) =>
   embed.author?.name === `${author.username} — workers`;
-
-const updateWorkersPower = async (userWorkers: ReturnType<typeof embedReaders.worker>) => {
-  for (let worker of userWorkers) {
-    await infoService.updateWorkerPower({
-      worker: worker.type,
-      power: worker.power,
-      level: worker.level,
-    });
-  }
-};

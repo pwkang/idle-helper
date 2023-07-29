@@ -1,7 +1,7 @@
 import ms from 'ms';
 import {redisService} from './redis.service';
 
-const prefix = 'epic-helper:message-edited:';
+const prefix = 'idle-helper:message-edited:';
 
 interface IRedisSetMessageEdited {
   messageId: string;
