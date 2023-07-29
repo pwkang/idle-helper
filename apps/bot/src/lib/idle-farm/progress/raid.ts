@@ -1,4 +1,4 @@
-import {ButtonStyle, Client, Embed, EmbedBuilder, Message, User} from 'discord.js';
+import {Client, Embed, EmbedBuilder, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import embedReaders from '../embed-readers';
 import {userService} from '../../../services/database/user.service';
@@ -6,8 +6,7 @@ import {IUser} from '@idle-helper/models';
 import {BOT_COLOR, BOT_EMOJI, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 import {djsMessageHelper} from '../../discordjs/message';
 import {typedObjectEntries} from '@idle-helper/utils';
-import {infoService} from '../../../services/database/info.service';
-import {IInfo} from '@idle-helper/models/dist/info/info.type';
+import {calcWorkerPower} from '../calculator/worker-power';
 
 interface IIdleRaid {
   client: Client;
@@ -41,7 +40,6 @@ interface IIdleWorkerSuccess {
 const idleRaidSuccess = async ({embed, author, client, channelId}: IIdleWorkerSuccess) => {
   const raidInfo = embedReaders.raid({embed});
   const userWorker = await userService.getUserWorkers({userId: author.id});
-  const workersPower = await infoService.getWorkerPower();
   const registeredWorkersAmount = Object.values(userWorker).filter(Boolean).length;
   if (!registeredWorkersAmount) {
     return djsMessageHelper.send({
@@ -55,7 +53,6 @@ const idleRaidSuccess = async ({embed, author, client, channelId}: IIdleWorkerSu
   const guideEmbed = generateEmbed({
     enemyFarms: raidInfo,
     userWorkers: userWorker,
-    workersPower,
   });
   await djsMessageHelper.send({
     client,
@@ -77,10 +74,9 @@ const isIdleRaid = ({author, embed}: IChecker) =>
 interface IGenerateEmbed {
   enemyFarms: ReturnType<typeof embedReaders.raid>;
   userWorkers: IUser['workers'];
-  workersPower: IInfo['workerPower'];
 }
 
-const generateEmbed = ({workersPower, userWorkers, enemyFarms}: IGenerateEmbed) => {
+const generateEmbed = ({userWorkers, enemyFarms}: IGenerateEmbed) => {
   return new EmbedBuilder()
     .setColor(BOT_COLOR.embed)
     .addFields(
@@ -89,14 +85,17 @@ const generateEmbed = ({workersPower, userWorkers, enemyFarms}: IGenerateEmbed) 
         value: typedObjectEntries(IDLE_FARM_WORKER_TYPE).reverse().map(([key, value]) => {
           const worker = userWorkers[value];
           if (!worker) return undefined;
-          return `${BOT_EMOJI.worker[value]} Lv ${worker.level} | AT: ${worker.power}`;
+          return `${BOT_EMOJI.worker[value]} Lv ${worker.level} | AT: ${calcWorkerPower({
+            type: value,
+            level: worker.level,
+          })}`;
         }).filter(Boolean).join('\n'),
         inline: true,
       },
       {
         name: `${BOT_EMOJI.other.farm} Enemy farms`,
         value: enemyFarms.map(({farm, worker, level}) =>
-          `${BOT_EMOJI.worker[worker]} Lv ${level} | AT: ${workersPower[worker]?.[level] ?? '??'}`,
+          `${BOT_EMOJI.worker[worker]} Lv ${level} | AT: ${calcWorkerPower({type: worker, level})}`,
         ).join('\n'),
         inline: true,
       },
