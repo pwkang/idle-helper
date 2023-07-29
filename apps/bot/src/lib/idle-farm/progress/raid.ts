@@ -7,6 +7,7 @@ import {BOT_COLOR, BOT_EMOJI, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constant
 import {djsMessageHelper} from '../../discordjs/message';
 import {typedObjectEntries} from '@idle-helper/utils';
 import {calcWorkerPower} from '../calculator/worker-power';
+import {dailyReminder} from '../../idle-helper/reminder/daily-reminder';
 
 interface IIdleRaid {
   client: Client;
@@ -25,6 +26,12 @@ export const idleRaid = async ({author, client, isSlashCommand, message}: IIdleR
   event.on('embed', async (embed) => {
     if (isIdleRaid({author, embed})) {
       idleRaidSuccess({embed, author, client, channelId: message.channel.id});
+      dailyReminder({
+        client,
+        channelId: message.channel.id,
+        userId: author.id,
+      });
+      event.stop();
     }
   });
   if (isSlashCommand) event.triggerCollect(message);
