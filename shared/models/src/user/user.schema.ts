@@ -1,8 +1,5 @@
 import {Schema} from 'mongoose';
 import {IUser, IUserWorker} from './user.type';
-import {typedObjectEntries} from '@idle-helper/utils';
-import {IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
-import {ValuesOf} from '../type';
 
 const workerSchema = new Schema<IUserWorker>({
   level: Number,
@@ -44,5 +41,9 @@ export const userSchema = new Schema<IUser>({
       type: Boolean,
       default: true,
     },
+  },
+  commandsLastUsed: {
+    daily: Date,
+    claim: Date,
   },
 });

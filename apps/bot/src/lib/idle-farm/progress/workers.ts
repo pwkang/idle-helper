@@ -2,6 +2,7 @@ import {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import embedReaders from '../embed-readers';
 import {userService} from '../../../services/database/user.service';
+import {dailyReminder} from '../../idle-helper/reminder/daily-reminder';
 
 interface IIdleWorker {
   client: Client;
@@ -20,6 +21,12 @@ export const idleWorker = async ({author, client, isSlashCommand, message}: IIdl
   event.on('embed', async (embed) => {
     if (isIdleWorker({author, embed})) {
       idleWorkerSuccess({embed, author, client});
+      dailyReminder({
+        client,
+        channelId: message.channel.id,
+        userId: author.id,
+      });
+      event.stop();
     }
   });
   if (isSlashCommand) event.triggerCollect(message);

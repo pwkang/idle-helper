@@ -28,7 +28,8 @@ export interface IUser {
   farms: {
     lastClaimedAt: Date;
   };
-  datetime: {
-    registerAt: Date;
+  commandsLastUsed: {
+    daily: Date;
+    claim: Date;
   };
 }
