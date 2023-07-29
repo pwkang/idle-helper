@@ -14,7 +14,7 @@ export const serverSchema = new Schema<IServer>({
       worker: {type: String},
       packing: {type: String},
       energy: {type: String},
-      dice: {type: String},
+      lucky: {type: String},
     },
   },
 });

@@ -1,6 +1,6 @@
 import {mongoClient} from '@idle-helper/services';
 import {IServer, serverSchema} from '@idle-helper/models';
-import {IDLE_FARM_COMMAND_TYPE, IDLE_FARM_RANDOM_EVENTS} from '@idle-helper/constants';
+import {IDLE_FARM_RANDOM_EVENTS} from '@idle-helper/constants';
 import {UpdateQuery} from 'mongoose';
 import {typedObjectEntries} from '@idle-helper/utils';
 
@@ -61,10 +61,11 @@ interface IUpdateRandomEvents {
   randomEvents: Partial<Record<ValuesOf<typeof IDLE_FARM_RANDOM_EVENTS>, string | null>>;
 }
 
-const updateRandomEvents = async ({
-                                    serverId,
-                                    randomEvents,
-                                  }: IUpdateRandomEvents): Promise<IServer | null> => {
+const updateRandomEvents = async (
+  {
+    serverId,
+    randomEvents,
+  }: IUpdateRandomEvents): Promise<IServer | null> => {
   const query: UpdateQuery<IServer> = {
     $set: {},
     $unset: {},

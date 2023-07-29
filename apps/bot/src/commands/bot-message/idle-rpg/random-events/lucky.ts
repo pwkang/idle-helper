@@ -3,7 +3,7 @@ import {djsMessageHelper} from '../../../../lib/discordjs/message';
 import {IDLE_FARM_ID} from '@idle-helper/constants';
 
 export default <BotMessage>{
-  name: 'random-events-dice',
+  name: 'random-events-lucky',
   bot: IDLE_FARM_ID,
   match: (message) => {
     const embed = message.embeds[0];
@@ -16,11 +16,11 @@ export default <BotMessage>{
     });
     if (!serverProfile) return;
     const randomEvent = serverProfile.settings.randomEvent;
-    if (!randomEvent.dice) return;
+    if (!randomEvent.lucky) return;
     await djsMessageHelper.send({
       client,
       options: {
-        content: randomEvent.dice,
+        content: randomEvent.lucky,
       },
       channelId: message.channel.id,
     });

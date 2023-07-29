@@ -14,7 +14,7 @@ export default <SlashCommand>{
     .setName('server')
     .setDescription('Server configuration')
     .addSubcommand((subcommand) =>
-      subcommand.setName('settings').setDescription('View the server settings')
+      subcommand.setName('settings').setDescription('View the server settings'),
     )
     .addSubcommand((subcommand) =>
       subcommand
@@ -23,23 +23,23 @@ export default <SlashCommand>{
         .addStringOption((option) =>
           option
             .setName(IDLE_FARM_RANDOM_EVENTS_NAME.energy.replaceAll(' ', '-').toLowerCase())
-            .setDescription(IDLE_FARM_RANDOM_EVENTS_NAME.energy)
+            .setDescription(IDLE_FARM_RANDOM_EVENTS_NAME.energy),
         )
         .addStringOption((option) =>
           option
             .setName(IDLE_FARM_RANDOM_EVENTS_NAME.worker.replaceAll(' ', '-').toLowerCase())
-            .setDescription(IDLE_FARM_RANDOM_EVENTS_NAME.worker)
+            .setDescription(IDLE_FARM_RANDOM_EVENTS_NAME.worker),
         )
         .addStringOption((option) =>
           option
-            .setName(IDLE_FARM_RANDOM_EVENTS_NAME.dice.replaceAll(' ', '-').toLowerCase())
-            .setDescription(IDLE_FARM_RANDOM_EVENTS_NAME.dice)
+            .setName(IDLE_FARM_RANDOM_EVENTS_NAME.lucky.replaceAll(' ', '-').toLowerCase())
+            .setDescription(IDLE_FARM_RANDOM_EVENTS_NAME.lucky),
         )
         .addStringOption((option) =>
           option
             .setName(IDLE_FARM_RANDOM_EVENTS_NAME.packing.replaceAll(' ', '-').toLowerCase())
-            .setDescription(IDLE_FARM_RANDOM_EVENTS_NAME.packing)
-        )
+            .setDescription(IDLE_FARM_RANDOM_EVENTS_NAME.packing),
+        ),
     ),
   preCheck: {
     userAccOff: USER_ACC_OFF_ACTIONS.skip,
