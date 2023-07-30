@@ -17,6 +17,7 @@ interface IEnemyFarmInfo {
 export const _raidReader = ({embed}: IRaidReader) => {
   const farms: IEnemyFarmInfo[] = [];
   for (let row of embed.fields[0].value.split('\n')) {
+    if (isNoWorker(row)) continue;
     const farm = typedObjectEntries(IDLE_FARM_FARM_TYPE).find(([_, value]) => row.includes(value))?.[0]!;
     const worker = typedObjectEntries(IDLE_FARM_WORKER_TYPE).find(([_, value]) => row.includes(value))?.[0]!;
     const level = Number(row.match(/Lv(\d+)/)?.[1]);
@@ -32,3 +33,5 @@ export const _raidReader = ({embed}: IRaidReader) => {
   }
   return farms;
 };
+
+const isNoWorker = (row: string) => row.includes('NONE');
