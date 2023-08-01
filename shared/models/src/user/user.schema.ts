@@ -42,6 +42,7 @@ export const userSchema = new Schema<IUser>({
       type: Boolean,
       default: true,
     },
+    channelId: String,
   },
   commandsLastUsed: {
     daily: Date,

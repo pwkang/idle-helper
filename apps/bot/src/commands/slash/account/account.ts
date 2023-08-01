@@ -6,6 +6,7 @@ import {slashAccountOff} from './subcommand/slash-account-off';
 import {slashAccountDelete} from './subcommand/account-delete';
 import {USER_ACC_OFF_ACTIONS} from '@idle-helper/constants';
 import {setClaimReminder} from './subcommand/account-claim-reminder';
+import {slashBindReminderChannel} from './subcommand/bind-reminder-channel';
 
 export default <SlashCommand>{
   name: 'account',
@@ -35,7 +36,13 @@ export default <SlashCommand>{
             .setDescription('Separated multiple time by comma, e.g. 4,12,24')
             .setRequired(true),
         ),
-    ),
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName('reminder-channel')
+        .setDescription('Bind reminder channel to current channel'),
+    )
+  ,
   preCheck: {
     userAccOff: USER_ACC_OFF_ACTIONS.skip,
     userNotRegistered: USER_ACC_OFF_ACTIONS.skip,
@@ -60,6 +67,10 @@ export default <SlashCommand>{
       case 'claim-reminder':
         await setClaimReminder({client, interaction});
         break;
+      case 'reminder-channel':
+        await slashBindReminderChannel({client, interaction});
+        break;
+
     }
   },
 };

@@ -24,6 +24,7 @@ export interface IUser {
   workers: Record<ValuesOf<typeof IDLE_FARM_WORKER_TYPE>, IUserWorker>;
   config: {
     onOff: boolean;
+    channelId: string;
   };
   farms: {
     lastClaimedAt: Date;

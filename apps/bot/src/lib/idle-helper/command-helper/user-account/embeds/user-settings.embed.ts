@@ -1,6 +1,7 @@
 import {EmbedBuilder, User} from 'discord.js';
 import {IUser} from '@idle-helper/models';
 import {BOT_COLOR, BOT_EMOJI} from '@idle-helper/constants';
+import messageFormatter from '../../../../discordjs/message-formatter';
 
 export interface IGetUserSettingsEmbed {
   author: User;
@@ -31,6 +32,10 @@ export const _getUserSettingsEmbed = ({userProfile, author}: IGetUserSettingsEmb
       value: userProfile.farms.reminderHours.length ?
         `Remind to claim at **${userProfile.farms.reminderHours.join(', ')}** hours` :
         `Farm reminder is not net`,
+    },
+    {
+      icon: ':satellite:',
+      value: userProfile.config.channelId ? `Reminder send to ${messageFormatter.channel(userProfile.config.channelId)}` : 'Reminder channel is not set',
     },
   ];
 

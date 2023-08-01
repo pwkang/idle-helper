@@ -4,6 +4,7 @@ import {_turnOffAccount} from './account-off';
 import {_deleteAccount} from './account-delete';
 import {_accountSettings} from './account-settings';
 import {_claimReminder} from './claim-reminder';
+import {_reminderChannel} from './reminder-channel';
 
 export const _userAccountHelper = {
   register: _registerAccount,
@@ -12,4 +13,5 @@ export const _userAccountHelper = {
   deleteAccount: _deleteAccount,
   settings: _accountSettings,
   claimReminder: _claimReminder,
+  reminderChannel: _reminderChannel,
 };

@@ -8,15 +8,19 @@ const dbUser = mongoClient.model<IUser>('users', userSchema);
 interface IRegisterUser {
   userId: string;
   username: string;
+  channelId: string;
 }
 
-const registerUser = async ({userId, username}: IRegisterUser): Promise<boolean> => {
+const registerUser = async ({userId, username, channelId}: IRegisterUser): Promise<boolean> => {
   const user = await dbUser.findOne({userId});
 
   if (!user) {
     const newUser = new dbUser({
       userId,
       username,
+      config: {
+        channelId,
+      },
     });
 
     await newUser.save();

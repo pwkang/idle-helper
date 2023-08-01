@@ -4,12 +4,14 @@ import {BOT_COLOR} from '@idle-helper/constants';
 
 interface IRegisterAccount {
   author: User;
+  channelId: string;
 }
 
-export const _registerAccount = async ({author}: IRegisterAccount): Promise<BaseMessageOptions> => {
+export const _registerAccount = async ({author, channelId}: IRegisterAccount): Promise<BaseMessageOptions> => {
   const created = await userService.registerUser({
     userId: author.id,
     username: author.username,
+    channelId,
   });
   if (created) {
     return {
