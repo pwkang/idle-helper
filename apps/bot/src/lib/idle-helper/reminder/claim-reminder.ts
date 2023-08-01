@@ -24,6 +24,9 @@ const sendReminder = async ({client, userId}: ISendReminder) => {
       content: `${messageFormatter.user(userId)}, You have been idle for **${convertMsToHumanReadableString(idleDuration)}**`,
     },
   });
+  await updateReminder({
+    userId,
+  });
 };
 
 interface IUpdateReminder {
