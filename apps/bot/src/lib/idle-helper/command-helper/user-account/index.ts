@@ -3,6 +3,7 @@ import {_turnOnAccount} from './account-on';
 import {_turnOffAccount} from './account-off';
 import {_deleteAccount} from './account-delete';
 import {_accountSettings} from './account-settings';
+import {_claimReminder} from './claim-reminder';
 
 export const _userAccountHelper = {
   register: _registerAccount,
@@ -10,4 +11,5 @@ export const _userAccountHelper = {
   turnOffAccount: _turnOffAccount,
   deleteAccount: _deleteAccount,
   settings: _accountSettings,
+  claimReminder: _claimReminder,
 };

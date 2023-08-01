@@ -124,6 +124,23 @@ const getUserWorkers = async ({userId}: IGetUserWorkers): Promise<IUser['workers
   const user = await dbUser.findOne({userId});
   return user?.workers ?? {} as IUser['workers'];
 };
+
+interface ISetClaimReminders {
+  userId: string;
+  reminderHours: number[];
+}
+
+const setClaimReminders = async ({userId, reminderHours}: ISetClaimReminders): Promise<IUser | null> => {
+  const user = await dbUser.findOneAndUpdate({userId}, {
+    $set: {
+      'farms.reminderHours': reminderHours,
+    },
+  }, {
+    new: true,
+  });
+  return user ?? null;
+};
+
 export const userService = {
   registerUser,
   findUser,
@@ -133,4 +150,5 @@ export const userService = {
   claimFarm,
   saveUserWorkers,
   getUserWorkers,
+  setClaimReminders,
 };

@@ -27,6 +27,7 @@ export interface IUser {
   };
   farms: {
     lastClaimedAt: Date;
+    reminderHours: number[];
   };
   commandsLastUsed: {
     daily: Date;

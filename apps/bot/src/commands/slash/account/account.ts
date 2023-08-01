@@ -5,6 +5,7 @@ import {slashAccountOn} from './subcommand/slash-account-on';
 import {slashAccountOff} from './subcommand/slash-account-off';
 import {slashAccountDelete} from './subcommand/account-delete';
 import {USER_ACC_OFF_ACTIONS} from '@idle-helper/constants';
+import {setClaimReminder} from './subcommand/account-claim-reminder';
 
 export default <SlashCommand>{
   name: 'account',
@@ -23,6 +24,17 @@ export default <SlashCommand>{
     )
     .addSubcommand((subcommand) =>
       subcommand.setName('delete').setDescription('Delete your account'),
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName('claim-reminder')
+        .setDescription('Set reminder to claim your farm')
+        .addStringOption((option) =>
+          option
+            .setName('hours')
+            .setDescription('Separated multiple time by comma, e.g. 4,12,24')
+            .setRequired(true),
+        ),
     ),
   preCheck: {
     userAccOff: USER_ACC_OFF_ACTIONS.skip,
@@ -44,6 +56,9 @@ export default <SlashCommand>{
         break;
       case 'delete':
         await slashAccountDelete({client, interaction});
+        break;
+      case 'claim-reminder':
+        await setClaimReminder({client, interaction});
         break;
     }
   },

@@ -35,6 +35,7 @@ export const userSchema = new Schema<IUser>({
   },
   farms: {
     lastClaimedAt: Date,
+    reminderHours: [Number],
   },
   config: {
     onOff: {
