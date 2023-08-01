@@ -3,6 +3,7 @@ import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-li
 import {IMessageEmbedChecker} from '../../../types/utils';
 import {userService} from '../../../services/database/user.service';
 import {dailyReminder} from '../../idle-helper/reminder/daily-reminder';
+import claimReminder from '../../idle-helper/reminder/claim-reminder';
 
 interface IIdleClaim {
   client: Client;
@@ -46,6 +47,9 @@ interface IIdleClaimSuccess {
 
 const idleClaimSuccess = async ({embed, author}: IIdleClaimSuccess) => {
   await userService.claimFarm({
+    userId: author.id,
+  });
+  await claimReminder.update({
     userId: author.id,
   });
 };

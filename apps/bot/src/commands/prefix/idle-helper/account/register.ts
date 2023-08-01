@@ -13,6 +13,7 @@ export default <PrefixCommand>{
   execute: async (client, message) => {
     const messageOptions = await commandHelper.userAccount.register({
       author: message.author,
+      channelId: message.channel.id,
     });
     await djsMessageHelper.reply({
       client,

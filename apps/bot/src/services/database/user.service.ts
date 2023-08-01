@@ -8,15 +8,19 @@ const dbUser = mongoClient.model<IUser>('users', userSchema);
 interface IRegisterUser {
   userId: string;
   username: string;
+  channelId: string;
 }
 
-const registerUser = async ({userId, username}: IRegisterUser): Promise<boolean> => {
+const registerUser = async ({userId, username, channelId}: IRegisterUser): Promise<boolean> => {
   const user = await dbUser.findOne({userId});
 
   if (!user) {
     const newUser = new dbUser({
       userId,
       username,
+      config: {
+        channelId,
+      },
     });
 
     await newUser.save();
@@ -124,6 +128,39 @@ const getUserWorkers = async ({userId}: IGetUserWorkers): Promise<IUser['workers
   const user = await dbUser.findOne({userId});
   return user?.workers ?? {} as IUser['workers'];
 };
+
+interface ISetClaimReminders {
+  userId: string;
+  reminderHours: number[];
+}
+
+const setClaimReminders = async ({userId, reminderHours}: ISetClaimReminders): Promise<IUser | null> => {
+  const user = await dbUser.findOneAndUpdate({userId}, {
+    $set: {
+      'farms.reminderHours': reminderHours,
+    },
+  }, {
+    new: true,
+  });
+  return user ?? null;
+};
+
+interface IUpdateReminderChannel {
+  userId: string;
+  channelId: string;
+}
+
+const updateReminderChannel = async ({userId, channelId}: IUpdateReminderChannel): Promise<IUser | null> => {
+  const user = await dbUser.findOneAndUpdate({userId}, {
+    $set: {
+      'config.channelId': channelId,
+    },
+  }, {
+    new: true,
+  });
+  return user ?? null;
+};
+
 export const userService = {
   registerUser,
   findUser,
@@ -133,4 +170,6 @@ export const userService = {
   claimFarm,
   saveUserWorkers,
   getUserWorkers,
+  setClaimReminders,
+  updateReminderChannel,
 };

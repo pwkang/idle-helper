@@ -35,11 +35,14 @@ const getEmbed = (client: Client) => new EmbedBuilder()
     value: [
       `- Use ${BOT_CLICKABLE_SLASH_COMMANDS.accountRegister} to register to the bot`,
       `- Register your workers via ${IDLE_FARM_CLICKABLE_SLASH_COMMANDS.workerStats}`,
+      `- Set your reminder channel via ${BOT_CLICKABLE_SLASH_COMMANDS.accountReminderChannel}`,
+      `- Set your claim reminder target hours via ${BOT_CLICKABLE_SLASH_COMMANDS.accountClaimReminder}`,
     ].join('\n'),
   }, {
     name: 'Features',
     value: [
       `- Raid Helper - send en embed with your & enemy's workers lvl & power during a raid`,
+      '- Claim reminder upon idle for target hours',
       '- Setup server random event pings',
       '- More coming soon...',
     ].join('\n'),

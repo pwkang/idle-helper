@@ -35,12 +35,14 @@ export const userSchema = new Schema<IUser>({
   },
   farms: {
     lastClaimedAt: Date,
+    reminderHours: [Number],
   },
   config: {
     onOff: {
       type: Boolean,
       default: true,
     },
+    channelId: String,
   },
   commandsLastUsed: {
     daily: Date,
