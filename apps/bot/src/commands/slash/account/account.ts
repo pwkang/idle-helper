@@ -33,7 +33,7 @@ export default <SlashCommand>{
         .addStringOption((option) =>
           option
             .setName('hours')
-            .setDescription('Separated multiple time by comma, e.g. 4,12,24')
+            .setDescription('Separated multiple time by space, e.g. 4 12 24')
             .setRequired(true),
         ),
     )
