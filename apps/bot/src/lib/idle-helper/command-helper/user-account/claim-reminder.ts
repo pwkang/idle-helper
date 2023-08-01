@@ -9,6 +9,12 @@ interface IClaimReminder {
 }
 
 export const _claimReminder = async ({hours, userId}: IClaimReminder): Promise<BaseMessageOptions> => {
+  if (hours.length === 0) {
+    return {
+      embeds: [getInvalidHoursEmbed()],
+    };
+  }
+
   await userService.setClaimReminders({
     userId,
     reminderHours: hours,
@@ -25,4 +31,10 @@ const getEmbed = (hours: number[]) => {
   return new EmbedBuilder()
     .setColor(BOT_COLOR.embed)
     .setDescription(`Reminder will be send at ${hours.join(', ')} hours.`);
+};
+
+const getInvalidHoursEmbed = () => {
+  return new EmbedBuilder()
+    .setColor(BOT_COLOR.embed)
+    .setDescription('Invalid hours');
 };
