@@ -145,6 +145,22 @@ const setClaimReminders = async ({userId, reminderHours}: ISetClaimReminders): P
   return user ?? null;
 };
 
+interface IUpdateReminderChannel {
+  userId: string;
+  channelId: string;
+}
+
+const updateReminderChannel = async ({userId, channelId}: IUpdateReminderChannel): Promise<IUser | null> => {
+  const user = await dbUser.findOneAndUpdate({userId}, {
+    $set: {
+      'config.channelId': channelId,
+    },
+  }, {
+    new: true,
+  });
+  return user ?? null;
+};
+
 export const userService = {
   registerUser,
   findUser,
@@ -155,4 +171,5 @@ export const userService = {
   saveUserWorkers,
   getUserWorkers,
   setClaimReminders,
+  updateReminderChannel,
 };

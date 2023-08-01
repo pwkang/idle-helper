@@ -1,6 +1,7 @@
 import {userService} from '../../../../services/database/user.service';
 import {BaseMessageOptions, EmbedBuilder} from 'discord.js';
 import {BOT_COLOR} from '@idle-helper/constants';
+import claimReminder from '../../reminder/claim-reminder';
 
 interface IClaimReminder {
   userId: string;
@@ -11,6 +12,9 @@ export const _claimReminder = async ({hours, userId}: IClaimReminder): Promise<B
   await userService.setClaimReminders({
     userId,
     reminderHours: hours,
+  });
+  await claimReminder.update({
+    userId,
   });
   return {
     embeds: [getEmbed(hours)],
