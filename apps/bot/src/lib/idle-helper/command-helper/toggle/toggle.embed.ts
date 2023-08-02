@@ -1,6 +1,6 @@
 import type {EmbedField} from 'discord.js';
 import {EmbedBuilder} from 'discord.js';
-import {BOT_COLOR, BOT_EMOJI} from '@idle-helper/constants';
+import {BOT_COLOR, BOT_EMOJI, PREFIX} from '@idle-helper/constants';
 
 export interface IToggleEmbedsInfo {
   id: string;
@@ -23,16 +23,20 @@ export interface IToggleEmbedsInfo {
 
 interface IGetToggleEmbed {
   embedsInfo: IToggleEmbedsInfo[];
-  displayItem: string;
 }
 
 export const renderEmbed = ({embedsInfo}: IGetToggleEmbed): EmbedBuilder => {
-  const embed = new EmbedBuilder().setColor(BOT_COLOR.embed);
+  const embed = new EmbedBuilder().setColor(BOT_COLOR.embed)
+    .setDescription(
+      `**Syntax 1:** \`${PREFIX.bot}t <on/off> <ID> [ID] [ID]\` - turn on/off any settings
+      > *\`${PREFIX.bot}t on a1 a5 b3a c2-c5\`*
+      **Syntax 2:** \`${PREFIX.bot}t reset\` - reset all settings`,
+    );
   const fields: EmbedField[] = embedsInfo.map((info, index) =>
     renderFieldValue({
       info,
       index,
-    })
+    }),
   );
   embed.addFields(fields);
   return embed;

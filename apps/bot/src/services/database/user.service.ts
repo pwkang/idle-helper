@@ -1,6 +1,6 @@
 import {mongoClient} from '@idle-helper/services';
-import {IUser, IUserWorker, userSchema} from '@idle-helper/models';
-import {IDLE_FARM_WORKER_TYPE, IDLE_FARM_FARM_TYPE} from '@idle-helper/constants';
+import {IUser, IUserToggle, IUserWorker, userSchema} from '@idle-helper/models';
+import {IDLE_FARM_FARM_TYPE, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 import {UpdateQuery} from 'mongoose';
 
 const dbUser = mongoClient.model<IUser>('users', userSchema);
@@ -161,6 +161,42 @@ const updateReminderChannel = async ({userId, channelId}: IUpdateReminderChannel
   return user ?? null;
 };
 
+interface IGetUserToggle {
+  userId: string;
+}
+
+const getUserToggle = async ({userId}: IGetUserToggle): Promise<IUserToggle> => {
+  const user = await dbUser.findOne({userId});
+  return user?.toggle ?? {} as IUserToggle;
+};
+
+interface IUpdateUserToggle {
+  userId: string;
+  query: UpdateQuery<IUser>;
+}
+
+const updateUserToggle = async ({userId, query}: IUpdateUserToggle): Promise<IUser | null> => {
+  const user = await dbUser.findOneAndUpdate({userId}, query, {
+    new: true,
+  });
+  return user ?? null;
+};
+
+interface IResetUserToggle {
+  userId: string;
+}
+
+const resetUserToggle = async ({userId}: IResetUserToggle): Promise<IUser | null> => {
+  const user = await dbUser.findOneAndUpdate({userId}, {
+    $unset: {
+      toggle: '',
+    },
+  }, {
+    new: true,
+  });
+  return user ?? null;
+};
+
 export const userService = {
   registerUser,
   findUser,
@@ -172,4 +208,7 @@ export const userService = {
   getUserWorkers,
   setClaimReminders,
   updateReminderChannel,
+  getUserToggle,
+  updateUserToggle,
+  resetUserToggle,
 };

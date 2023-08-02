@@ -18,10 +18,13 @@ export const userSchema = new Schema<IUser>({
     index: true,
   },
   profile: {
-    energy: {
-      type: Number,
-      default: 0,
+    energy: {type: Number, default: 0},
+  },
+  toggle: {
+    reminder: {
+      claim: {type: Boolean, default: true},
     },
+    raidHelper: {type: Boolean, default: true},
   },
   username: String,
   workers: {
@@ -38,10 +41,7 @@ export const userSchema = new Schema<IUser>({
     reminderHours: [Number],
   },
   config: {
-    onOff: {
-      type: Boolean,
-      default: true,
-    },
+    onOff: {type: Boolean, default: true},
     channelId: String,
   },
   commandsLastUsed: {

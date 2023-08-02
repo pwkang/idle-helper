@@ -3,6 +3,10 @@ import {IDLE_FARM_WORKER_TYPE, IDLE_FARM_FARM_TYPE} from '@idle-helper/constants
 
 
 export interface IUserToggle extends Record<string, boolean | Record<string, boolean>> {
+  reminder: {
+    claim: boolean;
+  };
+  raidHelper: boolean;
 }
 
 export interface IUserWorker {
