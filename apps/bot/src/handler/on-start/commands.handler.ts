@@ -40,7 +40,6 @@ async function loadSlashCommands(client: Client) {
       if (data.groupName) commandName.push(data.groupName);
       commandName.push(data.name);
     }
-    console.log(commandName.join(' '));
     client.slashCommands.set(commandName.join(' '), data);
   });
 }
