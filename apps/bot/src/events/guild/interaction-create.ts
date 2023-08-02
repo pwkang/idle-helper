@@ -8,40 +8,51 @@ export default <BotEvent>{
   execute: async (client, interaction: BaseInteraction) => {
     if (!interaction.guild) return;
 
-    const command = searchSlashCommand(client, interaction);
+    if (interaction.isChatInputCommand()) {
 
-    if (!command) return;
+      const command = searchSlashCommand(client, interaction);
 
-    const hasPermission = checkPermission({
-      permissions: command.permissions,
-      member: interaction.member as GuildMember,
-    });
+      if (!command) return;
 
-    if (!hasPermission) return djsInteractionHelper.replyInteraction({
-      client,
-      options: {
-        content: 'You do not have permission to use this command',
-        ephemeral: true,
-      },
-      interaction,
-    });
+      const hasPermission = checkPermission({
+        permissions: command.permissions,
+        member: interaction.member as GuildMember,
+      });
 
-    const toExecute = await preCheckPrefixCommand({
-      client,
-      preCheck: command.preCheck,
-      author: interaction.user,
-      channelId: interaction.channelId!,
-    });
-    if (!toExecute) return;
+      if (!hasPermission) return djsInteractionHelper.replyInteraction({
+        client,
+        options: {
+          content: 'You do not have permission to use this command',
+          ephemeral: true,
+        },
+        interaction,
+      });
 
-    await command.execute(client, interaction as typeof command.interactionType);
+      if (!interaction.isCommand()) return;
+
+      const toExecute = await preCheckPrefixCommand({
+        client,
+        preCheck: command.preCheck,
+        author: interaction.user,
+        channelId: interaction.channelId!,
+      });
+      if (!toExecute) return;
+
+      await command.execute(client, interaction);
+    }
   },
 };
 
-const searchSlashCommand = (client: Client, interaction: BaseInteraction) =>
-  client.slashCommands.find(
-    (cmd) => interaction.isCommand() && cmd.builder.name === interaction.commandName,
-  );
+const searchSlashCommand = (client: Client, interaction: BaseInteraction) => {
+  if (!interaction.isCommand() || !interaction.isChatInputCommand()) return null;
+  const commandName = interaction.commandName;
+  const subcommandGroupName = interaction.options.getSubcommandGroup();
+  const subcommandName = interaction.options.getSubcommand();
+  const searchCommandName = [commandName, subcommandGroupName, subcommandName]
+    .filter((name) => !!name)
+    .join(' ');
+  return client.slashCommands.get(searchCommandName);
+};
 
 interface ICheckPermission {
   permissions?: bigint[];
