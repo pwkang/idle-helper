@@ -1,6 +1,6 @@
 import {Client, Events, Message} from 'discord.js';
 import {DEVS_ID, IDLE_FARM_ID, PREFIX, PREFIX_COMMAND_TYPE} from '@idle-helper/constants';
-import {preCheckPrefixCommand} from '../../utils/command-precheck';
+import {preCheckCommand} from '../../utils/command-precheck';
 
 export default <BotEvent>{
   eventName: Events.MessageCreate,
@@ -11,10 +11,12 @@ export default <BotEvent>{
       if (!messages.size) return;
 
       for (const cmd of messages.values()) {
-        const toExecute = await preCheckPrefixCommand({
+        const toExecute = await preCheckCommand({
+          author: message.author,
           client,
+          message,
           preCheck: cmd.preCheck,
-          author: message.interaction?.user!,
+          server: message.guild!,
           channelId: message.channelId,
         });
         if (!toExecute) return;
@@ -26,10 +28,12 @@ export default <BotEvent>{
       const result = searchCommand(client, message);
       if (!result) return;
 
-      const toExecute = await preCheckPrefixCommand({
-        client,
-        preCheck: result.command.preCheck,
+      const toExecute = await preCheckCommand({
         author: message.author,
+        client,
+        message,
+        preCheck: result.command.preCheck,
+        server: message.guild!,
         channelId: message.channelId,
       });
       if (!toExecute) return;

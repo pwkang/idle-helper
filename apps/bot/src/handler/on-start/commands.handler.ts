@@ -23,8 +23,7 @@ async function loadSlashCommands(client: Client) {
   const commands = await importFiles<SlashCommand>({
     path: `./${handlerRoot}/commands/slash`,
     options: {
-      fileFilter: [handlerFileFilter, '!*.type.ts'],
-      directoryFilter: ['!subcommand'],
+      fileFilter: [handlerFileFilter, '!*.type.ts', '!constant.ts'],
     },
   });
   logger({
@@ -34,13 +33,14 @@ async function loadSlashCommands(client: Client) {
   commands.forEach(({data}) => {
     if (!data?.name) return;
     const commandName: string[] = [];
-    if (data.type === 'command' && data.builder) {
+    if (data.type === 'command') {
       commandName.push(data.name);
     } else if (data.type === 'subcommand') {
       commandName.push(data.commandName);
       if (data.groupName) commandName.push(data.groupName);
       commandName.push(data.name);
     }
+    console.log(commandName.join(' '));
     client.slashCommands.set(commandName.join(' '), data);
   });
 }

@@ -1,6 +1,6 @@
 import {BaseInteraction, Client, Events, GuildMember} from 'discord.js';
 import djsInteractionHelper from '../../lib/discordjs/interaction';
-import {preCheckPrefixCommand} from '../../utils/command-precheck';
+import {preCheckCommand} from '../../utils/command-precheck';
 
 export default <BotEvent>{
   eventName: Events.InteractionCreate,
@@ -30,11 +30,13 @@ export default <BotEvent>{
 
       if (!interaction.isCommand()) return;
 
-      const toExecute = await preCheckPrefixCommand({
+      const toExecute = await preCheckCommand({
+        author: interaction.user,
         client,
         preCheck: command.preCheck,
-        author: interaction.user,
-        channelId: interaction.channelId!,
+        interaction,
+        channelId: interaction.channelId,
+        server: interaction.guild,
       });
       if (!toExecute) return;
 
@@ -47,7 +49,7 @@ const searchSlashCommand = (client: Client, interaction: BaseInteraction) => {
   if (!interaction.isCommand() || !interaction.isChatInputCommand()) return null;
   const commandName = interaction.commandName;
   const subcommandGroupName = interaction.options.getSubcommandGroup();
-  const subcommandName = interaction.options.getSubcommand();
+  const subcommandName = interaction.options.getSubcommand(false);
   const searchCommandName = [commandName, subcommandGroupName, subcommandName]
     .filter((name) => !!name)
     .join(' ');
