@@ -1,5 +1,7 @@
-import type {IToggleEmbedsInfo} from './toggle.embed';
-import type {UpdateQuery} from 'mongoose';
+import {IToggleEmbedsInfo} from './toggle.embed';
+import {UpdateQuery} from 'mongoose';
+import {getUserToggle} from './type/user.toggle';
+
 
 export interface IGetUpdateQuery {
   on?: string;
@@ -17,7 +19,7 @@ const filterKeyword = (keyword: string): string[] =>
     .split(' ')
     .filter((item) => regexParent.test(item) || regexChild.test(item) || regexRange);
 
-const getUpdateQuery = <T>({on, off, toggleInfo}: IGetUpdateQuery): UpdateQuery<T> => {
+export const getUpdateQuery = <T>({on, off, toggleInfo}: IGetUpdateQuery): UpdateQuery<T> => {
   const itemOn = on
     ? filterKeyword(on).flatMap((item) => getPathsFromKeyword(item, toggleInfo))
     : [];
@@ -106,7 +108,11 @@ const findPath = ({toggleInfo, groupIndex, parentIndex, childIndex}: IFindPath):
   return parent.path;
 };
 
+export interface IUpdateToggle {
+  on?: string;
+  off?: string;
+}
 
 export const _toggleHelper = {
-  getUpdateQuery,
+  user: getUserToggle,
 };

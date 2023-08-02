@@ -8,6 +8,7 @@ import {djsMessageHelper} from '../../discordjs/message';
 import {typedObjectEntries} from '@idle-helper/utils';
 import {calcWorkerPower} from '../calculator/worker-power';
 import {dailyReminder} from '../../idle-helper/reminder/daily-reminder';
+import toggleUserChecker from '../../idle-helper/toggle-checker/user';
 
 interface IIdleRaid {
   client: Client;
@@ -45,6 +46,8 @@ interface IIdleWorkerSuccess {
 }
 
 const idleRaidSuccess = async ({embed, author, client, channelId}: IIdleWorkerSuccess) => {
+  const userToggle = await toggleUserChecker({userId: author.id});
+  if (!userToggle?.raidHelper) return;
   const raidInfo = embedReaders.raid({embed});
   const userWorker = await userService.getUserWorkers({userId: author.id});
   const registeredWorkersAmount = Object.values(userWorker).filter(Boolean).length;

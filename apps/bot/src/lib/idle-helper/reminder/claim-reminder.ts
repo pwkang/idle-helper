@@ -5,6 +5,7 @@ import {redisClaimReminder} from '../../../services/redis/claim-reminder.redis';
 import {djsMessageHelper} from '../../discordjs/message';
 import convertMsToHumanReadableString from '../../../utils/convert-ms-to-human-readable-string';
 import messageFormatter from '../../discordjs/message-formatter';
+import toggleUserChecker from '../toggle-checker/user';
 
 interface ISendReminder {
   userId: string;
@@ -16,6 +17,10 @@ const sendReminder = async ({client, userId}: ISendReminder) => {
     userId,
   });
   if (!userAccount?.farms.lastClaimedAt) return;
+
+  const userToggle = await toggleUserChecker({userId});
+  if (!userToggle?.reminder.claim) return;
+
   const idleDuration = Date.now() - userAccount.farms.lastClaimedAt.getTime();
   await djsMessageHelper.send({
     client,

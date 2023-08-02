@@ -1,5 +1,10 @@
 import {handlerFileFilter, handlerRoot} from '../handler/on-start/constant';
-import {SlashCommandBuilder} from 'discord.js';
+import {
+  Collection,
+  SlashCommandBuilder,
+  SlashCommandSubcommandBuilder,
+  SlashCommandSubcommandGroupBuilder,
+} from 'discord.js';
 import {importFiles} from '@idle-helper/utils';
 
 interface ISlashCommand {
@@ -15,29 +20,51 @@ export const listSlashCommands = async (): Promise<ISlashCommand[]> => {
     },
     path: `./${handlerRoot}/commands/slash`,
   });
-  commands.forEach(({data}) => {
-    if (!data?.builder) return;
-    slashCommands.push({
-      name: data.name,
-      builder: data.builder,
-    });
-  });
-  return slashCommands;
+  const generated = generateSlashCommands(commands.map(({data}) => data));
+  return generated.map((value, key) => ({name: key, builder: value}));
 
-  // return new Promise((resolve) => {
-  //   readdirp(`./${handlerRoot}/commands/slash`, {fileFilter: '*.ts'})
-  //     .on('data', async (entry) => {
-  //       const {fullPath} = entry;
-  //       const file = await import(fullPath);
-  //       const command = file.default.default as SlashCommand;
-  //       if (!command?.builder) return;
-  //       slashCommands.push({
-  //         name: command.name,
-  //         builder: command.builder,
-  //       });
-  //     })
-  //     .on('end', () => {
-  //       resolve(slashCommands);
-  //     });
-  // });
+};
+
+export const generateSlashCommands = (slashCommands: SlashCommand[]) => {
+  const generatedSlashCommands = new Collection<string, SlashCommandBuilder>();
+  const commands = slashCommands.filter((sc) => sc?.type === 'command');
+  for (const command of commands) {
+    const _command = new SlashCommandBuilder()
+      .setName(command.name)
+      .setDescription(command.description);
+    generatedSlashCommands.set(command.name, _command);
+  }
+  const subcommandGroups = slashCommands.filter((sc) => sc?.type === 'subcommandGroup');
+  for (const subcommandGroup of subcommandGroups) {
+    const {commandName, name} = subcommandGroup as SlashCommandSubcommandGroup;
+    const subcommands = slashCommands.filter(
+      (sc) => sc?.type === 'subcommand' && sc.groupName === name && sc.commandName === commandName,
+    );
+    const command = generatedSlashCommands.get(commandName);
+    if (!command) continue;
+    const _subcommandGroup = new SlashCommandSubcommandGroupBuilder()
+      .setName(name)
+      .setDescription(subcommandGroup.description);
+    for (const subcommand of subcommands) {
+      const {name, description, builder} = subcommand as SlashCommandSubcommand;
+      const _subcommand = new SlashCommandSubcommandBuilder()
+        .setName(name)
+        .setDescription(description);
+      if (builder) builder(_subcommand);
+      _subcommandGroup.addSubcommand(_subcommand);
+    }
+    command.addSubcommandGroup(_subcommandGroup);
+  }
+  const subcommands = slashCommands.filter((sc) => sc?.type === 'subcommand' && !sc.groupName);
+  for (const subcommand of subcommands) {
+    const {commandName, name, description, builder} = subcommand as SlashCommandSubcommand;
+    const command = generatedSlashCommands.get(commandName);
+    if (!command) continue;
+    const _subcommand = new SlashCommandSubcommandBuilder()
+      .setName(name)
+      .setDescription(description);
+    if (builder) builder(_subcommand);
+    command.addSubcommand(_subcommand);
+  }
+  return generatedSlashCommands;
 };
