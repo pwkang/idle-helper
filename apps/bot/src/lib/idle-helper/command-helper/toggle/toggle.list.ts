@@ -1,8 +1,8 @@
 import type {IToggleEmbedsInfo} from './toggle.embed';
-import {IUserToggle} from '@idle-helper/models';
+import {IGuildToggle, IUserToggle} from '@idle-helper/models';
 
 
-export const user = (userToggle: IUserToggle): IToggleEmbedsInfo[] => {
+const user = (userToggle: IUserToggle): IToggleEmbedsInfo[] => {
   return [
     {
       id: 'common',
@@ -24,6 +24,25 @@ export const user = (userToggle: IUserToggle): IToggleEmbedsInfo[] => {
   ];
 };
 
+const guild = (guildToggle: IGuildToggle): IToggleEmbedsInfo[] => {
+  return [
+    {
+      id: 'general',
+      title: 'General',
+      inline: true,
+      children: [
+        {
+          value: guildToggle.teamRaid.reminder,
+          path: 'toggle.teamRaid.reminder',
+          label: 'Team Raid Reminder',
+        },
+      ],
+    },
+  ];
+};
+
+
 export const toggleDisplayList = {
   user,
+  guild,
 };

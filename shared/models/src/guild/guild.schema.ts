@@ -8,4 +8,17 @@ export const guildSchema = new Schema<IGuild>({
   },
   roleId: String,
   leaderId: String,
+  toggle: {
+    teamRaid: {
+      reminder: {type: Boolean, default: true},
+    },
+  },
+  info: {
+    name: String,
+  },
+  teamRaid: {
+    readyAt: Date,
+    channelId: String,
+    message: String,
+  },
 });
