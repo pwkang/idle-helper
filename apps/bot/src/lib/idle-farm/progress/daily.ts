@@ -1,6 +1,6 @@
 import {Client, Embed, EmbedBuilder, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
-import embedReaders from '../embed-readers';
+import messageReaders from '../embed-readers';
 import {userService} from '../../../services/database/user.service';
 import {IUser} from '@idle-helper/models';
 import {BOT_COLOR, BOT_EMOJI, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';

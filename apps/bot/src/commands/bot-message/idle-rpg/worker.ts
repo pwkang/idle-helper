@@ -1,5 +1,5 @@
 import {IDLE_FARM_ID} from '@idle-helper/constants';
-import embedReaders from '../../../lib/idle-farm/embed-readers';
+import messageReaders from '../../../lib/idle-farm/embed-readers';
 import {infoService} from '../../../services/database/info.service';
 
 export default <BotMessage>{
@@ -14,12 +14,12 @@ export default <BotMessage>{
   },
   execute: async (client, message) => {
     const embed = message.embeds[0];
-    const workers = embedReaders.worker({embed});
+    const workers = messageReaders.worker({embed});
     await updateWorkersPower(workers);
   },
 };
 
-const updateWorkersPower = async (userWorkers: ReturnType<typeof embedReaders.worker>) => {
+const updateWorkersPower = async (userWorkers: ReturnType<typeof messageReaders.worker>) => {
   for (let worker of userWorkers) {
     await infoService.updateWorkerPower({
       worker: worker.type,

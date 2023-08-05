@@ -7,7 +7,7 @@ export default <PrefixCommand>{
   type: PREFIX_COMMAND_TYPE.dev,
   preCheck: {},
   execute: async (client, message) => {
-    const fetched = await message.channel.messages.fetch('1134476410568847383');
+    const fetched = await message.channel.messages.fetch('1137298969064636447');
     await idleRaid({
       author: message.author,
       client,
