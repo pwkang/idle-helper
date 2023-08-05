@@ -51,7 +51,7 @@ interface IFindGuild {
 }
 
 const findGuild = async ({serverId, roleId}: IFindGuild) => {
-  return dbGuild.findOne({serverId, roleId});
+  return dbGuild.findOne({serverId, roleId}).lean();
 };
 
 interface IFindFirstGuild {
@@ -59,7 +59,7 @@ interface IFindFirstGuild {
 }
 
 const findFirstGuild = async ({serverId}: IFindFirstGuild) => {
-  return dbGuild.findOne({serverId});
+  return dbGuild.findOne({serverId}).lean();
 };
 
 
@@ -68,7 +68,7 @@ interface IGetAllGuilds {
 }
 
 const getAllGuilds = async ({serverId}: IGetAllGuilds) => {
-  return dbGuild.find({serverId});
+  return dbGuild.find({serverId}).lean();
 };
 
 interface IUpdateGuildReminder {
@@ -99,7 +99,7 @@ const updateGuildReminder = async (
 
   return dbGuild.findOneAndUpdate({serverId, roleId}, updateQuery, {
     new: true,
-  });
+  }).lean();
 };
 
 interface ICalcTotalGuild {
@@ -126,7 +126,7 @@ interface IUpdateLeader {
 }
 
 const updateLeader = async ({serverId, roleId, leaderId}: IUpdateLeader) => {
-  return dbGuild.findOneAndUpdate({serverId, roleId}, {$set: {leaderId}}, {new: true});
+  return dbGuild.findOneAndUpdate({serverId, roleId}, {$set: {leaderId}}, {new: true}).lean();
 };
 
 interface IGetAllGuildRoles {
