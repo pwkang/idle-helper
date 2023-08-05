@@ -1,6 +1,6 @@
 import {guildService} from '../../../services/database/guild.service';
 import djsInteractionHelper from '../../../lib/discordjs/interaction';
-import {ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder} from 'discord.js';
+import {ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, PermissionsBitField} from 'discord.js';
 import messageFormatter from '../../../lib/discordjs/message-formatter';
 import {SLASH_COMMAND} from '../constant';
 import {BOT_COLOR, USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
@@ -22,6 +22,7 @@ export default <SlashCommand>{
         .setDescription('Select the role of the guild to delete')
         .setRequired(true),
     ),
+  permissions: [PermissionsBitField.Flags.ManageGuild],
   execute: async (client, interaction) => {
     const role = interaction.options.getRole('role', true);
     const guildAccount = await guildService.findGuild({
@@ -37,7 +38,7 @@ export default <SlashCommand>{
           ephemeral: true,
         },
       });
-    const embed = await commandHelper.guildSettings.renderGuildSettingsEmbed({
+    const embed = commandHelper.guildSettings.renderGuildSettingsEmbed({
       guildAccount: guildAccount,
     });
     const event = await djsInteractionHelper.replyInteraction({

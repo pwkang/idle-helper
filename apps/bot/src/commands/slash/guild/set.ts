@@ -3,6 +3,7 @@ import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/co
 import commandHelper from '../../../lib/idle-helper/command-helper';
 import djsInteractionHelper from '../../../lib/discordjs/interaction';
 import {guildService} from '../../../services/database/guild.service';
+import {PermissionsBitField} from 'discord.js';
 
 export default <SlashCommand>{
   name: SLASH_COMMAND.guild.set.name,
@@ -13,6 +14,7 @@ export default <SlashCommand>{
     userAccOff: USER_ACC_OFF_ACTIONS.skip,
     userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
   },
+  permissions: [PermissionsBitField.Flags.ManageGuild],
   builder: (subcommand) =>
     subcommand
       .addRoleOption((option) =>
