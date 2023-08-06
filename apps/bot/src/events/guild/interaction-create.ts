@@ -1,5 +1,4 @@
 import {BaseInteraction, Client, Events, GuildMember} from 'discord.js';
-import djsInteractionHelper from '../../lib/discordjs/interaction';
 import {preCheckCommand} from '../../utils/command-precheck';
 
 export default <BotEvent>{
@@ -13,21 +12,6 @@ export default <BotEvent>{
       const command = searchSlashCommand(client, interaction);
 
       if (!command) return;
-
-      const hasPermission = checkPermission({
-        permissions: command.permissions,
-        member: interaction.member as GuildMember,
-      });
-
-      if (!hasPermission) return djsInteractionHelper.replyInteraction({
-        client,
-        options: {
-          content: 'You do not have permission to use this command',
-          ephemeral: true,
-        },
-        interaction,
-      });
-
       if (!interaction.isCommand()) return;
 
       const toExecute = await preCheckCommand({
@@ -60,9 +44,3 @@ interface ICheckPermission {
   permissions?: bigint[];
   member: GuildMember;
 }
-
-const checkPermission = ({permissions, member}: ICheckPermission) => {
-  if (!permissions) return true;
-  const memberPermissions = member.permissions;
-  return permissions.every((permission) => memberPermissions.has(permission));
-};

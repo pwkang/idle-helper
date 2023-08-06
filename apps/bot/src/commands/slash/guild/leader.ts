@@ -1,20 +1,18 @@
 import {SLASH_COMMAND} from '../constant';
 import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
 import djsInteractionHelper from '../../../lib/discordjs/interaction';
-import {guildService} from '../../../services/database/guild.service';
 import commandHelper from '../../../lib/idle-helper/command-helper';
-import {PermissionsBitField} from 'discord.js';
 
 export default <SlashCommand>{
-  // name: SLASH_COMMAND.guild.leader.name,
+  name: SLASH_COMMAND.guild.leader.name,
   description: SLASH_COMMAND.guild.leader.description,
   commandName: SLASH_COMMAND.guild.name,
   type: 'subcommand',
   preCheck: {
     userAccOff: USER_ACC_OFF_ACTIONS.skip,
     userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
+    isServerAdmin: true,
   },
-  permissions: [PermissionsBitField.Flags.ManageGuild],
   builder: (subcommand) =>
     subcommand
       .addRoleOption((option) =>
@@ -33,37 +31,18 @@ export default <SlashCommand>{
     const role = interaction.options.getRole('role', true);
     const leader = interaction.options.getUser('leader', true);
 
-    const isRoleUsed = await guildService.isRoleUsed({
-      serverId: interaction.guildId!,
+    const configureGuild = await commandHelper.guildSettings.configure({
+      client,
       roleId: role.id,
+      server: interaction.guild!,
+      author: interaction.user,
     });
-    if (!isRoleUsed) {
-      return djsInteractionHelper.replyInteraction({
-        client,
-        interaction,
-        options: {
-          content: `There is no guild with role ${role} setup in this server`,
-          ephemeral: true,
-        },
-      });
-    }
-
-    const updatedGuild = await guildService.updateLeader({
-      serverId: interaction.guildId!,
-      roleId: role.id,
-      leaderId: leader?.id,
-    });
-    if (!updatedGuild) return;
     await djsInteractionHelper.replyInteraction({
       client,
       interaction,
-      options: {
-        embeds: [
-          commandHelper.guildSettings.renderGuildSettingsEmbed({
-            guildAccount: updatedGuild!,
-          }),
-        ],
-      },
+      options: await configureGuild.setLeader({
+        leader: leader,
+      }),
     });
   },
 };

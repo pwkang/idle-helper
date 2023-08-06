@@ -2,7 +2,6 @@ import djsInteractionHelper from '../../../../lib/discordjs/interaction';
 import {SLASH_COMMAND} from '../../constant';
 import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
 import commandHelper from '../../../../lib/idle-helper/command-helper';
-import {PermissionsBitField} from 'discord.js';
 
 export default <SlashCommand>{
   name: SLASH_COMMAND.guild.toggle.reset.name,
@@ -14,7 +13,6 @@ export default <SlashCommand>{
     userAccOff: USER_ACC_OFF_ACTIONS.skip,
     userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
   },
-  permissions: [PermissionsBitField.Flags.ManageGuild],
   builder: (subcommand) =>
     subcommand.addRoleOption((option) =>
       option
@@ -26,22 +24,14 @@ export default <SlashCommand>{
     if (!interaction.inGuild()) return;
     const guildRole = interaction.options.getRole('role', true);
 
-    const toggleGuild = await commandHelper.toggle.guild({
-      serverId: interaction.guildId,
+    const configureGuild = await commandHelper.guildSettings.configure({
+      author: interaction.user,
+      client,
+      server: interaction.guild!,
       roleId: guildRole.id,
     });
 
-    if (!toggleGuild)
-      return djsInteractionHelper.replyInteraction({
-        client,
-        interaction,
-        options: {
-          content: `There is no guild with role ${guildRole} setup in this server`,
-          ephemeral: true,
-        },
-      });
-
-    const messageOptions = await toggleGuild.reset();
+    const messageOptions = await configureGuild.resetToggle();
 
     if (!messageOptions) return;
     await djsInteractionHelper.replyInteraction({

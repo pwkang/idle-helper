@@ -1,9 +1,7 @@
-import {guildService} from '../../../services/database/guild.service';
 import djsInteractionHelper from '../../../lib/discordjs/interaction';
 import {SLASH_COMMAND} from '../constant';
 import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
 import commandHelper from '../../../lib/idle-helper/command-helper';
-import {PermissionsBitField} from 'discord.js';
 
 
 export default <SlashCommand>{
@@ -14,8 +12,8 @@ export default <SlashCommand>{
   preCheck: {
     userAccOff: USER_ACC_OFF_ACTIONS.skip,
     userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
+    isServerAdmin: true,
   },
-  permissions: [PermissionsBitField.Flags.ManageGuild],
   builder: (subcommand) =>
     subcommand
       .addRoleOption((option) =>
@@ -33,36 +31,18 @@ export default <SlashCommand>{
     const role = interaction.options.getRole('role', true);
     const leader = interaction.options.getUser('leader') ?? undefined;
 
-    const isRoleUsed = await guildService.isRoleUsed({
-      serverId: interaction.guildId!,
+    const configureGuild = await commandHelper.guildSettings.configure({
+      client,
       roleId: role.id,
-    });
-
-    if (isRoleUsed) {
-      return djsInteractionHelper.replyInteraction({
-        client,
-        interaction,
-        options: {
-          content: `Role ${role} is already used by another guild`,
-          ephemeral: true,
-        },
-      });
-    }
-    const newGuild = await guildService.registerGuild({
-      serverId: interaction.guildId!,
-      roleId: role.id,
-      leaderId: leader?.id,
+      server: interaction.guild!,
+      author: interaction.user,
     });
     await djsInteractionHelper.replyInteraction({
       client,
       interaction,
-      options: {
-        embeds: [
-          commandHelper.guildSettings.renderGuildSettingsEmbed({
-            guildAccount: newGuild,
-          }),
-        ],
-      },
+      options: await configureGuild.setupNewGuild({
+        leader: leader,
+      }),
     });
   },
 };

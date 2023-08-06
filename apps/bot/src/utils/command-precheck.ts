@@ -56,7 +56,7 @@ export const preCheckCommand = async (
         interaction,
         message,
         messageOptions: {
-          content: 'You do not have permission to use this command.',
+          content: 'You do not have permission to access this command.',
         },
       });
 
