@@ -26,12 +26,8 @@ interface IGetToggleEmbed {
 }
 
 export const renderEmbed = ({embedsInfo}: IGetToggleEmbed): EmbedBuilder => {
-  const embed = new EmbedBuilder().setColor(BOT_COLOR.embed)
-    .setDescription(
-      `**Syntax 1:** \`${PREFIX.bot}t <on/off> <ID> [ID] [ID]\` - turn on/off any settings
-      > *\`${PREFIX.bot}t on a1 a5 b3a c2-c5\`*
-      **Syntax 2:** \`${PREFIX.bot}t reset\` - reset all settings`,
-    );
+  const embed = new EmbedBuilder().setColor(BOT_COLOR.embed);
+
   const fields: EmbedField[] = embedsInfo.map((info, index) =>
     renderFieldValue({
       info,

@@ -59,6 +59,46 @@ export const SLASH_COMMAND = {
       description: 'set message to send when random events occur (type "clear" to remove)',
     },
   },
+  guild: {
+    name: 'guild',
+    description: 'Guild configuration',
+    setup: {
+      name: 'setup',
+      description: 'Setup a new guild',
+    },
+    set: {
+      name: 'set',
+      description: 'Update guild settings',
+    },
+    delete: {
+      name: 'delete',
+      description: 'Delete a guild',
+    },
+    settings: {
+      name: 'settings',
+      description: 'View guild settings',
+    },
+    leader: {
+      name: 'leader',
+      description: 'Set guild leader',
+    },
+    toggle: {
+      name: 'toggle',
+      description: 'Toggle guild settings',
+      set: {
+        name: 'set',
+        description: 'Update guild toggle settings',
+      },
+      show: {
+        name: 'show',
+        description: 'Show guild toggle settings',
+      },
+      reset: {
+        name: 'reset',
+        description: 'Reset guild toggle settings',
+      },
+    },
+  },
   invite: {
     name: 'invite',
     description: 'Invite EPIC Helper to another server or join the official server',

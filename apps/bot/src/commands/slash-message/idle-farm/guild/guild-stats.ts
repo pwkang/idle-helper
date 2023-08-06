@@ -1,16 +1,16 @@
+import {idleGuild} from '../../../../lib/idle-farm/guild/guild';
 import {SLASH_MESSAGE_BOT_TYPE, USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
-import {idleDaily} from '../../../../lib/idle-farm/progress/daily';
 
 export default <SlashMessage>{
-  name: 'daily',
-  bot: SLASH_MESSAGE_BOT_TYPE.idleFarm,
-  commandName: ['daily'],
+  name: 'guild-stats',
+  commandName: ['guild stats'],
   preCheck: {
-    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.abort,
-    userAccOff: USER_ACC_OFF_ACTIONS.abort,
+    userAccOff: USER_ACC_OFF_ACTIONS.skip,
+    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
   },
+  bot: SLASH_MESSAGE_BOT_TYPE.idleFarm,
   execute: async (client, message, author) => {
-    await idleDaily({
+    await idleGuild({
       author,
       client,
       message,

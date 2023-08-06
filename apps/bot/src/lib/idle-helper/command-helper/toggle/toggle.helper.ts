@@ -1,6 +1,7 @@
 import {IToggleEmbedsInfo} from './toggle.embed';
 import {UpdateQuery} from 'mongoose';
 import {getUserToggle} from './type/user.toggle';
+import {getGuildToggle} from './type/guild.toggle';
 
 
 export interface IGetUpdateQuery {
@@ -115,4 +116,5 @@ export interface IUpdateToggle {
 
 export const _toggleHelper = {
   user: getUserToggle,
+  guild: getGuildToggle,
 };

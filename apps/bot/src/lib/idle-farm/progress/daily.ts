@@ -1,12 +1,5 @@
-import {Client, Embed, EmbedBuilder, Message, User} from 'discord.js';
+import {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
-import messageReaders from '../embed-readers';
-import {userService} from '../../../services/database/user.service';
-import {IUser} from '@idle-helper/models';
-import {BOT_COLOR, BOT_EMOJI, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
-import {djsMessageHelper} from '../../discordjs/message';
-import {typedObjectEntries} from '@idle-helper/utils';
-import {calcWorkerPower} from '../calculator/worker-power';
 import {redisDailyReminder} from '../../../services/redis/daily-reminder.redis';
 
 interface IIdleDaily {

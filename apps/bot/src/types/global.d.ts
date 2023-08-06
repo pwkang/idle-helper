@@ -2,19 +2,13 @@ import type {
   Client,
   ClientEvents,
   Message,
-  PermissionsBitField,
   SlashCommandBuilder,
   SlashCommandSubcommandBuilder,
   User,
 } from 'discord.js';
 import {ChatInputCommandInteraction} from 'discord.js';
 import type {ScheduleOptions} from 'node-cron';
-import {
-  PREFIX_COMMAND_TYPE,
-  SLASH_MESSAGE_BOT_TYPE,
-  USER_ACC_OFF_ACTIONS,
-  USER_NOT_REGISTERED_ACTIONS,
-} from '@idle-helper/constants';
+import {PREFIX_COMMAND_TYPE, SLASH_MESSAGE_BOT_TYPE} from '@idle-helper/constants';
 import {ICommandPreCheck} from './utils';
 
 declare global {
@@ -33,7 +27,6 @@ declare global {
   interface SlashCommandBase {
     name: string;
     description: string;
-    permissions: bigint[];
     execute: (client: Client, interaction: ChatInputCommandInteraction) => Promise<void>;
     preCheck: ICommandPreCheck;
   }

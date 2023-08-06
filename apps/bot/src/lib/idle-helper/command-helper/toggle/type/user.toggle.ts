@@ -4,6 +4,7 @@ import {toggleDisplayList} from '../toggle.list';
 import {renderEmbed} from '../toggle.embed';
 import {getUpdateQuery, IUpdateToggle} from '../toggle.helper';
 import {IUser, IUserToggle} from '@idle-helper/models';
+import {PREFIX} from '@idle-helper/constants';
 
 interface IGetUserToggle {
   author: User;
@@ -72,5 +73,9 @@ const getUserToggleEmbed = ({userToggle, author}: IGetUserToggleEmbed) => {
   }).setAuthor({
     name: `${author.username}'s toggle`,
     iconURL: author.avatarURL() ?? undefined,
-  });
+  }).setDescription(
+    `**Syntax 1:** \`${PREFIX.bot}t <on/off> <ID> [ID] [ID]\` - turn on/off any settings
+      > *\`${PREFIX.bot}t on a1 a5 b3a c2-c5\`*
+      **Syntax 2:** \`${PREFIX.bot}t reset\` - reset all settings`,
+  );
 };
