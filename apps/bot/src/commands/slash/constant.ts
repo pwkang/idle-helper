@@ -66,9 +66,9 @@ export const SLASH_COMMAND = {
       name: 'setup',
       description: 'Setup a new guild',
     },
-    set: {
-      name: 'set',
-      description: 'Update guild settings',
+    reminder: {
+      name: 'reminder',
+      description: 'Update guild reminder settings',
     },
     delete: {
       name: 'delete',

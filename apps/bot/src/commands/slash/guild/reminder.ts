@@ -4,8 +4,8 @@ import commandHelper from '../../../lib/idle-helper/command-helper';
 import djsInteractionHelper from '../../../lib/discordjs/interaction';
 
 export default <SlashCommand>{
-  name: SLASH_COMMAND.guild.set.name,
-  description: SLASH_COMMAND.guild.set.description,
+  name: SLASH_COMMAND.guild.reminder.name,
+  description: SLASH_COMMAND.guild.reminder.description,
   commandName: SLASH_COMMAND.guild.name,
   type: 'subcommand',
   preCheck: {
