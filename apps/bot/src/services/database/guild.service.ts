@@ -5,6 +5,7 @@ import {mongoClient} from '@idle-helper/services';
 import {redisGuildReminder} from '../redis/guild-reminder.redis';
 
 guildSchema.post('findOneAndUpdate', async (doc: IGuild) => {
+  if (!doc) return;
   if (doc.teamRaid.readyAt && doc.teamRaid.readyAt > new Date()) {
     await redisGuildReminder.setReminderTime({
       serverId: doc.serverId,
@@ -215,6 +216,25 @@ const resetToggle = async ({serverId, roleId}: IResetToggle): Promise<IGuild | n
   return guild ?? null;
 };
 
+
+interface IRegisterToGuild {
+  serverId: string;
+  roleId: string;
+  userId: string;
+}
+
+const registerUserToGuild = async ({serverId, roleId, userId}: IRegisterToGuild) => {
+  await dbGuild.findOneAndUpdate({serverId, roleId}, {$addToSet: {membersId: userId}}, {new: true});
+  await dbGuild.findOneAndUpdate(
+    {
+      $or: [{serverId: {$ne: serverId}}, {roleId: {$ne: roleId}}],
+      membersId: {$in: [userId]},
+    },
+    {$pull: {membersId: userId}},
+    {new: true},
+  );
+};
+
 export const guildService = {
   registerGuild,
   isRoleUsed,
@@ -230,4 +250,5 @@ export const guildService = {
   updateGuildInfo,
   updateToggle,
   resetToggle,
+  registerUserToGuild,
 };

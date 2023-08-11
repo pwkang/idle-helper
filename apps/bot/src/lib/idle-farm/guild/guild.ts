@@ -4,6 +4,7 @@ import messageReaders from '../embed-readers';
 import commandHelper from '../../idle-helper/command-helper';
 import {djsMessageHelper} from '../../discordjs/message';
 import {guildService} from '../../../services/database/guild.service';
+import {redisGuildMembers} from '../../../services/redis/guild-members.redis';
 
 interface IIdleGuild {
   client: Client;
@@ -37,11 +38,17 @@ export const idleGuild = async ({author, client, isSlashCommand, message}: IIdle
           },
         });
       }
+      const guildRole = roles.first()!;
       idleGuildSuccess({
         embed,
-        guildRoleId: roles.first()?.id!,
+        guildRoleId: guildRole.id,
         server: message.guild,
         isSlashCommand,
+      });
+      registerUserToGuild({
+        serverId: message.guild.id,
+        roleId: guildRole.id,
+        userId: author.id,
       });
       event.stop();
     }
@@ -75,6 +82,29 @@ const idleGuildSuccess = async ({embed, guildRoleId, isSlashCommand, server}: II
   await guildService.updateGuildInfo({
     serverId: server.id,
     name: guildInfo.name === guild.info.name ? undefined : guildInfo.name,
+  });
+};
+
+interface IRegisterUserToGuild {
+  userId: string;
+  serverId: string;
+  roleId: string;
+}
+
+const registerUserToGuild = async ({userId, serverId, roleId}: IRegisterUserToGuild) => {
+  const cached = await redisGuildMembers.getGuildInfo({
+    userId,
+  });
+  if (cached?.guildRoleId === roleId && cached?.serverId === serverId) return;
+  await guildService.registerUserToGuild({
+    userId,
+    serverId,
+    roleId,
+  });
+  await redisGuildMembers.setGuildMember({
+    guildRoleId: roleId,
+    serverId,
+    userId,
   });
 };
 
