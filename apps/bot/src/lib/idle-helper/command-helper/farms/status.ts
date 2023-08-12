@@ -36,7 +36,7 @@ interface IGetEmbed {
 
 const getEmbed = ({userAccount, author}: IGetEmbed) => {
   const embed = new EmbedBuilder().setColor(BOT_COLOR.embed).setAuthor({
-    name: `${author.username}'s status`,
+    name: `${author.username} - last claim`,
     iconURL: author.avatarURL() ?? undefined,
   });
 
@@ -44,10 +44,9 @@ const getEmbed = ({userAccount, author}: IGetEmbed) => {
     ? Date.now() - userAccount.farms.lastClaimedAt.getTime()
     : 0;
 
-  embed.addFields({
-    name: 'Duration from previous claim',
-    value: duration ? convertMsToHumanReadableString(duration) : '-',
-  });
+  embed.setDescription(
+    `Last claim at: **${duration ? convertMsToHumanReadableString(duration) : '-'}**`,
+  );
 
   return embed;
 };

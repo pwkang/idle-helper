@@ -111,4 +111,8 @@ export const SLASH_COMMAND = {
     name: 'help',
     description: 'Show all commands or information of EPIC Helper',
   },
+  lastClaim: {
+    name: 'last-claim',
+    description: 'Show last claim time',
+  },
 } as const;
