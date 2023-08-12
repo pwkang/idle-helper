@@ -1,7 +1,6 @@
 import {SLASH_COMMAND} from '../constant';
 import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
 import commandHelper from '../../../lib/idle-helper/command-helper';
-import {djsMessageHelper} from '../../../lib/discordjs/message';
 import djsInteractionHelper from '../../../lib/discordjs/interaction';
 
 export default <SlashCommand>{
@@ -14,13 +13,9 @@ export default <SlashCommand>{
     userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
   },
   builder: (subcommand) =>
-    subcommand
-      .addRoleOption(option =>
-        option
-          .setName('role')
-          .setDescription('Guild role of the guild')
-          .setRequired(true),
-      ),
+    subcommand.addRoleOption((option) =>
+      option.setName('role').setDescription('Guild role of the guild').setRequired(true),
+    ),
   execute: async (client, interaction) => {
     const role = interaction.options.getRole('role', true);
     if (!('guild' in role)) return;

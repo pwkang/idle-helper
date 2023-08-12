@@ -43,7 +43,9 @@ export const _showSettings = async ({server, type, initialGuildRoleId}: IShowSet
       };
     if (!guilds.find((guild) => guild.roleId === currentGuildRoleId)) {
       return {
-        content: `There is no guild with role ${messageFormatter.role(currentGuildRoleId)} setup in this server`,
+        content: `There is no guild with role ${messageFormatter.role(
+          currentGuildRoleId
+        )} setup in this server`,
         ephemeral: true,
       };
     }

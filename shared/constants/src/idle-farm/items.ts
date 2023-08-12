@@ -1,2 +1,1 @@
-export const RPG_ITEMS = {
-} as const;
+export const RPG_ITEMS = {} as const;

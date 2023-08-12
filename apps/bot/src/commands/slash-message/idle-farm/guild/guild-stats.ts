@@ -1,5 +1,9 @@
 import {idleGuild} from '../../../../lib/idle-farm/guild/guild';
-import {SLASH_MESSAGE_BOT_TYPE, USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
+import {
+  SLASH_MESSAGE_BOT_TYPE,
+  USER_ACC_OFF_ACTIONS,
+  USER_NOT_REGISTERED_ACTIONS,
+} from '@idle-helper/constants';
 
 export default <SlashMessage>{
   name: 'guild-stats',

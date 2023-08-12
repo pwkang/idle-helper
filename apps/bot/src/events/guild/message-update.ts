@@ -9,20 +9,20 @@ export default <BotEvent>{
     if (
       isBotSlashCommand(newMessage) &&
       isFirstUpdateAfterDeferred(oldMessage) &&
-      newMessage.interaction
+      !!newMessage.interaction
     ) {
       const messages = searchSlashMessages(client, newMessage);
       if (!messages.size) return;
       messages.map(async (cmd) => {
         const toExecute = await preCheckCommand({
           client,
-          author: newMessage.interaction?.user!,
+          author: newMessage.interaction!.user,
           server: newMessage.guild,
           preCheck: cmd.preCheck,
           channelId: newMessage.channelId,
         });
         if (!toExecute) return;
-        await cmd.execute(client, newMessage, newMessage.interaction?.user!);
+        await cmd.execute(client, newMessage, newMessage.interaction!.user);
       });
     }
 

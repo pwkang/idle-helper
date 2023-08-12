@@ -15,10 +15,10 @@ export default <SlashCommand>{
   builder: (subcommand) =>
     subcommand
       .addStringOption((option) =>
-        option.setName('on').setDescription('Type the ID of the settings. e.g. a1 b2a'),
+        option.setName('on').setDescription('Type the ID of the settings. e.g. a1 b2a')
       )
       .addStringOption((option) =>
-        option.setName('off').setDescription('Type the ID of the settings. e.g. a1 b2a'),
+        option.setName('off').setDescription('Type the ID of the settings. e.g. a1 b2a')
       ),
   execute: async (client, interaction) => {
     const onStr = interaction.options.getString('on');

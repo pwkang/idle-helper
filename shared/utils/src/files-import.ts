@@ -17,13 +17,14 @@ export const importFiles = <T>({options, path}: IImportFiles): Promise<IReturn<T
       .on('data', async (entry: EntryInfo) => {
         const {fullPath, path} = entry;
         files.push(
-          new Promise(async (resolve) => {
-            const file = await import(fullPath);
-            resolve({
-              data: file.default,
-              path,
+          new Promise((resolve) => {
+            import(fullPath).then(file => {
+              resolve({
+                data: file.default,
+                path,
+              });
             });
-          })
+          }),
         );
       })
       .on('end', () => {

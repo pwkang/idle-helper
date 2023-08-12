@@ -53,7 +53,7 @@ export default <PrefixCommand>{
         guild: message.guild!,
         client,
       });
-      for (let command of commandsToDelete) {
+      for (const command of commandsToDelete) {
         const guildCommand = registeredGuildSlashCommands.find(
           (gsc) => gsc.name === command.builder.name
         );
@@ -75,7 +75,7 @@ export default <PrefixCommand>{
       }
     } else {
       registeredGlobalSlashCommands = await djsRestHelper.slashCommand.global.getAll({client});
-      for (let command of commandsToDelete) {
+      for (const command of commandsToDelete) {
         const globalCommand = registeredGlobalSlashCommands.find(
           (gsc) => gsc.name === command.builder.name
         );

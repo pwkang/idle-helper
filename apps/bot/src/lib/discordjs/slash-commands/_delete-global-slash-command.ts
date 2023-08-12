@@ -1,4 +1,4 @@
-import {Client, DiscordAPIError, Routes} from 'discord.js';
+import {Client, Routes} from 'discord.js';
 import {logger} from '@idle-helper/utils';
 import {djsRestClient} from '@idle-helper/services';
 
@@ -11,7 +11,7 @@ export const _deleteGlobalSlashCommand = async ({client, commandId}: IDeleteGuil
   if (!client.user) return [];
   try {
     await djsRestClient.delete(Routes.applicationCommand(client.user.id!, commandId));
-  } catch (e: DiscordAPIError | any) {
+  } catch (e: any) {
     logger({
       message: e.rawError.message,
       variant: 'delete-global-slash-command',

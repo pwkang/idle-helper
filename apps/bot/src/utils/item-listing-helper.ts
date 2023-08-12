@@ -38,7 +38,7 @@ export const itemListingHelper = async ({
     totalItems,
     page,
   });
-  let event = await generateResponse({
+  const event = await generateResponse({
     client,
     message,
     interaction,

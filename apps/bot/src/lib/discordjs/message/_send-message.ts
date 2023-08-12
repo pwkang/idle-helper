@@ -1,11 +1,4 @@
-import type {
-  Channel,
-  Client,
-  DiscordAPIError,
-  Message,
-  MessageCreateOptions,
-  MessagePayload,
-} from 'discord.js';
+import type {Channel, Client, Message, MessageCreateOptions, MessagePayload} from 'discord.js';
 import {PermissionsBitField, TextChannel} from 'discord.js';
 import {logger} from '@idle-helper/utils';
 
@@ -42,10 +35,10 @@ async function checkTypeAndSend({
   let sentMessage;
   if (channel instanceof TextChannel) {
     const textChannel = channel as TextChannel;
-    // if (!textChannel.permissionsFor(client.user!)?.has(requiredPermissions)) return;
+    if (!textChannel.permissionsFor(client.user!)?.has(requiredPermissions)) return;
     try {
       sentMessage = await textChannel.send(options);
-    } catch (error: DiscordAPIError | any) {
+    } catch (error: any) {
       logger({
         message: error.message,
         logLevel: 'warn',

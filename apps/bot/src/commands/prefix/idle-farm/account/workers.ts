@@ -9,7 +9,7 @@ export default <PrefixCommand>{
     userAccOff: USER_ACC_OFF_ACTIONS.abort,
     userNotRegistered: USER_NOT_REGISTERED_ACTIONS.abort,
   },
-  execute: async (client, message, args) => {
+  execute: async (client, message) => {
     idleWorker({
       message,
       author: message.author,

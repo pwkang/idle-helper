@@ -26,7 +26,9 @@ const sendReminder = async ({client, userId}: ISendReminder) => {
     client,
     channelId: userAccount.config.channelId,
     options: {
-      content: `${messageFormatter.user(userId)}, You have been idle for **${convertMsToHumanReadableString(idleDuration)}**`,
+      content: `${messageFormatter.user(
+        userId
+      )}, You have been idle for **${convertMsToHumanReadableString(idleDuration)}**`,
     },
   });
   await updateReminder({
@@ -44,7 +46,9 @@ const updateReminder = async ({userId}: IUpdateReminder) => {
   });
   if (!userAccount?.farms.lastClaimedAt) return;
   const workedDuration = Date.now() - userAccount.farms.lastClaimedAt.getTime();
-  const nextReminderTime = Math.min(...userAccount.farms.reminderHours.filter(h => ms(`${h}h`) > workedDuration));
+  const nextReminderTime = Math.min(
+    ...userAccount.farms.reminderHours.filter((h) => ms(`${h}h`) > workedDuration)
+  );
   if (nextReminderTime === Infinity) return;
   const remindAt = new Date(userAccount.farms.lastClaimedAt.getTime() + ms(`${nextReminderTime}h`));
   await redisClaimReminder.setUser(userId, remindAt);

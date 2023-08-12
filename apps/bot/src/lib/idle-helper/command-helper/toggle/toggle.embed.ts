@@ -1,6 +1,6 @@
 import type {EmbedField} from 'discord.js';
 import {EmbedBuilder} from 'discord.js';
-import {BOT_COLOR, BOT_EMOJI, PREFIX} from '@idle-helper/constants';
+import {BOT_COLOR, BOT_EMOJI} from '@idle-helper/constants';
 
 export interface IToggleEmbedsInfo {
   id: string;
@@ -45,7 +45,7 @@ interface IRenderFieldValue {
 
 const renderFieldValue = ({info, index}: IRenderFieldValue): EmbedField => {
   const embedValue: string[] = [];
-  const {value, children: parent, title, inline} = info;
+  const {value, children: parent, inline} = info;
   const groupId = String.fromCharCode(65 + index);
   const toGrey = value === false;
 

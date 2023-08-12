@@ -1,11 +1,4 @@
-import {
-  ApplicationCommand,
-  Client,
-  DiscordAPIError,
-  Guild,
-  Routes,
-  SlashCommandBuilder,
-} from 'discord.js';
+import {ApplicationCommand, Client, Guild, Routes, SlashCommandBuilder} from 'discord.js';
 import {logger} from '@idle-helper/utils';
 import {djsRestClient} from '@idle-helper/services';
 
@@ -26,10 +19,10 @@ export const _createGuildSlashCommand = async ({
       Routes.applicationGuildCommands(client.user.id!, guild.id),
       {
         body: commands,
-      }
+      },
     );
     return data as ApplicationCommand;
-  } catch (e: DiscordAPIError | any) {
+  } catch (e: any) {
     logger({
       message: e.rawError,
       variant: 'create-guild-slash-command',

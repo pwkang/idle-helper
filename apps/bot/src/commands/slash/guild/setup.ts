@@ -3,7 +3,6 @@ import {SLASH_COMMAND} from '../constant';
 import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
 import commandHelper from '../../../lib/idle-helper/command-helper';
 
-
 export default <SlashCommand>{
   name: SLASH_COMMAND.guild.setup.name,
   description: SLASH_COMMAND.guild.setup.description,
@@ -20,12 +19,12 @@ export default <SlashCommand>{
         option
           .setName('role')
           .setDescription('Only user with this role can trigger guild reminder, duel log, etc.')
-          .setRequired(true),
+          .setRequired(true)
       )
       .addUserOption((option) =>
         option
           .setName('leader')
-          .setDescription('User that can modify the guild settings without admin permission'),
+          .setDescription('User that can modify the guild settings without admin permission')
       ),
   execute: async (client, interaction) => {
     const role = interaction.options.getRole('role', true);

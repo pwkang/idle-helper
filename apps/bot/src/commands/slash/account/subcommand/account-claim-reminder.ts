@@ -13,16 +13,19 @@ export default <SlashCommand>{
   commandName: SLASH_COMMAND.account.name,
   type: 'subcommand',
   builder: (subcommand) =>
-    subcommand
-      .addStringOption((option) =>
-        option
-          .setName('hours')
-          .setDescription('Separated multiple time by space, e.g. 4 12 24')
-          .setRequired(true),
-      ),
+    subcommand.addStringOption((option) =>
+      option
+        .setName('hours')
+        .setDescription('Separated multiple time by space, e.g. 4 12 24')
+        .setRequired(true)
+    ),
   execute: async (client, interaction) => {
     const hours = interaction.options.getString('hours', true);
-    const reminderHours = hours.split(' ').map((hour) => parseInt(hour)).filter((hour) => !isNaN(hour)).filter((hour) => hour >= 0 && hour <= 24);
+    const reminderHours = hours
+      .split(' ')
+      .map((hour) => parseInt(hour))
+      .filter((hour) => !isNaN(hour))
+      .filter((hour) => hour >= 0 && hour <= 24);
 
     const messageOptions = await commandHelper.userAccount.claimReminder({
       userId: interaction.user.id,
@@ -34,6 +37,5 @@ export default <SlashCommand>{
       interaction,
       options: messageOptions,
     });
-
   },
 };

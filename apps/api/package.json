@@ -1,5 +1,5 @@
 {
-  "name": "@epic-helper/api",
+  "name": "@idle-helper/api",
   "version": "1.0.0",
   "main": "dist/server.js",
   "scripts": {

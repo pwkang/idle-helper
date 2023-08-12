@@ -18,7 +18,7 @@ export default <SlashCommand>{
       option
         .setName('role')
         .setDescription('Select the role of the guild to reset')
-        .setRequired(true),
+        .setRequired(true)
     ),
   execute: async (client, interaction) => {
     if (!interaction.inGuild()) return;

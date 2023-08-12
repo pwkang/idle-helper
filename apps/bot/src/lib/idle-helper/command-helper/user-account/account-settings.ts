@@ -61,12 +61,10 @@ const getActionRow = ({selected}: IGetActionRow) => {
     new StringSelectMenuBuilder()
       .setCustomId('cmd_type')
       .setPlaceholder('Select a command')
-      .setOptions(
-        {
-          label: 'Settings',
-          value: 'settings',
-          default: selected === PAGE_TYPE.settings,
-        },
-      ),
+      .setOptions({
+        label: 'Settings',
+        value: 'settings',
+        default: selected === PAGE_TYPE.settings,
+      })
   );
 };

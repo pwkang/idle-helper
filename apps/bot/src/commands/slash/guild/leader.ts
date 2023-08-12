@@ -19,13 +19,13 @@ export default <SlashCommand>{
         option
           .setName('role')
           .setDescription('Select the role of the guild to update')
-          .setRequired(true),
+          .setRequired(true)
       )
       .addUserOption((option) =>
         option
           .setName('leader')
           .setDescription('User that can modify the guild settings without admin permission')
-          .setRequired(true),
+          .setRequired(true)
       ),
   execute: async (client, interaction) => {
     const role = interaction.options.getRole('role', true);

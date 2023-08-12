@@ -2,7 +2,6 @@ import {
   BaseInteraction,
   Client,
   Collection,
-  DiscordAPIError,
   InteractionReplyOptions,
   InteractionResponse,
   InteractionUpdateOptions,
@@ -19,6 +18,11 @@ export interface IReplyInteraction {
   interactive?: boolean;
 }
 
+type TEventCB = (
+  collected: BaseInteraction | StringSelectMenuInteraction,
+  customId: string,
+) => Promise<InteractionUpdateOptions | null> | InteractionUpdateOptions | null;
+
 export default async function _replyInteraction<T>({
   interaction,
   interactive,
@@ -30,7 +34,7 @@ export default async function _replyInteraction<T>({
 
   try {
     interactionResponse = await interaction.reply(options);
-  } catch (error: DiscordAPIError | any) {
+  } catch (error: any) {
     logger({
       message: error.rawError,
       variant: 'replyInteraction',
@@ -41,8 +45,8 @@ export default async function _replyInteraction<T>({
   if (!interactive || !interactionResponse) return;
   const sentMessage = await interactionResponse.fetch();
   const channel = interaction.channel;
-  const registeredEvents = new Collection<string | T, Function>();
-  let allEventsFn: Function | null = null;
+  const registeredEvents = new Collection<string | T, TEventCB>();
+  let allEventsFn: TEventCB | null = null;
   if (!channel) return;
   const collector = interactionResponse.createMessageComponentCollector({
     idle: ms('1m'),
@@ -50,18 +54,13 @@ export default async function _replyInteraction<T>({
 
   function on(
     customId: T extends undefined ? string : T,
-    callback: (
-      collected: BaseInteraction | StringSelectMenuInteraction
-    ) => Promise<InteractionUpdateOptions | null> | InteractionUpdateOptions | null
+    callback: TEventCB,
   ) {
     registeredEvents.set(customId, callback);
   }
 
   function every(
-    callback: (
-      collected: BaseInteraction | StringSelectMenuInteraction,
-      customId: string
-    ) => Promise<InteractionUpdateOptions | null> | InteractionUpdateOptions | null
+    callback: TEventCB,
   ) {
     allEventsFn = callback;
   }
@@ -71,9 +70,9 @@ export default async function _replyInteraction<T>({
     const callback = registeredEvents.get(collected.customId as string);
     let replyOptions: InteractionUpdateOptions | null = null;
     if (allEventsFn) {
-      replyOptions = await allEventsFn(collected, collected.customId as string);
+      replyOptions = await allEventsFn(collected, collected.customId);
     } else if (callback) {
-      replyOptions = await callback(collected);
+      replyOptions = await callback(collected, collected.customId);
     }
     if (!replyOptions) return;
     await _updateInteraction({
@@ -94,7 +93,7 @@ export default async function _replyInteraction<T>({
         await interactionResponse?.edit({
           components: [],
         });
-      } catch (error: DiscordAPIError | any) {
+      } catch (error: any) {
         logger({
           message: error.message,
           logLevel: 'warn',

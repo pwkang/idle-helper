@@ -4,7 +4,7 @@ import {IInfo} from '@idle-helper/models/dist/info/info.type';
 import {IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 import {infoRedis} from '../redis/info.redis';
 
-infoSchema.post('findOneAndUpdate', async function(doc) {
+infoSchema.post('findOneAndUpdate', async function (doc) {
   await infoRedis.setInfo(doc);
 });
 
@@ -14,8 +14,8 @@ const getWorkerPower = async (): Promise<IInfo['workerPower']> => {
   const cachedInfo = await infoRedis.getInfo();
   if (!cachedInfo) {
     const info = await dbInfo.findOne();
-    info && await infoRedis.setInfo(info);
-    return info?.workerPower ?? {} as IInfo['workerPower'];
+    info && (await infoRedis.setInfo(info));
+    return info?.workerPower ?? ({} as IInfo['workerPower']);
   }
   return cachedInfo.workerPower;
 };
@@ -31,14 +31,18 @@ const updateWorkerPower = async ({worker, level, power}: IUpdateWorkerPower) => 
   if (!info) return;
   const targetWorker = info[worker];
   if (targetWorker?.[level] === power) return;
-  await dbInfo.findOneAndUpdate({}, {
-    $set: {
-      [`workerPower.${worker}.${level}`]: power,
+  await dbInfo.findOneAndUpdate(
+    {},
+    {
+      $set: {
+        [`workerPower.${worker}.${level}`]: power,
+      },
     },
-  }, {
-    upsert: true,
-    new: true,
-  });
+    {
+      upsert: true,
+      new: true,
+    }
+  );
 };
 
 const init = async () => {

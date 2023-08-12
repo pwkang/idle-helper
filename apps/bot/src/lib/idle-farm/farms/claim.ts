@@ -45,7 +45,7 @@ interface IIdleClaimSuccess {
   embed: Message['embeds'][0];
 }
 
-const idleClaimSuccess = async ({embed, author}: IIdleClaimSuccess) => {
+const idleClaimSuccess = async ({author}: IIdleClaimSuccess) => {
   await userService.claimFarm({
     userId: author.id,
   });

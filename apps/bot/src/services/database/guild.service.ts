@@ -1,5 +1,4 @@
 import {UpdateQuery} from 'mongoose';
-import {Client} from 'discord.js';
 import {guildSchema, IGuild} from '@idle-helper/models';
 import {mongoClient} from '@idle-helper/services';
 import {redisGuildReminder} from '../redis/guild-reminder.redis';
@@ -63,7 +62,6 @@ const findFirstGuild = async ({serverId}: IFindFirstGuild) => {
   return dbGuild.findOne({serverId});
 };
 
-
 interface IGetAllGuilds {
   serverId: string;
 }
@@ -79,13 +77,12 @@ interface IUpdateGuildReminder {
   reminderMessage?: string;
 }
 
-const updateGuildReminder = async (
-  {
-    serverId,
-    roleId,
-    channelId,
-    reminderMessage,
-  }: IUpdateGuildReminder): Promise<IGuild | null> => {
+const updateGuildReminder = async ({
+  serverId,
+  roleId,
+  channelId,
+  reminderMessage,
+}: IUpdateGuildReminder): Promise<IGuild | null> => {
   const updateQuery: UpdateQuery<IGuild> = {
     $set: {},
   };
@@ -215,7 +212,6 @@ const resetToggle = async ({serverId, roleId}: IResetToggle): Promise<IGuild | n
   );
   return guild ?? null;
 };
-
 
 interface IRegisterToGuild {
   serverId: string;

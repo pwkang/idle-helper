@@ -2,8 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import * as dotenv from 'dotenv';
 import loadRoutes from './handler/routes.handler';
-import {logger} from '@epic-helper/utils';
-import morgan from 'morgan';
+import {logger} from '@idle-helper/utils';
 
 dotenv.config();
 

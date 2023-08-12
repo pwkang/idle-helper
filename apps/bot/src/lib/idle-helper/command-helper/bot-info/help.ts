@@ -12,7 +12,6 @@ interface IHelp {
 }
 
 export const _help = ({client}: IHelp) => {
-
   function render(): BaseMessageOptions {
     const embed = getEmbed(client);
     return {
@@ -25,30 +24,33 @@ export const _help = ({client}: IHelp) => {
   };
 };
 
-const getEmbed = (client: Client) => new EmbedBuilder()
-  .setColor(BOT_COLOR.embed)
-  .setTitle('IDLE Helper Help')
-  .setDescription(`**Prefix:** \`${PREFIX.bot}\` (not-customizable)`)
-  .setThumbnail(client.user?.avatarURL() ?? null)
-  .addFields({
-    name: 'Basic',
-    value: [
-      `- Use ${BOT_CLICKABLE_SLASH_COMMANDS.accountRegister} to register to the bot`,
-      `- Register your workers via ${IDLE_FARM_CLICKABLE_SLASH_COMMANDS.workerStats}`,
-      `- Set your reminder channel via ${BOT_CLICKABLE_SLASH_COMMANDS.accountReminderChannel}`,
-      `- Set your claim reminder target hours via ${BOT_CLICKABLE_SLASH_COMMANDS.accountClaimReminder}`,
-    ].join('\n'),
-  }, {
-    name: 'Features',
-    value: [
-      `- Raid Helper - send en embed with your & enemy's workers lvl & power during a raid`,
-      '- Claim reminder upon idle for target hours',
-      '- Setup server random event pings',
-      '- More coming soon...',
-    ].join('\n'),
-  }, {
-    name: 'Have a question?',
-    value: [
-      `- Join the [support server](${SUPPORT_SERVER_INVITE_LINK})`,
-    ].join('\n'),
-  });
+const getEmbed = (client: Client) =>
+  new EmbedBuilder()
+    .setColor(BOT_COLOR.embed)
+    .setTitle('IDLE Helper Help')
+    .setDescription(`**Prefix:** \`${PREFIX.bot}\` (not-customizable)`)
+    .setThumbnail(client.user?.avatarURL() ?? null)
+    .addFields(
+      {
+        name: 'Basic',
+        value: [
+          `- Use ${BOT_CLICKABLE_SLASH_COMMANDS.accountRegister} to register to the bot`,
+          `- Register your workers via ${IDLE_FARM_CLICKABLE_SLASH_COMMANDS.workerStats}`,
+          `- Set your reminder channel via ${BOT_CLICKABLE_SLASH_COMMANDS.accountReminderChannel}`,
+          `- Set your claim reminder target hours via ${BOT_CLICKABLE_SLASH_COMMANDS.accountClaimReminder}`,
+        ].join('\n'),
+      },
+      {
+        name: 'Features',
+        value: [
+          '- Raid Helper - send en embed with your & enemy\'s workers lvl & power during a raid',
+          '- Claim reminder upon idle for target hours',
+          '- Setup server random event pings',
+          '- More coming soon...',
+        ].join('\n'),
+      },
+      {
+        name: 'Have a question?',
+        value: [`- Join the [support server](${SUPPORT_SERVER_INVITE_LINK})`].join('\n'),
+      }
+    );

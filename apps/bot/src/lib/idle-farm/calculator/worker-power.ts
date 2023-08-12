@@ -1,4 +1,8 @@
-import {IDLE_FARM_WORKER_ID, IDLE_FARM_WORKER_STATS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import {
+  IDLE_FARM_WORKER_ID,
+  IDLE_FARM_WORKER_STATS,
+  IDLE_FARM_WORKER_TYPE,
+} from '@idle-helper/constants';
 
 interface ICalcWorkerPower {
   type: ValuesOf<typeof IDLE_FARM_WORKER_TYPE>;
@@ -18,7 +22,6 @@ export const calcWorkerPower = ({type, level}: ICalcWorkerPower) => {
   });
 };
 
-
 interface IFormula {
   type: number;
   level: number;
@@ -28,4 +31,4 @@ interface IFormula {
 }
 
 const formula = ({intelligence, level, type, strength, speed}: IFormula) =>
-  Math.round((speed + strength + intelligence) * (1 + (type / 4)) * (1 + (level / 2.5)));
+  Math.round((speed + strength + intelligence) * (1 + type / 4) * (1 + level / 2.5));

@@ -1,9 +1,7 @@
 import djsInteractionHelper from '../../../lib/discordjs/interaction';
-import {userService} from '../../../services/database/user.service';
 import {SLASH_COMMAND} from '../constant';
 import commandHelper from '../../../lib/idle-helper/command-helper';
 import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
-import {djsMessageHelper} from '../../../lib/discordjs/message';
 
 export default <SlashCommand>{
   name: SLASH_COMMAND.toggle.reset.name,

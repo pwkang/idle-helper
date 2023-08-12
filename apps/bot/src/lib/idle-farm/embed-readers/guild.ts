@@ -14,7 +14,7 @@ export const _guildReader = ({embed}: IGuildReader) => {
   const time = infoString.match(/\*\*(\d+h \d+m \d+s)\*\*/)?.[1];
   let readyIn = 0;
   if (time) {
-    for (let t of time.split(' ')) {
+    for (const t of time.split(' ')) {
       readyIn += ms(t);
     }
   }

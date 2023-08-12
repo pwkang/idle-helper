@@ -4,5 +4,5 @@
     "outDir": "dist",
     "rootDir": "src"
   },
-  "extends": "@epic-helper/tsconfig/tsconfig.base.json"
+  "extends": "@idle-helper/tsconfig/tsconfig.base.json"
 }

@@ -19,7 +19,7 @@ export default <SlashCommand>{
         option
           .setName('role')
           .setDescription('Select the role of the guild to update')
-          .setRequired(true),
+          .setRequired(true)
       )
       .addStringOption((option) => option.setName('on').setDescription('Features to turn on'))
       .addStringOption((option) => option.setName('off').setDescription('Features to turn off')),

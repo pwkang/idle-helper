@@ -13,7 +13,6 @@ interface ISlashCommand {
 }
 
 export const listSlashCommands = async (): Promise<ISlashCommand[]> => {
-  const slashCommands: ISlashCommand[] = [];
   const commands = await importFiles<SlashCommand>({
     options: {
       fileFilter: [handlerFileFilter],
@@ -22,7 +21,6 @@ export const listSlashCommands = async (): Promise<ISlashCommand[]> => {
   });
   const generated = generateSlashCommands(commands.map(({data}) => data));
   return generated.map((value, key) => ({name: key, builder: value}));
-
 };
 
 export const generateSlashCommands = (slashCommands: SlashCommand[]) => {

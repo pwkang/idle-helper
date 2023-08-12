@@ -18,7 +18,7 @@ export default <SlashCommand>{
       option
         .setName('role')
         .setDescription('Select the role of the guild to delete')
-        .setRequired(true),
+        .setRequired(true)
     ),
   execute: async (client, interaction) => {
     const role = interaction.options.getRole('role', true);
@@ -37,7 +37,7 @@ export default <SlashCommand>{
       interactive: true,
     });
     if (!event) return;
-    event.every(async interaction => {
+    event.every(async (interaction) => {
       return await configureGuild.deleteGuildConfirmation({
         interaction,
       });

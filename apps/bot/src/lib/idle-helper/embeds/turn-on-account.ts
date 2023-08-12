@@ -7,7 +7,7 @@ const _turnOnAccount = () => {
     .setTitle('Opps! you have turned off the helper.')
     .setDescription(
       'You need to turn on the helper to use this command.\n' +
-      `Use ${BOT_CLICKABLE_SLASH_COMMANDS.accountOn} to turn on your account.`,
+        `Use ${BOT_CLICKABLE_SLASH_COMMANDS.accountOn} to turn on your account.`
     );
 };
 

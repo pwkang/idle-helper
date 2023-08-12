@@ -5,7 +5,6 @@ import {SLASH_COMMAND} from '../../constant';
 import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
 import {PermissionsBitField} from 'discord.js';
 
-
 export default <SlashCommand>{
   name: SLASH_COMMAND.server.settings.name,
   description: SLASH_COMMAND.server.settings.description,

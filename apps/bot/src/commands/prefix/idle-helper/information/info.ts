@@ -15,6 +15,6 @@ export default <PrefixCommand>{
         embeds: [botInfo],
       },
       channelId: message.channel.id,
-    })
+    });
   },
-}
+};

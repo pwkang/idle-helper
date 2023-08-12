@@ -1,6 +1,5 @@
 import {Client, Embed, Message, MessageCollector, TextChannel, User} from 'discord.js';
 import {TypedEventEmitter} from './typed-event-emitter';
-import {sleep} from '@idle-helper/utils';
 import {IDLE_FARM_ID} from '@idle-helper/constants';
 import {createMessageEditedListener} from './message-edited-listener';
 
@@ -83,10 +82,18 @@ export const createIdleFarmCommandListener = (
       event.emit('embed', embed, collected);
     } else if (!collected.embeds.length) {
       // Message Content
-      if (isBotMaintenance({collected, author})
-      ) {
+      if (isBotMaintenance({collected, author})) {
         event.stop();
         return;
+      }
+
+      if (isUserInCommand({author, collected})) {
+        if (waitingAnswer) {
+          return;
+        } else {
+          event.stop();
+          return;
+        }
       }
 
       event.emit('content', collected.content, collected);
@@ -109,16 +116,10 @@ export const createIdleFarmCommandListener = (
   return event;
 };
 
-
 interface IChecker {
   collected: Message;
   author: User;
 }
-
-function isSlashCommand({collected}: IChecker) {
-  return collected.content === '' && collected.embeds.length === 0 && collected.interaction?.id;
-}
-
 
 function isBotMaintenance({author, collected}: IChecker) {
   return (
@@ -136,4 +137,11 @@ function isUserSpamming({author, collected}: IChecker) {
 
 const isLoadingContent = ({collected}: IChecker) =>
   (collected.content === '' && collected.embeds.length === 0) ||
-  (collected.content === 'loading the guild member list...');
+  collected.content === 'loading the guild member list...';
+
+
+function isUserInCommand({author, collected}: IChecker) {
+  return (
+    collected.content.includes('end your previous command') && collected.mentions.has(author.id)
+  );
+}
