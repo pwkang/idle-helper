@@ -1,4 +1,4 @@
-import {Client, DiscordAPIError, Message} from 'discord.js';
+import {Client, Message} from 'discord.js';
 import {logger} from '@idle-helper/utils';
 
 export interface DeleteMessageProps {
@@ -11,7 +11,7 @@ export default async function _deleteMessage({client, message}: DeleteMessagePro
   if (!message.deletable) return;
   try {
     await message.delete();
-  } catch (e: DiscordAPIError | any) {
+  } catch (e: any) {
     logger({
       message: e.rawError.message,
       variant: 'delete-message',

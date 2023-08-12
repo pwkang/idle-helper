@@ -5,7 +5,7 @@ import {infoService} from '../../../services/database/info.service';
 export default <BotMessage>{
   name: 'idle-rpg-worker',
   bot: IDLE_FARM_ID,
-  match: (message) => {
+  match: () => {
     return false; // disable this feature
     // const embed = message.embeds[0];
     // if (!embed) return false;
@@ -20,7 +20,7 @@ export default <BotMessage>{
 };
 
 const updateWorkersPower = async (userWorkers: ReturnType<typeof messageReaders.worker>) => {
-  for (let worker of userWorkers) {
+  for (const worker of userWorkers) {
     await infoService.updateWorkerPower({
       worker: worker.type,
       power: worker.power,

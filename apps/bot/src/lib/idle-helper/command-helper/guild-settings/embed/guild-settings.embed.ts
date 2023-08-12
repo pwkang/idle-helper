@@ -39,7 +39,7 @@ export const _getGuildSettingsEmbed = ({guildAccount}: IGetGuildReminderEmbed): 
           }`,
         ].join('\n'),
         inline: false,
-      },
+      }
     );
 
   return embed;

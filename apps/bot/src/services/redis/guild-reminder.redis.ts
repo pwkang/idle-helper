@@ -38,7 +38,7 @@ const getReadyGuild = async (): Promise<Pick<ISetReminderTime, 'serverId' | 'gui
         guildRoleId,
         serverId,
       };
-    }),
+    })
   );
   return reminderList.filter((item) => item !== null) as Pick<
     ISetReminderTime,
@@ -70,7 +70,7 @@ const getAllGuildReminder = async () => {
         serverId,
         readyAt: new Date(readyAt),
       };
-    }),
+    })
   );
   return reminderList.filter((item) => item !== null) as IRedisGuildReminder[];
 };

@@ -6,7 +6,7 @@ export default <BotEvent>{
   eventName: Events.MessageCreate,
   once: false,
   execute: async (client, message: Message) => {
-    if (isBotSlashCommand(message) && isNotDeferred(message)) {
+    if (isBotSlashCommand(message) && isNotDeferred(message) && message.interaction?.user) {
       const messages = searchSlashMessages(client, message);
       if (!messages.size) return;
 
@@ -20,7 +20,7 @@ export default <BotEvent>{
           channelId: message.channelId,
         });
         if (!toExecute) return;
-        await cmd.execute(client, message, message.interaction?.user!);
+        await cmd.execute(client, message, message.interaction!.user);
       }
     }
 
@@ -64,7 +64,8 @@ const isRpgCommand = (message: Message) =>
   message.mentions.has(IDLE_FARM_ID);
 
 const isBotCommand = (client: Client, message: Message) =>
-  PREFIX.bot && trimWhitespace(message.content).toLowerCase().startsWith(PREFIX.bot.toLowerCase()) ||
+  (PREFIX.bot &&
+    trimWhitespace(message.content).toLowerCase().startsWith(PREFIX.bot.toLowerCase())) ||
   message.mentions.has(client.user!.id);
 
 const validateCommand = (commands: string[], args: string[]) => {

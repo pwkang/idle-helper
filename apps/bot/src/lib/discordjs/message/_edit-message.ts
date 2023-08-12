@@ -1,4 +1,4 @@
-import {Client, DiscordAPIError, Message, MessageEditOptions, MessagePayload} from 'discord.js';
+import {Client, Message, MessageEditOptions, MessagePayload} from 'discord.js';
 import {logger} from '@idle-helper/utils';
 
 export interface EditMessageProps {
@@ -12,7 +12,7 @@ export default async function _editMessage({client, message, options}: EditMessa
   if (!message.editable) return;
   try {
     await message.edit(options);
-  } catch (e: DiscordAPIError | any) {
+  } catch (e: any) {
     logger({
       message: e.rawError.message,
       variant: 'edit-message',

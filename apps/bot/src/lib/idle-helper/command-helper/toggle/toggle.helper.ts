@@ -3,7 +3,6 @@ import {UpdateQuery} from 'mongoose';
 import {getUserToggle} from './type/user.toggle';
 import {getGuildToggle} from './type/guild.toggle';
 
-
 export interface IGetUpdateQuery {
   on?: string;
   off?: string;
@@ -45,7 +44,7 @@ export const getUpdateQuery = <T>({on, off, toggleInfo}: IGetUpdateQuery): Updat
 
 const getPathsFromKeyword = (
   key: string,
-  toggleInfo: IToggleEmbedsInfo[],
+  toggleInfo: IToggleEmbedsInfo[]
 ): string | string[] | null => {
   if (regexParent.test(key)) {
     const _key = key.match(regexParent);

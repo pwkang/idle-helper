@@ -18,15 +18,13 @@ export default <SlashCommand>{
         option
           .setName('role')
           .setDescription('Select the role of the guild to update')
-          .setRequired(true),
+          .setRequired(true)
       )
       .addChannelOption((option) =>
-        option.setName('channel').setDescription('Channel to send reminder message'),
+        option.setName('channel').setDescription('Channel to send reminder message')
       )
       .addStringOption((option) =>
-        option
-          .setName('reminder-message')
-          .setDescription('Message to send when team raid is ready'),
+        option.setName('reminder-message').setDescription('Message to send when team raid is ready')
       ),
   execute: async (client, interaction) => {
     const role = interaction.options.getRole('role', true);

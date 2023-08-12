@@ -7,31 +7,35 @@ interface IInfo {
 }
 
 export const _info = async ({client, server}: IInfo): Promise<EmbedBuilder> => {
-  const embed = new EmbedBuilder()
-    .setColor(BOT_COLOR.embed);
+  const embed = new EmbedBuilder().setColor(BOT_COLOR.embed);
 
   const uptime = getUptime(client);
   const totalGuilds = await getTotalGuilds(client);
   const {clusterId, totalCluster} = getClusterInfo(client);
   const {shardId, totalShard} = getShardInfo(client, server);
 
-  embed.addFields({
-    name: '**Uptime**',
-    value: uptime,
-    inline: true,
-  }, {
-    name: '**Servers**',
-    value: totalGuilds.toLocaleString(),
-    inline: true,
-  }, {
-    name: '**Shard**',
-    value: `${shardId + 1}/${totalShard}`,
-    inline: true,
-  }, {
-    name: '**Cluster**',
-    value: `${clusterId + 1}/${totalCluster}`,
-    inline: true,
-  });
+  embed.addFields(
+    {
+      name: '**Uptime**',
+      value: uptime,
+      inline: true,
+    },
+    {
+      name: '**Servers**',
+      value: totalGuilds.toLocaleString(),
+      inline: true,
+    },
+    {
+      name: '**Shard**',
+      value: `${shardId + 1}/${totalShard}`,
+      inline: true,
+    },
+    {
+      name: '**Cluster**',
+      value: `${clusterId + 1}/${totalCluster}`,
+      inline: true,
+    },
+  );
 
   embed.addFields({
     name: '**Lnks**',
@@ -43,11 +47,13 @@ export const _info = async ({client, server}: IInfo): Promise<EmbedBuilder> => {
 
 const getTotalGuilds = async (client: Client): Promise<number> => {
   if (client.cluster) {
-    return new Promise((resolve, reject) => {
-      client.cluster?.broadcastEval(client => client.guilds.cache.size).then(result => {
-        const total = result.reduce((acc, guildCount) => acc + guildCount, 0);
-        resolve(total);
-      });
+    return new Promise((resolve) => {
+      client.cluster
+        ?.broadcastEval((client) => client.guilds.cache.size)
+        .then((result) => {
+          const total = result.reduce((acc, guildCount) => acc + guildCount, 0);
+          resolve(total);
+        });
     });
   } else {
     return client.guilds.cache.size;

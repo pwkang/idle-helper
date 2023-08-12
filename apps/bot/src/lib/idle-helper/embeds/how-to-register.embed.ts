@@ -10,7 +10,7 @@ const _howToRegisterEmbed = ({author}: IHowToRegister) => {
     .setColor(BOT_COLOR.embed)
     .setTitle(`Hi, ${author.username}!`)
     .setDescription(
-      `Looks like you haven't registered yet.\nPlease use ${BOT_CLICKABLE_SLASH_COMMANDS.accountRegister} to register an account.`,
+      `Looks like you haven't registered yet.\nPlease use ${BOT_CLICKABLE_SLASH_COMMANDS.accountRegister} to register an account.`
     );
 };
 

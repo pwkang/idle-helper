@@ -17,7 +17,11 @@
     "build:bot": "turbo run build:bot",
     "dev-shard:bot": "npm run build:bot && USE_PINO_PRETTY=true node apps/bot/dist/index.js",
     "start:bot": "node apps/bot/dist/index.js",
-    "prod:bot": "pm2 start ecosystem.config.js"
+    "prod:bot": "pm2 start ecosystem.config.js",
+    "format": "prettier --write \"apps/**/*.ts\" \"shared/**/*.ts\"",
+    "format:check": "prettier --check \"apps/**/*.ts\" \"shared/**/*.ts\"",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check"
   },
   "repository": {
     "type": "git",
@@ -48,6 +52,9 @@
     "@types/ms": "^0.7.31",
     "@types/node": "^20.3.1",
     "@types/node-cron": "^3.0.7",
+    "@typescript-eslint/eslint-plugin": "^6.3.0",
+    "@typescript-eslint/parser": "^6.3.0",
+    "eslint": "^8.47.0",
     "nodemon": "^3.0.1",
     "prettier": "^2.8.8",
     "ts-node": "^10.9.1",

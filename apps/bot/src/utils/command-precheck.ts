@@ -1,4 +1,12 @@
-import {BaseInteraction, BaseMessageOptions, Client, Guild, Message, PermissionsBitField, User} from 'discord.js';
+import {
+  BaseInteraction,
+  BaseMessageOptions,
+  Client,
+  Guild,
+  Message,
+  PermissionsBitField,
+  User,
+} from 'discord.js';
 import {userService} from '../services/database/user.service';
 import {djsMessageHelper} from '../lib/discordjs/message';
 import {ICommandPreCheck} from '../types/utils';
@@ -18,16 +26,14 @@ type IPreCheckCommand = {
   message?: Message;
 };
 
-export const preCheckCommand = async (
-  {
-    preCheck,
-    author,
-    channelId,
-    client,
-    server,
-    interaction,
-    message,
-  }: IPreCheckCommand) => {
+export const preCheckCommand = async ({
+  preCheck,
+  author,
+  client,
+  server,
+  interaction,
+  message,
+}: IPreCheckCommand) => {
   const status: Record<keyof PrefixCommand['preCheck'], boolean> = {
     userNotRegistered: true,
     userAccOff: true,

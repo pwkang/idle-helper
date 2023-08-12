@@ -4,7 +4,9 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:bot": "tsc"
+    "build:bot": "tsc",
+    "type-check": "tsc --noEmit --skipLibCheck",
+    "lint": "eslint src/ --ext .ts --fix"
   },
   "dependencies": {
     "@idle-helper/constants": "workspace:*",

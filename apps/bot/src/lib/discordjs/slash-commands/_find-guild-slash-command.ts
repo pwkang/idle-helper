@@ -1,4 +1,4 @@
-import {ApplicationCommand, Client, DiscordAPIError, Guild, Routes} from 'discord.js';
+import {ApplicationCommand, Client, Guild, Routes} from 'discord.js';
 import {djsRestClient} from '@idle-helper/services';
 import {logger} from '@idle-helper/utils';
 
@@ -17,11 +17,11 @@ export const _findGuildSlashCommand = async ({
 
   try {
     const data = await djsRestClient.get(
-      Routes.applicationGuildCommand(client.user.id, guild.id, commandId)
+      Routes.applicationGuildCommand(client.user.id, guild.id, commandId),
     );
 
     return data as ApplicationCommand;
-  } catch (e: DiscordAPIError | any) {
+  } catch (e: any) {
     logger({
       message: e.rawError.message,
       variant: 'find-guild-slash-command',

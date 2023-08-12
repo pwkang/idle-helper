@@ -35,18 +35,18 @@ interface IGetEmbed {
 }
 
 const getEmbed = ({userAccount, author}: IGetEmbed) => {
-  const embed = new EmbedBuilder()
-    .setColor(BOT_COLOR.embed)
-    .setAuthor({
-      name: `${author.username}'s status`,
-      iconURL: author.avatarURL() ?? undefined,
-    });
+  const embed = new EmbedBuilder().setColor(BOT_COLOR.embed).setAuthor({
+    name: `${author.username}'s status`,
+    iconURL: author.avatarURL() ?? undefined,
+  });
 
-  const duration = userAccount.farms.lastClaimedAt ? Date.now() - userAccount.farms.lastClaimedAt.getTime() : 0;
+  const duration = userAccount.farms.lastClaimedAt
+    ? Date.now() - userAccount.farms.lastClaimedAt.getTime()
+    : 0;
 
   embed.addFields({
     name: 'Duration from previous claim',
-    value: !!duration ? convertMsToHumanReadableString(duration) : '-',
+    value: duration ? convertMsToHumanReadableString(duration) : '-',
   });
 
   return embed;

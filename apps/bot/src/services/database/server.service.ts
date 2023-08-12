@@ -41,7 +41,7 @@ const listRegisteredServersId = async (): Promise<string[]> => {
     {},
     {
       serverId: 1,
-    },
+    }
   );
   return servers?.map((server) => server.serverId) ?? [];
 };
@@ -55,17 +55,15 @@ const findServerById = async (serverId: string): Promise<IServer | null> => {
   return server;
 };
 
-
 interface IUpdateRandomEvents {
   serverId: string;
   randomEvents: Partial<Record<ValuesOf<typeof IDLE_FARM_RANDOM_EVENTS>, string | null>>;
 }
 
-const updateRandomEvents = async (
-  {
-    serverId,
-    randomEvents,
-  }: IUpdateRandomEvents): Promise<IServer | null> => {
+const updateRandomEvents = async ({
+  serverId,
+  randomEvents,
+}: IUpdateRandomEvents): Promise<IServer | null> => {
   const query: UpdateQuery<IServer> = {
     $set: {},
     $unset: {},

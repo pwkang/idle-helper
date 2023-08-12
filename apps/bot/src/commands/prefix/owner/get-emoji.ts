@@ -11,7 +11,7 @@ export default <PrefixCommand>{
   type: PREFIX_COMMAND_TYPE.dev,
   preCheck: {},
   execute: (client, message) => {
-    const emojis = message.guild && [...message.guild?.emojis.cache.values()];
+    const emojis = message.guild && [...message.guild.emojis.cache.values()];
     const emojiList =
       emojis?.map((emoji) => ({
         name: emoji.name + (emoji.animated ? '_animated' : ''),

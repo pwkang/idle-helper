@@ -17,6 +17,6 @@ export const _getUserGuildRoles = async ({server, userId, client}: IGetUserGuild
   if (!serverMember) return null;
   const guilds = await guildService.getAllGuildRoles({serverId: server.id});
   return serverMember.roles.cache.filter((userRole) =>
-    guilds.some((guildRole) => userRole.id === guildRole.roleId),
+    guilds.some((guildRole) => userRole.id === guildRole.roleId)
   );
 };

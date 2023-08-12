@@ -76,13 +76,17 @@ interface IClaimFarm {
 }
 
 const claimFarm = async ({userId}: IClaimFarm): Promise<IUser | null> => {
-  const user = await dbUser.findOneAndUpdate({userId}, {
-    $set: {
-      'farms.lastClaimedAt': new Date(),
+  const user = await dbUser.findOneAndUpdate(
+    {userId},
+    {
+      $set: {
+        'farms.lastClaimedAt': new Date(),
+      },
     },
-  }, {
-    new: true,
-  });
+    {
+      new: true,
+    }
+  );
 
   return user ?? null;
 };
@@ -112,11 +116,15 @@ const saveUserWorkers = async ({userId, workers}: ISaveUserWorkers): Promise<IUs
       level: worker.level,
     } as IUserWorker;
   }
-  const user = await dbUser.findOneAndUpdate({userId}, {
-    $set: query,
-  }, {
-    new: true,
-  });
+  const user = await dbUser.findOneAndUpdate(
+    {userId},
+    {
+      $set: query,
+    },
+    {
+      new: true,
+    }
+  );
   return user ?? null;
 };
 
@@ -126,7 +134,7 @@ interface IGetUserWorkers {
 
 const getUserWorkers = async ({userId}: IGetUserWorkers): Promise<IUser['workers']> => {
   const user = await dbUser.findOne({userId});
-  return user?.workers ?? {} as IUser['workers'];
+  return user?.workers ?? ({} as IUser['workers']);
 };
 
 interface ISetClaimReminders {
@@ -134,14 +142,21 @@ interface ISetClaimReminders {
   reminderHours: number[];
 }
 
-const setClaimReminders = async ({userId, reminderHours}: ISetClaimReminders): Promise<IUser | null> => {
-  const user = await dbUser.findOneAndUpdate({userId}, {
-    $set: {
-      'farms.reminderHours': reminderHours,
+const setClaimReminders = async ({
+  userId,
+  reminderHours,
+}: ISetClaimReminders): Promise<IUser | null> => {
+  const user = await dbUser.findOneAndUpdate(
+    {userId},
+    {
+      $set: {
+        'farms.reminderHours': reminderHours,
+      },
     },
-  }, {
-    new: true,
-  });
+    {
+      new: true,
+    }
+  );
   return user ?? null;
 };
 
@@ -150,14 +165,21 @@ interface IUpdateReminderChannel {
   channelId: string;
 }
 
-const updateReminderChannel = async ({userId, channelId}: IUpdateReminderChannel): Promise<IUser | null> => {
-  const user = await dbUser.findOneAndUpdate({userId}, {
-    $set: {
-      'config.channelId': channelId,
+const updateReminderChannel = async ({
+  userId,
+  channelId,
+}: IUpdateReminderChannel): Promise<IUser | null> => {
+  const user = await dbUser.findOneAndUpdate(
+    {userId},
+    {
+      $set: {
+        'config.channelId': channelId,
+      },
     },
-  }, {
-    new: true,
-  });
+    {
+      new: true,
+    }
+  );
   return user ?? null;
 };
 
@@ -167,7 +189,7 @@ interface IGetUserToggle {
 
 const getUserToggle = async ({userId}: IGetUserToggle): Promise<IUserToggle> => {
   const user = await dbUser.findOne({userId});
-  return user?.toggle ?? {} as IUserToggle;
+  return user?.toggle ?? ({} as IUserToggle);
 };
 
 interface IUpdateUserToggle {
@@ -187,13 +209,17 @@ interface IResetUserToggle {
 }
 
 const resetUserToggle = async ({userId}: IResetUserToggle): Promise<IUser | null> => {
-  const user = await dbUser.findOneAndUpdate({userId}, {
-    $unset: {
-      toggle: '',
+  const user = await dbUser.findOneAndUpdate(
+    {userId},
+    {
+      $unset: {
+        toggle: '',
+      },
     },
-  }, {
-    new: true,
-  });
+    {
+      new: true,
+    }
+  );
   return user ?? null;
 };
 

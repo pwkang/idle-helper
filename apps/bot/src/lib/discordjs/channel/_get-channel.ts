@@ -7,7 +7,7 @@ interface IGetChannel {
   channelId: string;
 }
 
-const _getChannel = async ({serverId, channelId, client}: IGetChannel) => {
+const _getChannel = async ({channelId, client}: IGetChannel) => {
   let channel = client.channels.cache.get(channelId);
   if (!channel) {
     try {

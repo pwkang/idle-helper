@@ -7,7 +7,10 @@ interface IRegisterAccount {
   channelId: string;
 }
 
-export const _registerAccount = async ({author, channelId}: IRegisterAccount): Promise<BaseMessageOptions> => {
+export const _registerAccount = async ({
+  author,
+  channelId,
+}: IRegisterAccount): Promise<BaseMessageOptions> => {
   const created = await userService.registerUser({
     userId: author.id,
     username: author.username,
@@ -19,11 +22,11 @@ export const _registerAccount = async ({author, channelId}: IRegisterAccount): P
     };
   } else {
     return {
-      content: `You have already registered!`,
+      content: 'You have already registered!',
     };
   }
 };
 
 const registeredEmbed = new EmbedBuilder()
   .setColor(BOT_COLOR.embed)
-  .setTitle(`Successfully registered your account!`);
+  .setTitle('Successfully registered your account!');

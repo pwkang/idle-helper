@@ -8,14 +8,16 @@ const setUser = async (userId: string, datetime: Date) => {
 
 const getReadyUsers = async () => {
   const keys = await redisService.keys(`${prefix}*`);
-  const users = await Promise.all(keys.map(async (key) => {
-    const userId = key.replace(prefix, '');
-    const datetime = await redisService.get(key);
-    return {
-      userId,
-      datetime: new Date(Number(datetime)),
-    };
-  }));
+  const users = await Promise.all(
+    keys.map(async (key) => {
+      const userId = key.replace(prefix, '');
+      const datetime = await redisService.get(key);
+      return {
+        userId,
+        datetime: new Date(Number(datetime)),
+      };
+    })
+  );
   return users.filter((user) => user.datetime.getTime() <= Date.now());
 };
 

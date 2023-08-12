@@ -17,7 +17,9 @@ export const dailyReminder = async ({client, channelId, userId}: IDailyReminder)
     channelId,
     client,
     options: {
-      content: `${messageFormatter.user(userId)}, remember to claim your ${IDLE_FARM_CLICKABLE_SLASH_COMMANDS.daily} reward!`,
+      content: `${messageFormatter.user(userId)}, remember to claim your ${
+        IDLE_FARM_CLICKABLE_SLASH_COMMANDS.daily
+      } reward!`,
     },
   });
   await redisDailyReminder.claim(userId);

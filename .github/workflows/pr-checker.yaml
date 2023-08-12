@@ -1,0 +1,66 @@
+name: 'Quality & Test'
+
+on:
+  pull_request:
+    paths-ignore:
+      - '.gitignore'
+      - '.prettierrc'
+      - '*.md'
+
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: 'Run Quality Check'
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+
+    strategy:
+      matrix:
+        node-version: [ 18.x ]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Cache turbo build setup
+        uses: actions/cache@v3
+        with:
+          path: .turbo
+          key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ github.job }}-${{ github.ref_name }}-
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: CI Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Shared Packages
+        run: pnpm build:shared
+
+      - name: Build Bot
+        run: pnpm build:bot
+
+      - name: Run TSC
+        run: pnpm type-check
+
+      - name: Run Lint
+        run: pnpm lint
+
+      - name: Run Prettier
+        run: pnpm format

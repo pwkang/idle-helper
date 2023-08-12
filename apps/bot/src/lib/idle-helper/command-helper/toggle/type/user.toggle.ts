@@ -61,7 +61,6 @@ export const getUserToggle = async ({author}: IGetUserToggle) => {
   };
 };
 
-
 interface IGetUserToggleEmbed {
   userToggle: IUserToggle;
   author: User;
@@ -70,12 +69,14 @@ interface IGetUserToggleEmbed {
 const getUserToggleEmbed = ({userToggle, author}: IGetUserToggleEmbed) => {
   return renderEmbed({
     embedsInfo: toggleDisplayList.user(userToggle),
-  }).setAuthor({
-    name: `${author.username}'s toggle`,
-    iconURL: author.avatarURL() ?? undefined,
-  }).setDescription(
-    `**Syntax 1:** \`${PREFIX.bot}t <on/off> <ID> [ID] [ID]\` - turn on/off any settings
+  })
+    .setAuthor({
+      name: `${author.username}'s toggle`,
+      iconURL: author.avatarURL() ?? undefined,
+    })
+    .setDescription(
+      `**Syntax 1:** \`${PREFIX.bot}t <on/off> <ID> [ID] [ID]\` - turn on/off any settings
       > *\`${PREFIX.bot}t on a1 a5 b3a c2-c5\`*
-      **Syntax 2:** \`${PREFIX.bot}t reset\` - reset all settings`,
-  );
+      **Syntax 2:** \`${PREFIX.bot}t reset\` - reset all settings`
+    );
 };

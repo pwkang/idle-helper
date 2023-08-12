@@ -8,9 +8,13 @@ interface IReminderChannel {
   channelId: string;
 }
 
-export const _reminderChannel = async ({userId, channelId}: IReminderChannel): Promise<BaseMessageOptions> => {
+export const _reminderChannel = async ({
+  userId,
+  channelId,
+}: IReminderChannel): Promise<BaseMessageOptions> => {
   await userService.updateReminderChannel({
-    channelId, userId,
+    channelId,
+    userId,
   });
 
   return {
@@ -18,4 +22,7 @@ export const _reminderChannel = async ({userId, channelId}: IReminderChannel): P
   };
 };
 
-const getEmbed = (channelId: string) => new EmbedBuilder().setColor(BOT_COLOR.embed).setDescription(`Reminder channel has been set to ${messageFormatter.channel(channelId)}`);
+const getEmbed = (channelId: string) =>
+  new EmbedBuilder()
+    .setColor(BOT_COLOR.embed)
+    .setDescription(`Reminder channel has been set to ${messageFormatter.channel(channelId)}`);

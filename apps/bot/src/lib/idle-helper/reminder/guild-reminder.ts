@@ -8,18 +8,16 @@ interface IGuildReminderTimesUp {
   guildRoleId: string;
 }
 
-export const guildReminderTimesUp = async (
-  {
-    guildRoleId,
-    client,
-    serverId,
-  }: IGuildReminderTimesUp) => {
+export const guildReminderTimesUp = async ({
+  guildRoleId,
+  client,
+  serverId,
+}: IGuildReminderTimesUp) => {
   const guild = await guildService.findGuild({
     serverId,
     roleId: guildRoleId,
   });
   if (!guild) return;
-
 
   await djsMessageHelper.send({
     client,

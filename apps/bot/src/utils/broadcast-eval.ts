@@ -15,7 +15,6 @@ interface IBroadcastEvalResult<T> {
 export const broadcastEval = async <T>({
   fn,
   client,
-  target,
 }: IBroadcastEval<T>): Promise<IBroadcastEvalResult<T>[] | null> => {
   if (!client.cluster) {
     const result = fn(client);

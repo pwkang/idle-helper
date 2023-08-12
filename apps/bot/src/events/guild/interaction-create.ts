@@ -1,4 +1,4 @@
-import {BaseInteraction, Client, Events, GuildMember} from 'discord.js';
+import {BaseInteraction, Client, Events} from 'discord.js';
 import {preCheckCommand} from '../../utils/command-precheck';
 
 export default <BotEvent>{
@@ -8,7 +8,6 @@ export default <BotEvent>{
     if (!interaction.guild) return;
 
     if (interaction.isChatInputCommand()) {
-
       const command = searchSlashCommand(client, interaction);
 
       if (!command) return;
@@ -39,8 +38,3 @@ const searchSlashCommand = (client: Client, interaction: BaseInteraction) => {
     .join(' ');
   return client.slashCommands.get(searchCommandName);
 };
-
-interface ICheckPermission {
-  permissions?: bigint[];
-  member: GuildMember;
-}

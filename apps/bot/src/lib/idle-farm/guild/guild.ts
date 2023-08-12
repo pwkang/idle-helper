@@ -63,7 +63,12 @@ interface IIdleGuildSuccess {
   server: Guild;
 }
 
-const idleGuildSuccess = async ({embed, guildRoleId, isSlashCommand, server}: IIdleGuildSuccess) => {
+const idleGuildSuccess = async ({
+  embed,
+  guildRoleId,
+  isSlashCommand,
+  server,
+}: IIdleGuildSuccess) => {
   const guildInfo = messageReaders.guild({embed});
   if (isSlashCommand) {
     // return if guild name is not matched in slash command
@@ -112,5 +117,4 @@ interface IChecker {
   embed: Embed;
 }
 
-const isIdleGuild = ({embed}: IChecker) =>
-  embed.footer?.text.includes('Your guild was raided');
+const isIdleGuild = ({embed}: IChecker) => embed.footer?.text.includes('Your guild was raided');

@@ -1,9 +1,4 @@
-import {
-  Client,
-  DiscordAPIError,
-  InteractionUpdateOptions,
-  MessageComponentInteraction,
-} from 'discord.js';
+import {Client, InteractionUpdateOptions, MessageComponentInteraction} from 'discord.js';
 import {logger} from '@idle-helper/utils';
 
 export interface IUpdateInteraction {
@@ -19,7 +14,7 @@ export default async function _updateInteraction({
 }: IUpdateInteraction) {
   try {
     await interaction.update(options);
-  } catch (error: DiscordAPIError | any) {
+  } catch (error: any) {
     logger({
       message: error.rawError,
       variant: 'updateInteraction',

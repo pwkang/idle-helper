@@ -1,7 +1,6 @@
 import {Schema} from 'mongoose';
 import {IServer} from './server.type';
 
-
 export const serverSchema = new Schema<IServer>({
   serverId: {type: String, required: true},
   name: {type: String, required: true},

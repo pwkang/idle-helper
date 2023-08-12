@@ -1,10 +1,4 @@
-import type {
-  Client,
-  DiscordAPIError,
-  Message,
-  MessageCreateOptions,
-  MessagePayload,
-} from 'discord.js';
+import type {Client, Message, MessageCreateOptions, MessagePayload} from 'discord.js';
 import {PermissionsBitField, TextChannel} from 'discord.js';
 import {logger} from '@idle-helper/utils';
 
@@ -25,7 +19,7 @@ export default async function _replyMessage({message, options, client}: ReplyMes
     if (!textChannel.permissionsFor(client.user!)?.has(requiredPermissions)) return;
     try {
       return await message.reply(options);
-    } catch (error: DiscordAPIError | any) {
+    } catch (error: any) {
       logger({
         message: error.rawError.message,
         logLevel: 'warn',

@@ -12,7 +12,7 @@ const registerNewServers = async (client: Client) => {
   const registeredServersId = await serverService.listRegisteredServersId();
 
   const serversToRegister = cachedServers.filter(
-    (server) => !registeredServersId.includes(server.id),
+    (server) => !registeredServersId.includes(server.id)
   );
   serversToRegister.forEach((server) => {
     serverService.registerServer({

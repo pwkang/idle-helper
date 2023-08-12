@@ -1,7 +1,6 @@
 import type {IToggleEmbedsInfo} from './toggle.embed';
 import {IGuildToggle, IUserToggle} from '@idle-helper/models';
 
-
 const user = (userToggle: IUserToggle): IToggleEmbedsInfo[] => {
   return [
     {
@@ -40,7 +39,6 @@ const guild = (guildToggle: IGuildToggle): IToggleEmbedsInfo[] => {
     },
   ];
 };
-
 
 export const toggleDisplayList = {
   user,

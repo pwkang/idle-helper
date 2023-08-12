@@ -44,23 +44,21 @@ export const _deleteAccount = ({author}: ISlashAccountDelete) => {
 
 const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
   new ButtonBuilder().setCustomId('confirm').setLabel('Confirm').setStyle(ButtonStyle.Primary),
-  new ButtonBuilder().setCustomId('cancel').setLabel('Cancel').setStyle(ButtonStyle.Secondary),
+  new ButtonBuilder().setCustomId('cancel').setLabel('Cancel').setStyle(ButtonStyle.Secondary)
 );
 
 const embed = new EmbedBuilder()
   .setColor(BOT_COLOR.embed)
   .setTitle('Are you sure you want to delete your account?')
   .setDescription(
-    'The following information will be deleted:\n' +
-    '- Account information\n' +
-    '- All settings\n',
+    'The following information will be deleted:\n' + '- Account information\n' + '- All settings\n'
   );
 
 const deletedEmbed = new EmbedBuilder()
   .setColor(BOT_COLOR.embed)
   .setTitle('Successfully deleted your account!')
   .setDescription(
-    `You can create a new account by using ${BOT_CLICKABLE_SLASH_COMMANDS.accountRegister} again`,
+    `You can create a new account by using ${BOT_CLICKABLE_SLASH_COMMANDS.accountRegister} again`
   );
 
 const cancelledEmbed = new EmbedBuilder()

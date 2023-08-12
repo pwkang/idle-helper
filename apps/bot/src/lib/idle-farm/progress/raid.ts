@@ -106,10 +106,7 @@ interface IGenerateEmbed {
 const generateEmbed = ({userWorkers, raidMessage}: IGenerateEmbed) => {
   const raidInfo = messageReaders.raid({message: raidMessage});
   const {enemyFarms, workers} = raidInfo;
-  const embed = new EmbedBuilder()
-    .setColor(BOT_COLOR.embed)
-  ;
-
+  const embed = new EmbedBuilder().setColor(BOT_COLOR.embed);
   const workersInfo: string[] = [];
   for (const worker of typedObjectEntries(IDLE_FARM_WORKER_TYPE).reverse()) {
     const [key] = worker;
@@ -120,29 +117,22 @@ const generateEmbed = ({userWorkers, raidMessage}: IGenerateEmbed) => {
       level: workerInfo.level,
     })}`;
     const isWorkerUsed = workers.find((w) => w.type === key)?.used;
-    workersInfo.push(
-      isWorkerUsed ? `~~${value}~~` : value,
-    );
-
+    workersInfo.push(isWorkerUsed ? `~~${value}~~` : value);
   }
-  embed.addFields(
-    {
-      name: `${BOT_EMOJI.other.farm} Your farms`,
-      value: workersInfo.join('\n'),
-      inline: true,
-    },
-  );
+  embed.addFields({
+    name: `${BOT_EMOJI.other.farm} Your farms`,
+    value: workersInfo.join('\n'),
+    inline: true,
+  });
 
   const enemyFarmsInfo: string[] = [];
-  for (let farm of enemyFarms) {
+  for (const farm of enemyFarms) {
     const {worker, level, health} = farm;
     const value = `${BOT_EMOJI.worker[worker]}Lv ${level} | AT: ${calcWorkerPower({
       type: worker,
       level,
     })}`;
-    enemyFarmsInfo.push(
-      health ? value : `~~${value}~~`,
-    );
+    enemyFarmsInfo.push(health ? value : `~~${value}~~`);
   }
   embed.addFields({
     name: `${BOT_EMOJI.other.farm} Enemy farms`,

@@ -11,6 +11,11 @@ import ms from 'ms';
 import {djsMessageHelper} from './index';
 import djsInteractionHelper from '../interaction';
 
+type TEventCB = (
+  collected: BaseInteraction | StringSelectMenuInteraction,
+  customId: string,
+) => Promise<InteractionUpdateOptions | null> | InteractionUpdateOptions | null;
+
 export interface SendInteractiveMessageProps {
   client: Client;
   channelId: string;
@@ -32,26 +37,21 @@ export default async function _sendInteractiveMessage<EventType extends string>(
   });
   if (!sentMessage) return;
 
-  let allEventsFn: Function | null = null;
-  const registeredEvents = new Collection<string | EventType, Function>();
+  let allEventsFn: TEventCB | null = null;
+  const registeredEvents = new Collection<string | EventType, TEventCB>();
   const collector = sentMessage.createMessageComponentCollector({
     idle: ms('1m'),
   });
 
   function every(
-    callback: (
-      collected: BaseInteraction | StringSelectMenuInteraction,
-      customId: string
-    ) => Promise<InteractionUpdateOptions | null> | InteractionUpdateOptions | null
+    callback: TEventCB,
   ) {
     allEventsFn = callback;
   }
 
   function on(
     customId: EventType extends undefined ? string : EventType,
-    callback: (
-      collected: BaseInteraction | StringSelectMenuInteraction
-    ) => Promise<InteractionUpdateOptions | null> | InteractionUpdateOptions | null
+    callback: TEventCB,
   ) {
     registeredEvents.set(customId, callback);
   }
@@ -62,9 +62,9 @@ export default async function _sendInteractiveMessage<EventType extends string>(
     let replyOptions: InteractionUpdateOptions | null = null;
 
     if (allEventsFn) {
-      replyOptions = await allEventsFn(collected, collected.customId as string);
+      replyOptions = await allEventsFn(collected, collected.customId);
     } else if (callback) {
-      replyOptions = await callback(collected);
+      replyOptions = await callback(collected, collected.customId);
     }
     if (!replyOptions) return;
     await djsInteractionHelper.updateInteraction({
