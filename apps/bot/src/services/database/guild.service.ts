@@ -235,6 +235,16 @@ const registerUserToGuild = async ({serverId, roleId, userId}: IRegisterToGuild)
   );
 };
 
+interface IGetAllGuildMembers {
+  serverId: string;
+  roleId: string;
+}
+
+const getAllGuildMembers = async ({serverId, roleId}: IGetAllGuildMembers) => {
+  const guild = await dbGuild.findOne({serverId, roleId});
+  return guild?.membersId ?? [];
+};
+
 export const guildService = {
   registerGuild,
   isRoleUsed,
@@ -251,4 +261,5 @@ export const guildService = {
   updateToggle,
   resetToggle,
   registerUserToGuild,
+  getAllGuildMembers,
 };

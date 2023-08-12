@@ -3,6 +3,7 @@ export const IDLE_FARM_CLICKABLE_SLASH_COMMANDS = {
   farmStats: '</farm stats:1128415242662203472>',
   farmUpgrade: '</farm upgrade:1128415242662203472>',
   guildStats: '</guild stats:1128414125433827348>',
+  guildList: '</guild list:1128414125433827348>',
   leagueOverview: '</league overview:1128414209475104970>',
   open: '</open:1128412596131872768>',
   packing: '</packing:1128412427634090146>',

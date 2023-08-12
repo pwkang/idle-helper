@@ -21,5 +21,5 @@ export const guildSchema = new Schema<IGuild>({
     channelId: String,
     message: String,
   },
-  members: [String],
+  membersId: [String],
 });

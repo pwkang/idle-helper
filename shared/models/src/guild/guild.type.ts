@@ -17,5 +17,5 @@ export interface IGuild {
     readyAt: Date;
     message: string;
   };
-  members: string[];
+  membersId: string[];
 }

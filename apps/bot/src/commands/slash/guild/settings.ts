@@ -2,7 +2,7 @@ import djsInteractionHelper from '../../../lib/discordjs/interaction';
 import {SLASH_COMMAND} from '../constant';
 import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
 import commandHelper from '../../../lib/idle-helper/command-helper';
-import {GUILD_SETTINGS_PAGE_TYPE} from '../../../lib/idle-helper/command-helper/guild-settings/_showSettings';
+import {GUILD_SETTINGS_PAGE_TYPE} from '../../../lib/idle-helper/command-helper/guild-settings/_show-settings';
 
 export default <SlashCommand>{
   name: SLASH_COMMAND.guild.settings.name,

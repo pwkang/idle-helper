@@ -98,6 +98,10 @@ export const SLASH_COMMAND = {
         description: 'Reset guild toggle settings',
       },
     },
+    memberTracker: {
+      name: 'member-tracker',
+      description: 'Shows guild member info',
+    },
   },
   invite: {
     name: 'invite',
