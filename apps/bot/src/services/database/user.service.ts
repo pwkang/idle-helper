@@ -197,6 +197,19 @@ const resetUserToggle = async ({userId}: IResetUserToggle): Promise<IUser | null
   return user ?? null;
 };
 
+interface IGetUsersById {
+  userIds: string[];
+}
+
+const getUsersById = async ({userIds}: IGetUsersById): Promise<IUser[]> => {
+  const users = await dbUser.find({
+    userId: {
+      $in: userIds,
+    },
+  });
+  return users;
+};
+
 export const userService = {
   registerUser,
   findUser,
@@ -211,4 +224,5 @@ export const userService = {
   getUserToggle,
   updateUserToggle,
   resetUserToggle,
+  getUsersById,
 };

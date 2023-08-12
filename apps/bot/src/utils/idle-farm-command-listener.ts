@@ -2,6 +2,7 @@ import {Client, Embed, Message, MessageCollector, TextChannel, User} from 'disco
 import {TypedEventEmitter} from './typed-event-emitter';
 import {sleep} from '@idle-helper/utils';
 import {IDLE_FARM_ID} from '@idle-helper/constants';
+import {createMessageEditedListener} from './message-edited-listener';
 
 interface IIdleFarmCommandListener {
   client: Client;
@@ -68,15 +69,9 @@ export const createIdleFarmCommandListener = (
   collector.on('collect', messageCollected);
 
   async function messageCollected(collected: Message) {
-    if (
-      isSlashCommand({collected, author}) &&
-      collected.content === '' &&
-      collected.embeds.length === 0
-    ) {
-      await sleep(1000);
-      collected = collector?.channel.messages.cache.get(collected.id) as Message;
+    if (isLoadingContent({collected, author})) {
+      return awaitEdit(collected.id);
     }
-
     if (collected.embeds.length) {
       const embed = collected.embeds[0];
 
@@ -101,6 +96,15 @@ export const createIdleFarmCommandListener = (
       event.emit('attachments', collected.attachments, collected);
     }
   }
+
+  const awaitEdit = async (messageId: string) => {
+    const event = await createMessageEditedListener({
+      messageId,
+    });
+    event.on('edited', (message) => {
+      messageCollected(message);
+    });
+  };
 
   return event;
 };
@@ -129,3 +133,7 @@ function isUserSpamming({author, collected}: IChecker) {
     embed.author?.name === author.username && embed.fields[0]?.name.includes('please don\'t spam')
   );
 }
+
+const isLoadingContent = ({collected}: IChecker) =>
+  (collected.content === '' && collected.embeds.length === 0) ||
+  (collected.content === 'loading the guild member list...');
