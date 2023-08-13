@@ -1,5 +1,5 @@
 import {ValuesOf} from '../type';
-import {IDLE_FARM_WORKER_TYPE, IDLE_FARM_FARM_TYPE} from '@idle-helper/constants';
+import {IDLE_FARM_DONOR_TIER, IDLE_FARM_FARM_TYPE, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 
 export interface IUserToggle extends Record<string, boolean | Record<string, boolean>> {
   reminder: {
@@ -28,6 +28,7 @@ export interface IUser {
   config: {
     onOff: boolean;
     channelId: string;
+    donorTier: ValuesOf<typeof IDLE_FARM_DONOR_TIER>;
   };
   farms: {
     lastClaimedAt: Date;

@@ -1,5 +1,5 @@
 import {ValuesOf} from '../type';
-import {IDLE_FARM_COMMAND_TYPE} from '../idle-farm/rpg';
+import {IDLE_FARM_COMMAND_TYPE} from '../idle-farm/bot';
 
 export const BOT_REMINDER_DEFAULT_MESSAGES: Partial<
   Record<ValuesOf<typeof IDLE_FARM_COMMAND_TYPE> | 'all', string>

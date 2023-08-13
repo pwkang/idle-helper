@@ -1,6 +1,6 @@
 import {EmbedBuilder, User} from 'discord.js';
 import {IUser} from '@idle-helper/models';
-import {BOT_COLOR, BOT_EMOJI} from '@idle-helper/constants';
+import {BOT_COLOR, BOT_EMOJI, IDLE_FARM_DONOR_TIER} from '@idle-helper/constants';
 import messageFormatter from '../../../../discordjs/message-formatter';
 
 export interface IGetUserSettingsEmbed {
@@ -12,6 +12,13 @@ interface IHelperSettings {
   icon: string;
   value: string;
 }
+
+const DONOR_TIER_LABEL = {
+  [IDLE_FARM_DONOR_TIER.nonDonor]: 'Non-donor',
+  [IDLE_FARM_DONOR_TIER.common]: 'Common',
+  [IDLE_FARM_DONOR_TIER.talented]: 'Talented',
+  [IDLE_FARM_DONOR_TIER.wise]: 'Wise +',
+} as const;
 
 export const _getUserSettingsEmbed = ({userProfile, author}: IGetUserSettingsEmbed) => {
   const embed = new EmbedBuilder()
@@ -38,6 +45,10 @@ export const _getUserSettingsEmbed = ({userProfile, author}: IGetUserSettingsEmb
       value: userProfile.config.channelId
         ? `Reminder send to ${messageFormatter.channel(userProfile.config.channelId)}`
         : 'Reminder channel is not set',
+    },
+    {
+      icon: BOT_EMOJI.other.idleCoin,
+      value: `Donor tier: **${DONOR_TIER_LABEL[userProfile.config.donorTier ?? IDLE_FARM_DONOR_TIER.nonDonor]}**`,
     },
   ];
 

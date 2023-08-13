@@ -1,4 +1,5 @@
-import {IInfo} from '@idle-helper/models/dist/info/info.type';
+import {IInfo, IMarketItem, TMarketItems} from '@idle-helper/models/dist/info/info.type';
+import {typedObjectEntries} from '@idle-helper/utils';
 
 const transformWorkerPower = (workerPower?: Record<string, number>) => {
   if (workerPower === undefined) return {};
@@ -7,6 +8,14 @@ const transformWorkerPower = (workerPower?: Record<string, number>) => {
     power[key] = Number(value);
   }
   return power;
+};
+
+const transformMarketItem = (marketItem?: any): IMarketItem => {
+  return {
+    price: marketItem.price === undefined ? 0 : Number(marketItem.price),
+    isOverstocked: marketItem.isOverstocked === undefined ? false : Boolean(marketItem.isOverstocked),
+    lastUpdatedAt: marketItem.lastUpdatedAt === undefined ? new Date() : new Date(marketItem.lastUpdatedAt),
+  };
 };
 
 const fromRedis = (value: string): IInfo => {
@@ -21,6 +30,10 @@ const fromRedis = (value: string): IInfo => {
       masterful: transformWorkerPower(parsed?.workerPower?.masterful),
       deficient: transformWorkerPower(parsed?.workerPower?.deficient),
     },
+    market: typedObjectEntries(parsed?.market ?? {}).reduce((acc, [key, value]) => {
+      acc[key] = transformMarketItem(value);
+      return acc;
+    }, {} as TMarketItems),
   };
 };
 

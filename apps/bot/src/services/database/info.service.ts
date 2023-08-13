@@ -1,23 +1,30 @@
 import {mongoClient} from '@idle-helper/services';
 import {infoSchema} from '@idle-helper/models/dist/info/info.schema';
-import {IInfo} from '@idle-helper/models/dist/info/info.type';
-import {IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import {IInfo, IMarketItem} from '@idle-helper/models/dist/info/info.type';
+import {IDLE_FARM_ITEMS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 import {infoRedis} from '../redis/info.redis';
+import ms from 'ms';
 
-infoSchema.post('findOneAndUpdate', async function (doc) {
+infoSchema.post('findOneAndUpdate', async function(doc) {
+  if (!doc) return;
   await infoRedis.setInfo(doc);
 });
 
 const dbInfo = mongoClient.model<IInfo>('Info', infoSchema);
 
-const getWorkerPower = async (): Promise<IInfo['workerPower']> => {
+const getInfo = async () => {
   const cachedInfo = await infoRedis.getInfo();
   if (!cachedInfo) {
     const info = await dbInfo.findOne();
     info && (await infoRedis.setInfo(info));
-    return info?.workerPower ?? ({} as IInfo['workerPower']);
+    return info!;
   }
-  return cachedInfo.workerPower;
+  return cachedInfo;
+};
+
+const getWorkerPower = async (): Promise<IInfo['workerPower']> => {
+  const info = await getInfo();
+  return info?.workerPower;
 };
 
 interface IUpdateWorkerPower {
@@ -41,7 +48,7 @@ const updateWorkerPower = async ({worker, level, power}: IUpdateWorkerPower) => 
     {
       upsert: true,
       new: true,
-    }
+    },
   );
 };
 
@@ -53,8 +60,38 @@ const init = async () => {
   return info;
 };
 
+
+const getMarketItems = async (): Promise<IInfo['market']> => {
+  const info = await getInfo();
+  return info?.market;
+};
+
+interface IUpdateMarketItems extends Omit<IMarketItem, 'lastUpdatedAt'> {
+  type: keyof typeof IDLE_FARM_ITEMS;
+}
+
+const updateMarketItems = async ({type, price, isOverstocked}: IUpdateMarketItems) => {
+  const marketItems = await getMarketItems();
+  const marketItem = marketItems[type];
+  if (marketItem?.lastUpdatedAt && new Date().getTime() - marketItem?.lastUpdatedAt.getTime() <= ms('5m')) return;
+  await dbInfo.findOneAndUpdate({}, {
+    $set: {
+      [`market.${type}`]: {
+        price,
+        lastUpdatedAt: new Date(),
+        isOverstocked,
+      },
+    },
+  },
+  {
+    new: true,
+  });
+};
+
 export const infoService = {
   getWorkerPower,
   updateWorkerPower,
   init,
+  updateMarketItems,
+  getMarketItems,
 };
