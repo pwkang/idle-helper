@@ -5,6 +5,7 @@ import {_deleteAccount} from './account-delete';
 import {_accountSettings} from './account-settings';
 import {_claimReminder} from './claim-reminder';
 import {_reminderChannel} from './reminder-channel';
+import {_setDonor} from './set-donor';
 
 export const _userAccountHelper = {
   register: _registerAccount,
@@ -14,4 +15,5 @@ export const _userAccountHelper = {
   settings: _accountSettings,
   claimReminder: _claimReminder,
   reminderChannel: _reminderChannel,
+  setDonor: _setDonor,
 };

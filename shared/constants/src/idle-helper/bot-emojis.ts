@@ -30,6 +30,7 @@ export const BOT_EMOJI = {
   },
   other: {
     farm: '<:farm:1134144211344703531>',
+    idleCoin: '<:IDLEcoin:1140260422499442778>',
   },
   items: {
     algae: '<:algae:1140204930918002748>',

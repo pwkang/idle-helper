@@ -30,6 +30,10 @@ export const SLASH_COMMAND = {
       name: 'claim-reminder',
       description: 'Set reminder to claim your farm',
     },
+    donor: {
+      name: 'donor',
+      description: 'Set IDLE FARM donor tier',
+    },
   },
   toggle: {
     name: 'toggle',

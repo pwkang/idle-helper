@@ -43,6 +43,7 @@ export const userSchema = new Schema<IUser>({
   config: {
     onOff: {type: Boolean, default: true},
     channelId: String,
+    donorTier: String,
   },
   commandsLastUsed: {
     daily: Date,

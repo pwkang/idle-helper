@@ -10,6 +10,6 @@ export * from './idle-helper/random-events';
 
 export * from './idle-farm/clickable-slash';
 export * from './idle-farm/items';
-export * from './idle-farm/rpg';
+export * from './idle-farm/bot';
 export * from './idle-farm/worker';
 export * from './idle-farm/farm';
