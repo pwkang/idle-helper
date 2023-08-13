@@ -3,6 +3,7 @@ import {_raidReader} from './raid';
 import {_guildReader} from './guild';
 import {_guildListReader} from './guild-list';
 import {_marketReader} from './market';
+import {_inventoryReader} from './inventory';
 
 const messageReaders = {
   worker: _workerReader,
@@ -10,6 +11,7 @@ const messageReaders = {
   guild: _guildReader,
   guildList: _guildListReader,
   market: _marketReader,
+  inventory: _inventoryReader,
 };
 
 export default messageReaders;

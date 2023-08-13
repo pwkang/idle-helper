@@ -93,4 +93,5 @@ export const infoService = {
   updateWorkerPower,
   init,
   updateMarketItems,
+  getMarketItems,
 };
