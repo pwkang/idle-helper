@@ -111,7 +111,7 @@ const generateEmbed = ({items, marketItems, author, user}: IGenerateEmbed) => {
     embed.addFields({
       name: '\u200b',
       value: itemsInfo.slice(i, i + 15).map(item => {
-        return `${item.emoji} **${item.name}**: \`${item.totalPrice.toLocaleString()}${item.isOverstocked ? ' :warning:' : ''}\``;
+        return `${item.emoji} **${item.name}**: \`${item.totalPrice.toLocaleString()}\`${item.isOverstocked ? ' :warning:' : ''}`;
       }).join('\n'),
       inline: true,
     });
