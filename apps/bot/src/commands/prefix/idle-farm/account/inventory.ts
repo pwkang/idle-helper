@@ -6,8 +6,8 @@ export default <PrefixCommand>{
   type: PREFIX_COMMAND_TYPE.idleFarm,
   commands: ['inventory', 'inv', 'i'],
   preCheck: {
-    userAccOff: USER_ACC_OFF_ACTIONS.askToTurnOn,
-    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.askToRegister,
+    userAccOff: USER_ACC_OFF_ACTIONS.skip,
+    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
   },
   execute: async (client, message, args) => {
     idleInventory({
