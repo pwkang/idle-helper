@@ -51,7 +51,7 @@ const marketPageChanged = ({embed}: IMarketPageChanged) => {
   const marketItems = embedReaders.market({
     embed,
   });
-  marketItems.map(item => {
+  marketItems.forEach(item => {
     infoService.updateMarketItems({
       isOverstocked: item.isOverstocked,
       type: item.type,
