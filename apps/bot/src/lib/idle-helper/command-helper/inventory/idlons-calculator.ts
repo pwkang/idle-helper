@@ -106,7 +106,7 @@ const generateEmbed = ({items, marketItems, author, user}: IGenerateEmbed) => {
     });
   });
   itemsInfo.sort((a, b) => b.totalPrice - a.totalPrice);
-  const totalValue = Math.round(itemsInfo.reduce((acc, item) => acc + item.totalPrice, 0) * taxRate);
+  const totalValue = Math.round(itemsInfo.reduce((acc, item) => acc + item.totalPrice, 0));
   for (let i = 0; i < itemsInfo.length; i += 15) {
     embed.addFields({
       name: '\u200b',
@@ -117,7 +117,7 @@ const generateEmbed = ({items, marketItems, author, user}: IGenerateEmbed) => {
     });
   }
   const oldestUpdatedDate = itemsInfo.sort((a, b) => a.lastUpdatedAt.getTime() - b.lastUpdatedAt.getTime())[0]?.lastUpdatedAt;
-  embed.setDescription(`Total value: **${totalValue.toLocaleString()}**`);
+  embed.setDescription(`Total value: **${totalValue.toLocaleString()}** ${BOT_EMOJI.other.idlon} `);
   embed.setFooter({
     text: `Tax: ${TAX_RATE_LABEL[user.config.donorTier]} | Last updated${oldestUpdatedDate ? '' : ': N/A'}`,
   });
