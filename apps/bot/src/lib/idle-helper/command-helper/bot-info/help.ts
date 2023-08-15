@@ -46,6 +46,7 @@ const getEmbed = (client: Client) =>
           '- Raid Helper - send en embed with your & enemy\'s workers lvl & power during a raid',
           '- Claim reminder upon idle for target hours',
           '- Setup server random event pings',
+          '- View Last claim time `wh lc`',
           '- Inventory Idlons Calculator `idle i calc`',
           '- More coming soon...',
         ].join('\n'),
