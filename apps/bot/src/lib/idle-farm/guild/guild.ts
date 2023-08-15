@@ -86,6 +86,7 @@ const idleGuildSuccess = async ({
   if (!guild) return;
   await guildService.updateGuildInfo({
     serverId: server.id,
+    roleId: guildRoleId,
     name: guildInfo.name === guild.info.name ? undefined : guildInfo.name,
   });
 };

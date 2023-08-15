@@ -116,15 +116,13 @@ const generateEmbed = ({items, marketItems, author, user}: IGenerateEmbed) => {
       inline: true,
     });
   }
-  const oldestUpdatedDate = itemsInfo.sort((a, b) => a.lastUpdatedAt.getTime() - b.lastUpdatedAt.getTime())[0].lastUpdatedAt;
-  embed.setDescription([`Total value: **${totalValue.toLocaleString()}**`,
-    '',
-    `*Tax rate ${TAX_RATE_LABEL[user.config.donorTier]} has been applied*`,
-  ].join('\n'));
+  const oldestUpdatedDate = itemsInfo.sort((a, b) => a.lastUpdatedAt.getTime() - b.lastUpdatedAt.getTime())[0]?.lastUpdatedAt;
+  embed.setDescription(`Total value: **${totalValue.toLocaleString()}**`);
   embed.setFooter({
-    text: 'Last updated: ',
+    text: `Tax: ${TAX_RATE_LABEL[user.config.donorTier]} | Last updated${oldestUpdatedDate ? '' : ': N/A'}`,
   });
-  embed.setTimestamp(oldestUpdatedDate);
+  if (oldestUpdatedDate)
+    embed.setTimestamp(oldestUpdatedDate);
   return embed;
 };
 
