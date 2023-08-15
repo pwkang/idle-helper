@@ -1,27 +1,73 @@
-export default function convertMsToHumanReadableString(milliseconds: number) {
+function getYears(milliseconds: number) {
+  // Convert milliseconds to seconds
+  const seconds = Math.floor(milliseconds / 1000);
+
+  // Calculate the number of years
+  return Math.floor(seconds / (365 * 24 * 60 * 60));
+}
+
+function getDays(milliseconds: number) {
+  // Convert milliseconds to seconds
+  const seconds = Math.floor(milliseconds / 1000);
+
+  // Calculate the number of days
+  return Math.floor((seconds % (365 * 24 * 60 * 60)) / (24 * 60 * 60));
+}
+
+function getHours(milliseconds: number) {
+  // Convert milliseconds to seconds
+  const seconds = Math.floor(milliseconds / 1000);
+
+  // Calculate the number of hours
+  return Math.floor(((seconds % (365 * 24 * 60 * 60)) % (24 * 60 * 60)) / (60 * 60));
+}
+
+function getMinutes(milliseconds: number) {
+  // Convert milliseconds to seconds
+  const seconds = Math.floor(milliseconds / 1000);
+
+  // Calculate the number of minutes
+  return Math.floor((((seconds % (365 * 24 * 60 * 60)) % (24 * 60 * 60)) % (60 * 60)) / 60);
+}
+
+function getSeconds(milliseconds: number) {
+  // Convert milliseconds to seconds
   let seconds = Math.floor(milliseconds / 1000);
-  let minutes = Math.floor(seconds / 60);
-  let hours = Math.floor(minutes / 60);
-  let days = Math.floor(hours / 24);
-  let months = Math.floor(days / 30);
-  let years = Math.floor(months / 12);
 
-  seconds = seconds % 60;
-  minutes = minutes % 60;
-  hours = hours % 60;
-  days = days % 30;
-  months = months % 12;
-  years = years % 12;
+  // Calculate the number of seconds
+  seconds = (((seconds % (365 * 24 * 60 * 60)) % (24 * 60 * 60)) % (60 * 60)) % 60;
 
-  const time = [years, months, days, hours, minutes, seconds];
-  const timeUnit = ['y', 'm', 'd', 'h', 'm', 's'];
+  return seconds;
+}
 
-  let timeString = '';
-  for (let i = 0; i < time.length; i++) {
-    if (time[i] > 0 || timeString !== '') {
-      timeString += `${time[i]}${timeUnit[i]} `;
-    }
+export default function convertMsToHumanReadableString(milliseconds: number) {
+  const years = getYears(milliseconds);
+  const days = getDays(milliseconds);
+  const hours = getHours(milliseconds);
+  const minutes = getMinutes(milliseconds);
+  const seconds = getSeconds(milliseconds);
+
+  let hasValue = false;
+  const stringParts = [];
+  if (years > 0 || hasValue) {
+    stringParts.push(`${years}y`);
+    hasValue = true;
+  }
+  if (days > 0 || hasValue) {
+    stringParts.push(`${days}d`);
+    hasValue = true;
+  }
+  if (hours > 0 || hasValue) {
+    stringParts.push(`${hours}h`);
+    hasValue = true;
+  }
+  if (minutes > 0 || hasValue) {
+    stringParts.push(`${minutes}m`);
+    hasValue = true;
+  }
+  if (seconds > 0 || hasValue) {
+    stringParts.push(`${seconds}s`);
   }
 
-  return timeString;
+  return stringParts.join(' ');
 }
