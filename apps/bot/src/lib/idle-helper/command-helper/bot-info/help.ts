@@ -46,11 +46,12 @@ const getEmbed = (client: Client) =>
           '- Raid Helper - send en embed with your & enemy\'s workers lvl & power during a raid',
           '- Claim reminder upon idle for target hours',
           '- Setup server random event pings',
+          '- Inventory Idlons Calculator `idle i calc`',
           '- More coming soon...',
         ].join('\n'),
       },
       {
         name: 'Have a question?',
         value: [`- Join the [support server](${SUPPORT_SERVER_INVITE_LINK})`].join('\n'),
-      }
+      },
     );
