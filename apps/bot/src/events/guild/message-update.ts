@@ -1,11 +1,13 @@
 import {Client, Events, Message} from 'discord.js';
 import {emitMessageEdited} from '../../utils/message-edited-listener';
 import {preCheckCommand} from '../../utils/command-precheck';
+import isServerWhitelisted from '../../utils/whitelisted-servers-checker';
 
 export default <BotEvent>{
   eventName: Events.MessageUpdate,
   execute: async (client, oldMessage: Message, newMessage: Message) => {
     if (!newMessage.inGuild()) return;
+    if (!isServerWhitelisted(newMessage.guildId)) return;
     if (
       isBotSlashCommand(newMessage) &&
       isFirstUpdateAfterDeferred(oldMessage) &&
