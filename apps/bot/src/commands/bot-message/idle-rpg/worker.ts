@@ -1,5 +1,5 @@
 import {IDLE_FARM_ID} from '@idle-helper/constants';
-import messageReaders from '../../../lib/idle-farm/embed-readers';
+import messageReaders from '../../../lib/idle-farm/message-readers';
 import {infoService} from '../../../services/database/info.service';
 
 export default <BotMessage>{
