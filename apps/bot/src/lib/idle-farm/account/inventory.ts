@@ -4,6 +4,7 @@ import commandHelper from '../../idle-helper/command-helper';
 import {userService} from '../../../services/database/user.service';
 import {djsMessageHelper} from '../../discordjs/message';
 import embedProvider from '../../idle-helper/embeds';
+import toggleUserChecker from '../../idle-helper/toggle-checker/user';
 
 interface IIdleInventory {
   client: Client;
@@ -24,6 +25,10 @@ export const idleInventory = ({author, client, isSlashCommand, message, isCalc}:
     if (isIdleInventory({embed, author})) {
       event.stop();
       if (isCalc) {
+        const userToggle = await toggleUserChecker({
+          userId: author.id,
+        });
+        if (!userToggle?.calculator.inventory) return;
         const isAllow = await checkUser({author, channelId: message.channel.id, client});
         if (!isAllow) return;
         await commandHelper.calculator.inventory({
@@ -46,14 +51,6 @@ interface IUserChecker {
 const checkUser = async ({author, channelId, client}: IUserChecker) => {
   const userAccount = await userService.findUser({userId: author.id});
   let embed;
-  if (!userAccount) {
-    embed = embedProvider.howToRegister({
-      author,
-    });
-  }
-  if (!userAccount?.config.onOff) {
-    embed = embedProvider.turnOnAccount();
-  }
   if (!userAccount?.config.donorTier) {
     embed = embedProvider.setDonor();
   }

@@ -1,5 +1,5 @@
 import {PREFIX_COMMAND_TYPE} from '@idle-helper/constants';
-import messageReaders from '../../../lib/idle-farm/embed-readers';
+import commandHelper from '../../../lib/idle-helper/command-helper';
 
 export default <PrefixCommand>{
   name: 'test',
@@ -8,9 +8,10 @@ export default <PrefixCommand>{
   preCheck: {},
   execute: async (client, message) => {
     const fetched = await message.channel.messages.fetch('1142729395186966618');
-    const items = messageReaders.claim({
-      embed: fetched.embeds[0],
+    commandHelper.calculator.claim({
+      message: fetched,
+      client,
+      author: message.author,
     });
-    console.log(items);
   },
 };

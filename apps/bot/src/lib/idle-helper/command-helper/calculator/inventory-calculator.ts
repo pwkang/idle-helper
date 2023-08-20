@@ -32,6 +32,7 @@ export const _inventoryCalculator = async ({message, client, author}: IIdlonsCal
           marketItems,
           author,
           user: userAccount,
+          title: 'Idlons Calculator',
         }),
       ],
     },
@@ -56,6 +57,7 @@ export const _inventoryCalculator = async ({message, client, author}: IIdlonsCal
       marketItems,
       author,
       user: userAccount,
+      title: 'Idlons Calculator',
     });
     djsMessageHelper.edit({
       options: {

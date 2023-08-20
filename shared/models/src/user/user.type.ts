@@ -6,6 +6,11 @@ export interface IUserToggle extends Record<string, boolean | Record<string, boo
     claim: boolean;
   };
   raidHelper: boolean;
+  calculator: {
+    all: boolean;
+    claim: boolean;
+    inventory: boolean;
+  };
 }
 
 export interface IUserWorker {

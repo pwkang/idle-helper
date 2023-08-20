@@ -15,7 +15,7 @@ export default <PrefixCommand>{
       message,
       client,
       isSlashCommand: false,
-      isCalc: args[1]?.toLowerCase() === 'calc',
+      isCalc: ['calc', 'c'].some(keyword => keyword === args[1]?.toLowerCase()),
     });
   },
 };

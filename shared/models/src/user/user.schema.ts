@@ -25,6 +25,11 @@ export const userSchema = new Schema<IUser>({
       claim: {type: Boolean, default: true},
     },
     raidHelper: {type: Boolean, default: true},
+    calculator: {
+      all: {type: Boolean, default: true},
+      claim: {type: Boolean, default: false},
+      inventory: {type: Boolean, default: true},
+    },
   },
   username: String,
   workers: {

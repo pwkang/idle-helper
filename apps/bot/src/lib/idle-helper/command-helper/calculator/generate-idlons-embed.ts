@@ -11,6 +11,7 @@ interface IGenerateEmbed {
   marketItems: TMarketItems;
   author: User;
   user: IUser;
+  title?: string;
 }
 
 interface IItemInfo {
@@ -21,11 +22,11 @@ interface IItemInfo {
   lastUpdatedAt: Date;
 }
 
-export const generateEmbed = ({items, marketItems, author, user}: IGenerateEmbed) => {
+export const generateEmbed = ({items, marketItems, author, user, title}: IGenerateEmbed) => {
   const embed = new EmbedBuilder()
     .setColor(BOT_COLOR.embed)
     .setAuthor({
-      name: `${author.username} — idlons calculator`,
+      name: `${author.username} — ${title}`,
       iconURL: author.avatarURL() ?? undefined,
     });
   const itemsInfo: IItemInfo[] = [];
