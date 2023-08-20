@@ -26,7 +26,7 @@ export const idleInventory = ({author, client, isSlashCommand, message, isCalc}:
       if (isCalc) {
         const isAllow = await checkUser({author, channelId: message.channel.id, client});
         if (!isAllow) return;
-        await commandHelper.inventory.idlonsCalculator({
+        await commandHelper.calculator.inventory({
           message: collected,
           author,
           client,

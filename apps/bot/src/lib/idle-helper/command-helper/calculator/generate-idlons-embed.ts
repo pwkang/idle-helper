@@ -1,75 +1,10 @@
-import {Client, EmbedBuilder, Message, User} from 'discord.js';
-import embedReaders from '../../../idle-farm/embed-readers';
-import {BOT_COLOR, BOT_EMOJI, IDLE_FARM_DONOR_TIER, IDLE_FARM_ITEMS} from '@idle-helper/constants';
-import {createMessageEditedListener} from '../../../../utils/message-edited-listener';
-import {djsMessageHelper} from '../../../discordjs/message';
-import {infoService} from '../../../../services/database/info.service';
 import {TMarketItems} from '@idle-helper/models/dist/info/info.type';
-import {typedObjectEntries} from '@idle-helper/utils';
+import {EmbedBuilder, User} from 'discord.js';
 import {IUser} from '@idle-helper/models';
-import {userService} from '../../../../services/database/user.service';
+import {BOT_COLOR, BOT_EMOJI, IDLE_FARM_DONOR_TIER, IDLE_FARM_ITEMS} from '@idle-helper/constants';
+import {typedObjectEntries} from '@idle-helper/utils';
 
-interface IIdlonsCalculator {
-  message: Message;
-  author: User;
-  client: Client;
-}
-
-type IAllItems = Partial<Record<keyof typeof IDLE_FARM_ITEMS, number>>;
-
-export const _idlonsCalculator = async ({message, client, author}: IIdlonsCalculator) => {
-  let allItems: IAllItems = {};
-  const inventory = embedReaders.inventory({
-    embed: message.embeds[0],
-  });
-  const userAccount = await userService.findUser({userId: author.id});
-  if (!userAccount) return;
-  const marketItems = await infoService.getMarketItems();
-  allItems = {
-    ...inventory,
-  };
-  const sentMessage = await djsMessageHelper.send({
-    options: {
-      embeds: [
-        generateEmbed({
-          items: allItems,
-          marketItems,
-          author,
-          user: userAccount,
-        }),
-      ],
-    },
-    client,
-    channelId: message.channel.id,
-  });
-  const event = await createMessageEditedListener({
-    messageId: message.id,
-  });
-  if (!event || !sentMessage) return;
-  event.on('edited', (collected) => {
-    const embed = collected.embeds[0];
-    const updatedInventory = embedReaders.inventory({
-      embed,
-    });
-    allItems = {
-      ...allItems,
-      ...updatedInventory,
-    };
-    const updatedEmbed = generateEmbed({
-      items: allItems,
-      marketItems,
-      author,
-      user: userAccount,
-    });
-    djsMessageHelper.edit({
-      options: {
-        embeds: [updatedEmbed],
-      },
-      client,
-      message: sentMessage,
-    });
-  });
-};
+export type IAllItems = Partial<Record<keyof typeof IDLE_FARM_ITEMS, number>>;
 
 interface IGenerateEmbed {
   items: IAllItems;
@@ -86,7 +21,7 @@ interface IItemInfo {
   lastUpdatedAt: Date;
 }
 
-const generateEmbed = ({items, marketItems, author, user}: IGenerateEmbed) => {
+export const generateEmbed = ({items, marketItems, author, user}: IGenerateEmbed) => {
   const embed = new EmbedBuilder()
     .setColor(BOT_COLOR.embed)
     .setAuthor({

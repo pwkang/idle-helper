@@ -5,7 +5,7 @@ import {_userAccountHelper} from './user-account';
 import {_farmsHelper} from './farms';
 import {_guildSettingsHelper} from './guild-settings';
 import {_guildHelper} from './guild';
-import {_inventoryHelper} from './inventory';
+import {_calculatorHelper} from './calculator';
 
 const commandHelper = {
   toggle: _toggleHelper,
@@ -15,7 +15,7 @@ const commandHelper = {
   farms: _farmsHelper,
   guildSettings: _guildSettingsHelper,
   guild: _guildHelper,
-  inventory: _inventoryHelper,
+  calculator: _calculatorHelper,
 };
 
 export default commandHelper;
