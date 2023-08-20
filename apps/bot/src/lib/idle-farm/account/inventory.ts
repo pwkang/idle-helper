@@ -1,6 +1,10 @@
 import {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import commandHelper from '../../idle-helper/command-helper';
+import {userService} from '../../../services/database/user.service';
+import {djsMessageHelper} from '../../discordjs/message';
+import embedProvider from '../../idle-helper/embeds';
+import toggleUserChecker from '../../idle-helper/toggle-checker/user';
 
 interface IIdleInventory {
   client: Client;
@@ -19,28 +23,49 @@ export const idleInventory = ({author, client, isSlashCommand, message, isCalc}:
   if (!event) return;
   event.on('embed', async (embed, collected) => {
     if (isIdleInventory({embed, author})) {
+      event.stop();
       if (isCalc) {
-        await commandHelper.inventory.idlonsCalculator({
+        const userToggle = await toggleUserChecker({
+          userId: author.id,
+        });
+        if (!userToggle?.calculator.inventory) return;
+        const isAllow = await checkUser({author, channelId: message.channel.id, client});
+        if (!isAllow) return;
+        await commandHelper.calculator.inventory({
           message: collected,
           author,
           client,
         });
       }
-      event.stop();
     }
   });
   if (isSlashCommand) event.triggerCollect(message);
 };
 
-// interface IIdleInventorySuccess {
-//   message: Message;
-//   author: User;
-//   client: Client;
-// }
-//
-// const idleInventorySuccess = async ({message, author, client}: IIdleInventorySuccess) => {
-//
-// };
+interface IUserChecker {
+  author: User;
+  channelId: string;
+  client: Client;
+}
+
+const checkUser = async ({author, channelId, client}: IUserChecker) => {
+  const userAccount = await userService.findUser({userId: author.id});
+  let embed;
+  if (!userAccount?.config.donorTier) {
+    embed = embedProvider.setDonor();
+  }
+  if (embed) {
+    await djsMessageHelper.send({
+      options: {
+        embeds: [embed],
+      },
+      client,
+      channelId,
+    });
+  }
+  return !embed;
+
+};
 
 interface IChecker {
   author: User;

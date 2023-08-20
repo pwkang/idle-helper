@@ -4,6 +4,7 @@ import {_guildReader} from './guild';
 import {_guildListReader} from './guild-list';
 import {_marketReader} from './market';
 import {_inventoryReader} from './inventory';
+import {_claimReader} from './claim';
 
 const messageReaders = {
   worker: _workerReader,
@@ -12,6 +13,7 @@ const messageReaders = {
   guildList: _guildListReader,
   market: _marketReader,
   inventory: _inventoryReader,
+  claim: _claimReader,
 };
 
 export default messageReaders;

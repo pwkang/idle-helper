@@ -7,12 +7,13 @@ export default <BotEvent>{
   once: false,
   execute: async (client, message: Message) => {
     if (isBotSlashCommand(message) && isNotDeferred(message) && message.interaction?.user) {
+      const interactionUser = message.interaction.user;
       const messages = searchSlashMessages(client, message);
       if (!messages.size) return;
 
       for (const cmd of messages.values()) {
         const toExecute = await preCheckCommand({
-          author: message.author,
+          author: interactionUser,
           client,
           message,
           preCheck: cmd.preCheck,
@@ -20,7 +21,7 @@ export default <BotEvent>{
           channelId: message.channelId,
         });
         if (!toExecute) return;
-        await cmd.execute(client, message, message.interaction!.user);
+        await cmd.execute(client, message, interactionUser);
       }
     }
 

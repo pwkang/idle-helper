@@ -1,5 +1,10 @@
 import {userService} from '../../../../services/database/user.service';
-import {_toggleClaimReminder, _toggleRaidHelper} from './toggle-user-checker-list';
+import {
+  _toggleCalculatorClaim,
+  _toggleCalculatorInventory,
+  _toggleClaimReminder,
+  _toggleRaidHelper,
+} from './toggle-user-checker-list';
 
 interface IToggleUserChecker {
   userId: string;
@@ -16,6 +21,10 @@ const toggleUserChecker = async ({userId}: IToggleUserChecker) => {
       claim: _toggleClaimReminder({toggle: userToggle}),
     },
     raidHelper: _toggleRaidHelper({toggle: userToggle}),
+    calculator: {
+      claim: _toggleCalculatorClaim({toggle: userToggle}),
+      inventory: _toggleCalculatorInventory({toggle: userToggle}),
+    },
   };
 };
 

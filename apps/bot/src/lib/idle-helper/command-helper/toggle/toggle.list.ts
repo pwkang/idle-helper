@@ -18,8 +18,26 @@ const user = (userToggle: IUserToggle): IToggleEmbedsInfo[] => {
           path: 'toggle.reminder.claim',
           label: 'Claim Reminder',
         },
+        {
+          value: userToggle.calculator.all,
+          path: 'toggle.calculator.all',
+          label: 'Idlons Calculator',
+          children: [
+            {
+              value: userToggle.calculator.inventory,
+              path: 'toggle.calculator.inventory',
+              label: 'Inventory Calculator',
+            },
+            {
+              value: userToggle.calculator.claim,
+              path: 'toggle.calculator.claim',
+              label: 'Claim Calculator',
+            },
+          ],
+        },
       ],
     },
+
   ];
 };
 

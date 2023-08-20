@@ -11,3 +11,13 @@ interface IToggleRaidHelper {
 }
 
 export const _toggleRaidHelper = ({toggle}: IToggleRaidHelper) => toggle.raidHelper;
+
+interface IToggleCalculator {
+  toggle: IUserToggle;
+}
+
+export const _toggleCalculatorClaim = ({toggle}: IToggleCalculator) =>
+  toggle.calculator.all && toggle.calculator.claim;
+
+export const _toggleCalculatorInventory = ({toggle}: IToggleCalculator) =>
+  toggle.calculator.all && toggle.calculator.inventory;
