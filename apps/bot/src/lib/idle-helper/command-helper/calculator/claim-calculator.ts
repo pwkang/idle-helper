@@ -1,9 +1,9 @@
 import {Client, Message, User} from 'discord.js';
-import embedReaders from '../../../idle-farm/embed-readers';
 import {userService} from '../../../../services/database/user.service';
 import {infoService} from '../../../../services/database/info.service';
 import {generateEmbed} from './generate-idlons-embed';
 import {djsMessageHelper} from '../../../discordjs/message';
+import messageReaders from '../../../idle-farm/message-readers';
 
 interface IClaimCalculator {
   message: Message;
@@ -12,7 +12,7 @@ interface IClaimCalculator {
 }
 
 export const _claimCalculator = async ({author, client, message}: IClaimCalculator) => {
-  const items = embedReaders.claim({
+  const items = messageReaders.claim({
     embed: message.embeds[0],
   });
   const userAccount = await userService.findUser({
