@@ -3,9 +3,8 @@ import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-li
 import messageReaders from '../message-readers';
 import {userService} from '../../../services/database/user.service';
 import {IUser} from '@idle-helper/models';
-import {BOT_COLOR, BOT_EMOJI, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import {BOT_COLOR, BOT_EMOJI} from '@idle-helper/constants';
 import {djsMessageHelper} from '../../discordjs/message';
-import {typedObjectEntries} from '@idle-helper/utils';
 import {calcWorkerPower} from '../calculator/worker-power';
 import {dailyReminder} from '../../idle-helper/reminder/daily-reminder';
 import toggleUserChecker from '../../idle-helper/toggle-checker/user';
@@ -105,20 +104,17 @@ interface IGenerateEmbed {
   userWorkers: IUser['workers'];
 }
 
-const MAX_WORKERS = 6;
-
 const generateEmbed = ({userWorkers, raidMessage}: IGenerateEmbed) => {
   const raidInfo = messageReaders.raid({message: raidMessage});
   const {enemyFarms, workers} = raidInfo;
   const currentEnemy = enemyFarms.find((farm) => farm.health);
   const embed = new EmbedBuilder().setColor(BOT_COLOR.embed);
   const workersInfo: string[] = [];
-  for (const [key] of typedObjectEntries(IDLE_FARM_WORKER_TYPE).reverse()) {
-    if (workersInfo.length >= MAX_WORKERS) break;
-    const workerInfo = userWorkers[key];
+  for (const {type} of workers) {
+    const workerInfo = userWorkers[type];
     if (!workerInfo) continue;
     const power = calcWorkerPower({
-      type: key,
+      type,
       level: workerInfo.level,
       decimalPlace: 2,
     });
@@ -132,8 +128,8 @@ const generateEmbed = ({userWorkers, raidMessage}: IGenerateEmbed) => {
       atk: power,
       def: enemyPower,
     }) : '-';
-    const value = `${BOT_EMOJI.worker[key]} Lv ${workerInfo.level} | AT: ${power} | DMG: ${damage}`;
-    const isWorkerUsed = workers.find((w) => w.type === key)?.used;
+    const value = `${BOT_EMOJI.worker[type]} Lv ${workerInfo.level} | AT: ${power} | DMG: ${damage}`;
+    const isWorkerUsed = workers.find((w) => w.type === type)?.used;
     workersInfo.push(isWorkerUsed ? `~~${value}~~` : value);
   }
   embed.addFields({
