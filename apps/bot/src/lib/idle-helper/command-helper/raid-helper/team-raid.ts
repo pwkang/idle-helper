@@ -38,7 +38,7 @@ interface IGenerateMessageOptions {
   usersAccount: IUser[];
 }
 
-const generateMessageOptions = ({message, usersAccount}: IGenerateMessageOptions): BaseMessageOptions => {
+const generateMessageOptions = ({message}: IGenerateMessageOptions): BaseMessageOptions => {
   const raidInfo = messageReaders.teamRaid(message);
   const embed = new EmbedBuilder()
     .setColor(BOT_COLOR.embed)
