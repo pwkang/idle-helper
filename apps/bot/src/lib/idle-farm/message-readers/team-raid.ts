@@ -47,7 +47,6 @@ export const _teamRaidReader = (message: Message) => {
     const member: IMemberWorker[] = [];
     for (const button of row.components) {
       if (!(button instanceof ButtonComponent)) continue;
-      console.log(JSON.stringify({button}, null, 2));
       const type = typedObjectEntries(IDLE_FARM_WORKER_TYPE).find(([, value]) => button.emoji?.name === `${value}worker`)?.[0];
       const username = button.label;
       const used = button.disabled;

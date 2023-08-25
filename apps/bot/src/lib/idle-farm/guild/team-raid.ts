@@ -6,6 +6,7 @@ import {BOT_COLOR, BOT_EMOJI} from '@idle-helper/constants';
 import {typedObjectEntries} from '@idle-helper/utils';
 import {calcWorkerPower} from '../calculator/worker-power';
 import {djsMessageHelper} from '../../discordjs/message';
+import commandHelper from '../../idle-helper/command-helper';
 
 interface IIdleGuild {
   client: Client;
@@ -22,12 +23,24 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
     channelId: message.channel.id,
   });
   if (!event) return;
-  event.on('embed', async (embed) => {
+  const involvedUsers = [
+    message.author,
+    ...message.mentions.users.map(user => user),
+  ];
+  event.on('embed', async (embed, collected) => {
     if (isAbleToStart({embed})) {
       sendConfirmationMessage({
         channelId: message.channel.id,
         client,
-        users: message.mentions.users.map(user => user),
+        users: involvedUsers,
+      });
+    }
+    if (isTeamRaid(embed)) {
+      commandHelper.raid.teamRaid({
+        channelId: message.channel.id,
+        collected,
+        users: involvedUsers,
+        client,
       });
     }
   });
@@ -109,3 +122,5 @@ interface IIsAbleToStart {
 
 const isAbleToStart = ({embed}: IIsAbleToStart) =>
   embed.description?.includes('All players have to agree');
+
+const isTeamRaid = (embed: Embed) => embed.description?.includes('You are raiding');
