@@ -1,10 +1,10 @@
 import {Client, Message, User} from 'discord.js';
-import embedReaders from '../../../idle-farm/embed-readers';
 import {createMessageEditedListener} from '../../../../utils/message-edited-listener';
 import {djsMessageHelper} from '../../../discordjs/message';
 import {infoService} from '../../../../services/database/info.service';
 import {userService} from '../../../../services/database/user.service';
 import {generateEmbed, IAllItems} from './generate-idlons-embed';
+import messageReaders from '../../../idle-farm/message-readers';
 
 interface IIdlonsCalculator {
   message: Message;
@@ -15,7 +15,7 @@ interface IIdlonsCalculator {
 
 export const _inventoryCalculator = async ({message, client, author}: IIdlonsCalculator) => {
   let allItems: IAllItems = {};
-  const inventory = embedReaders.inventory({
+  const inventory = messageReaders.inventory({
     embed: message.embeds[0],
   });
   const userAccount = await userService.findUser({userId: author.id});
@@ -45,7 +45,7 @@ export const _inventoryCalculator = async ({message, client, author}: IIdlonsCal
   if (!event || !sentMessage) return;
   event.on('edited', (collected) => {
     const embed = collected.embeds[0];
-    const updatedInventory = embedReaders.inventory({
+    const updatedInventory = messageReaders.inventory({
       embed,
     });
     allItems = {

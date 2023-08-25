@@ -1,11 +1,13 @@
 import {Client, Events, Message} from 'discord.js';
 import {DEVS_ID, IDLE_FARM_ID, PREFIX, PREFIX_COMMAND_TYPE} from '@idle-helper/constants';
 import {preCheckCommand} from '../../utils/command-precheck';
+import isServerWhitelisted from '../../utils/whitelisted-servers-checker';
 
 export default <BotEvent>{
   eventName: Events.MessageCreate,
   once: false,
   execute: async (client, message: Message) => {
+    if (message.inGuild() && !isServerWhitelisted(message.guildId)) return;
     if (isBotSlashCommand(message) && isNotDeferred(message) && message.interaction?.user) {
       const interactionUser = message.interaction.user;
       const messages = searchSlashMessages(client, message);

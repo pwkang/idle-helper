@@ -1,6 +1,6 @@
 import {Client, Embed, EmbedBuilder, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
-import messageReaders from '../embed-readers';
+import messageReaders from '../message-readers';
 import {userService} from '../../../services/database/user.service';
 import {IUser} from '@idle-helper/models';
 import {BOT_COLOR, BOT_EMOJI, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
@@ -10,6 +10,7 @@ import {calcWorkerPower} from '../calculator/worker-power';
 import {dailyReminder} from '../../idle-helper/reminder/daily-reminder';
 import toggleUserChecker from '../../idle-helper/toggle-checker/user';
 import {createMessageEditedListener} from '../../../utils/message-edited-listener';
+import {calcWorkerDmg} from '../calculator/calcWorkerDmg';
 
 interface IIdleRaid {
   client: Client;
@@ -74,6 +75,7 @@ const idleRaidSuccess = async ({author, client, channelId, raidMessage}: IIdleWo
   if (!sentMessage) return;
   const event = await createMessageEditedListener({
     messageId: raidMessage.id,
+    timer: '5m',
   });
   event.on('edited', async (message) => {
     const guideEmbed = generateEmbed({
@@ -103,19 +105,34 @@ interface IGenerateEmbed {
   userWorkers: IUser['workers'];
 }
 
+const MAX_WORKERS = 6;
+
 const generateEmbed = ({userWorkers, raidMessage}: IGenerateEmbed) => {
   const raidInfo = messageReaders.raid({message: raidMessage});
   const {enemyFarms, workers} = raidInfo;
+  const currentEnemy = enemyFarms.find((farm) => farm.health);
   const embed = new EmbedBuilder().setColor(BOT_COLOR.embed);
   const workersInfo: string[] = [];
-  for (const worker of typedObjectEntries(IDLE_FARM_WORKER_TYPE).reverse()) {
-    const [key] = worker;
+  for (const [key] of typedObjectEntries(IDLE_FARM_WORKER_TYPE).reverse()) {
+    if (workersInfo.length >= MAX_WORKERS) break;
     const workerInfo = userWorkers[key];
     if (!workerInfo) continue;
-    const value = `${BOT_EMOJI.worker[key]} Lv ${workerInfo.level} | AT: ${calcWorkerPower({
+    const power = calcWorkerPower({
       type: key,
       level: workerInfo.level,
-    })}`;
+      decimalPlace: 2,
+    });
+    const enemyPower = currentEnemy ? calcWorkerPower({
+      type: currentEnemy.worker,
+      decimalPlace: 2,
+      level: currentEnemy.level,
+    }) : null;
+    const damage = enemyPower ? calcWorkerDmg({
+      type: 'player',
+      atk: power,
+      def: enemyPower,
+    }) : '-';
+    const value = `${BOT_EMOJI.worker[key]} Lv ${workerInfo.level} | AT: ${power} | DMG: ${damage}`;
     const isWorkerUsed = workers.find((w) => w.type === key)?.used;
     workersInfo.push(isWorkerUsed ? `~~${value}~~` : value);
   }
@@ -127,12 +144,15 @@ const generateEmbed = ({userWorkers, raidMessage}: IGenerateEmbed) => {
 
   const enemyFarmsInfo: string[] = [];
   for (const farm of enemyFarms) {
+    const isCurrentEnemy = farm.worker === currentEnemy?.worker;
     const {worker, level, health} = farm;
-    const value = `${BOT_EMOJI.worker[worker]}Lv ${level} | AT: ${calcWorkerPower({
+    const power = calcWorkerPower({
       type: worker,
       level,
-    })}`;
-    enemyFarmsInfo.push(health ? value : `~~${value}~~`);
+      decimalPlace: 2,
+    });
+    const value = `${BOT_EMOJI.worker[worker]}Lv ${level} | AT: ${power}`;
+    enemyFarmsInfo.push(health ? isCurrentEnemy ? `**${value}**` : value : `~~${value}~~`);
   }
   embed.addFields({
     name: `${BOT_EMOJI.other.farm} Enemy farms`,

@@ -3,7 +3,7 @@ import {guildService} from '../../../../services/database/guild.service';
 import messageFormatter from '../../../discordjs/message-formatter';
 import {IGuild} from '@idle-helper/models';
 import {createIdleFarmCommandListener} from '../../../../utils/idle-farm-command-listener';
-import embedReaders from '../../../idle-farm/embed-readers';
+import messageReaders from '../../../idle-farm/message-readers';
 import {djsMessageHelper} from '../../../discordjs/message';
 import {BOT_COLOR, IDLE_FARM_CLICKABLE_SLASH_COMMANDS} from '@idle-helper/constants';
 
@@ -61,7 +61,7 @@ export const _memberTracker = async ({
 
   event.on('embed', async (embed) => {
     if (!isGuildList({embed, guildName: guild.info.name})) return;
-    const info = embedReaders.guildList({embed});
+    const info = messageReaders.guildList({embed});
     await djsMessageHelper.send({
       channelId,
       client,

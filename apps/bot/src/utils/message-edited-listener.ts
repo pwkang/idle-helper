@@ -8,6 +8,7 @@ const messageEditedEvent = new EventEmitter();
 
 interface ICreateMessageEditedListener {
   messageId: string;
+  timer?: string;
 }
 
 type TEventTypes = {
@@ -18,7 +19,7 @@ type TExtraProps = {
   stop: () => void;
 };
 
-export const createMessageEditedListener = async ({messageId}: ICreateMessageEditedListener) => {
+export const createMessageEditedListener = async ({messageId, timer}: ICreateMessageEditedListener) => {
   await redisMessageEdited.register({
     messageId,
   });
@@ -29,7 +30,7 @@ export const createMessageEditedListener = async ({messageId}: ICreateMessageEdi
 
   const timeout = setTimeout(() => {
     clear();
-  }, ms('1m'));
+  }, ms(timer ?? '1m'));
 
   event.stop = () => {
     clear();

@@ -1,13 +1,15 @@
 import {BaseInteraction, Client, Events} from 'discord.js';
 import {preCheckCommand} from '../../utils/command-precheck';
+import isServerWhitelisted from '../../utils/whitelisted-servers-checker';
 
 export default <BotEvent>{
   eventName: Events.InteractionCreate,
   once: false,
   execute: async (client, interaction: BaseInteraction) => {
-    if (!interaction.guild) return;
+    if (!interaction.inGuild()) return;
+    if (!isServerWhitelisted(interaction.guildId)) return;
 
-    if (interaction.isChatInputCommand()) {
+    if (interaction.isChatInputCommand() && interaction.guild) {
       const command = searchSlashCommand(client, interaction);
 
       if (!command) return;

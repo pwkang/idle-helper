@@ -1,6 +1,6 @@
 import {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
-import messageReaders from '../embed-readers';
+import messageReaders from '../message-readers';
 import {userService} from '../../../services/database/user.service';
 import {dailyReminder} from '../../idle-helper/reminder/daily-reminder';
 

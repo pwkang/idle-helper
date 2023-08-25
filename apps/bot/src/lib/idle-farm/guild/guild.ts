@@ -1,6 +1,6 @@
 import {Client, Embed, Guild, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
-import messageReaders from '../embed-readers';
+import messageReaders from '../message-readers';
 import commandHelper from '../../idle-helper/command-helper';
 import {djsMessageHelper} from '../../discordjs/message';
 import {guildService} from '../../../services/database/guild.service';

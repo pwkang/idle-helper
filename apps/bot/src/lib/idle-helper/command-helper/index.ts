@@ -6,6 +6,7 @@ import {_farmsHelper} from './farms';
 import {_guildSettingsHelper} from './guild-settings';
 import {_guildHelper} from './guild';
 import {_calculatorHelper} from './calculator';
+import {_raidHelper} from './raid-helper';
 
 const commandHelper = {
   toggle: _toggleHelper,
@@ -16,6 +17,7 @@ const commandHelper = {
   guildSettings: _guildSettingsHelper,
   guild: _guildHelper,
   calculator: _calculatorHelper,
+  raid: _raidHelper,
 };
 
 export default commandHelper;

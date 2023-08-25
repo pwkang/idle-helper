@@ -1,7 +1,7 @@
 import {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import {createMessageEditedListener} from '../../../utils/message-edited-listener';
-import embedReaders from '../embed-readers';
+import messageReaders from '../message-readers';
 import {infoService} from '../../../services/database/info.service';
 
 interface IIdleMarket {
@@ -48,7 +48,7 @@ interface IMarketPageChanged {
 }
 
 const marketPageChanged = ({embed}: IMarketPageChanged) => {
-  const marketItems = embedReaders.market({
+  const marketItems = messageReaders.market({
     embed,
   });
   marketItems.forEach(item => {
