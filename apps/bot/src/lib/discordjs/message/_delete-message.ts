@@ -13,7 +13,7 @@ export default async function _deleteMessage({client, message}: DeleteMessagePro
     await message.delete();
   } catch (e: any) {
     logger({
-      message: e.rawError.message,
+      message: e.rawError?.message,
       variant: 'delete-message',
       logLevel: 'warn',
       clusterId: client.cluster?.id,

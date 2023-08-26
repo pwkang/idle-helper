@@ -23,7 +23,7 @@ export const _findGuildSlashCommand = async ({
     return data as ApplicationCommand;
   } catch (e: any) {
     logger({
-      message: e.rawError.message,
+      message: e.rawError?.message,
       variant: 'find-guild-slash-command',
       logLevel: 'error',
       clusterId: client.cluster?.id,

@@ -14,7 +14,7 @@ export default async function _editMessage({client, message, options}: EditMessa
     await message.edit(options);
   } catch (e: any) {
     logger({
-      message: e.rawError.message,
+      message: e.rawError?.message,
       variant: 'edit-message',
       logLevel: 'warn',
       clusterId: client.cluster?.id,

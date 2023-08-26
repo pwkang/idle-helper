@@ -20,7 +20,7 @@ export const _deleteGuildSlashCommand = async ({
     );
   } catch (e: any) {
     logger({
-      message: e.rawError.message,
+      message: e.rawError?.message,
       variant: 'delete-guild-slash-command',
       logLevel: 'error',
       clusterId: client.cluster?.id,

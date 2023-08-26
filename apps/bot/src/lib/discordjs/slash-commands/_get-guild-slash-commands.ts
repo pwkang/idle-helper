@@ -16,7 +16,7 @@ export const _getGuildSlashCommands = async ({guild, client}: IGetGuildSlashComm
     return data as ApplicationCommand[];
   } catch (e: any) {
     logger({
-      message: e.rawError.message,
+      message: e.rawError?.message,
       variant: 'get-guild-slash-commands',
       logLevel: 'error',
       clusterId: client.cluster?.id,
