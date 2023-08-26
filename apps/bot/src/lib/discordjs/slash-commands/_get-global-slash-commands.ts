@@ -14,7 +14,7 @@ export const _getGlobalSlashCommands = async ({client}: IGetGlobalSlashCommands)
     return data as ApplicationCommand[];
   } catch (e: any) {
     logger({
-      message: e.rawError.message,
+      message: e.rawError?.message,
       variant: 'get-global-slash-commands',
       logLevel: 'error',
       clusterId: client.cluster?.id,

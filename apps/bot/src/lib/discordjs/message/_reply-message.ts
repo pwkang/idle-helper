@@ -21,7 +21,7 @@ export default async function _replyMessage({message, options, client}: ReplyMes
       return await message.reply(options);
     } catch (error: any) {
       logger({
-        message: error.rawError.message,
+        message: error.rawError?.message,
         logLevel: 'warn',
         variant: 'replyMessage',
         clusterId: client.cluster?.id,

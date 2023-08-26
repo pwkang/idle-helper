@@ -13,9 +13,10 @@ interface IToggleUserChecker {
 export type IToggleUserCheckerReturnType = Awaited<ReturnType<typeof toggleUserChecker>>;
 
 const toggleUserChecker = async ({userId}: IToggleUserChecker) => {
-  const userToggle = await userService.getUserToggle({userId});
-  if (!userToggle) return null;
-
+  const userAccount = await userService.findUser({userId});
+  if (!userAccount?.toggle) return null;
+  const userToggle = userAccount.toggle;
+  
   return {
     reminder: {
       claim: _toggleClaimReminder({toggle: userToggle}),
