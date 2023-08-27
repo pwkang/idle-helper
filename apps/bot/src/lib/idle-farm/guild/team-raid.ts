@@ -31,7 +31,7 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
         server: message.guild,
         userId: message.author.id,
       });
-      if (!roles) return;
+      if (!roles?.size) return;
       if (roles.size > 1) {
         await djsMessageHelper.send({
           channelId: message.channel.id,
@@ -131,7 +131,7 @@ const generateConfirmationEmbed = ({authors, users}: IGenerateConfirmationEmbed)
         name: `${author.username} • ${totalPower}`,
         value: top3Workers
           .map(
-            (worker) => `${BOT_EMOJI.worker[worker.type]} Lv ${worker.level} | AT: ${worker.power}`
+            (worker) => `${BOT_EMOJI.worker[worker.type]} Lv ${worker.level} | AT: ${worker.power}`,
           )
           .join('\n'),
         inline: true,
