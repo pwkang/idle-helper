@@ -2,6 +2,7 @@ import {Client, Embed, Message, MessageCollector, TextChannel, User} from 'disco
 import {TypedEventEmitter} from './typed-event-emitter';
 import {IDLE_FARM_ID} from '@idle-helper/constants';
 import {createMessageEditedListener} from './message-edited-listener';
+import ms from 'ms';
 
 interface IIdleFarmCommandListener {
   client: Client;
@@ -36,8 +37,7 @@ export const createIdleFarmCommandListener = (
   if (!channel) return;
   let collector: MessageCollector | undefined;
   if (channel instanceof TextChannel) {
-    // const textChannel
-    collector = channel.createMessageCollector({time: 15000, filter});
+    collector = channel.createMessageCollector({time: ms('1m'), filter});
   }
   if (!collector) return;
   const event = new TypedEventEmitter<TEventTypes>() as TypedEventEmitter<TEventTypes> &

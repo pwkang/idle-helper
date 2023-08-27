@@ -10,13 +10,12 @@ import commandHelper from '../../idle-helper/command-helper';
 
 interface IIdleGuild {
   client: Client;
-  message: Message;
+  message: Message<true>;
   author: User;
   isSlashCommand?: boolean;
 }
 
 export const idleTeamRaid = async ({author, client, isSlashCommand, message}: IIdleGuild) => {
-  if (!message.inGuild() || !!message.mentions.users.size) return;
   const event = createIdleFarmCommandListener({
     author,
     client,
@@ -42,6 +41,12 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
         users: involvedUsers,
         client,
       });
+      event.stop();
+    }
+  });
+  event.on('content', async (content, collected) => {
+    if (isNotEnoughPlayer(collected) || hasOtherGuildMember(collected)) {
+      event.stop();
     }
   });
   if (isSlashCommand) event.triggerCollect(message);
@@ -57,6 +62,7 @@ export const sendConfirmationMessage = async ({channelId, client, users}: ISendC
   const usersAccount = await userService.getUsersById({
     userIds: users.map(user => user.id),
   });
+
   const embed = generateConfirmationEmbed({
     users: usersAccount,
     authors: users,
@@ -93,7 +99,7 @@ const generateConfirmationEmbed = ({authors, users}: IGenerateConfirmationEmbed)
           maxExp: worker.maxExp,
           farm: worker.farm,
           type,
-          power: calcWorkerPower({type, level: worker.level}),
+          power: calcWorkerPower({type, level: worker.level, decimalPlace: 3}),
         }))
         .sort((a, b) => b.power - a.power)
         .slice(0, 3);
@@ -107,7 +113,7 @@ const generateConfirmationEmbed = ({authors, users}: IGenerateConfirmationEmbed)
     } else {
       embed.addFields({
         name: author.username,
-        value: 'Workers not found',
+        value: 'Workers not registered',
         inline: true,
       });
     }
@@ -124,3 +130,7 @@ const isAbleToStart = ({embed}: IIsAbleToStart) =>
   embed.description?.includes('All players have to agree');
 
 const isTeamRaid = (embed: Embed) => embed.description?.includes('You are raiding');
+
+const isNotEnoughPlayer = (message: Message) => message.content.includes('you need at least 2 players');
+
+const hasOtherGuildMember = (message: Message) => message.content.includes('with players of your guild');

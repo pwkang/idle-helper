@@ -6,6 +6,12 @@ import {IUser} from '@idle-helper/models';
 import {djsMessageHelper} from '../../../discordjs/message';
 import {calcWorkerPower} from '../../../idle-farm/calculator/worker-power';
 import {calcOneShotPower} from '../../../idle-farm/calculator/one-show-power';
+import {calcWorkerDmg} from '../../../idle-farm/calculator/calcWorkerDmg';
+import {createMessageEditedListener} from '../../../../utils/message-edited-listener';
+import timestampHelper from '../../../discordjs/timestamp';
+import ms from 'ms';
+
+const TEAM_RAID_DURATION = ms('5m');
 
 interface ITeamRaidHelper {
   users: User[];
@@ -18,31 +24,54 @@ export const _teamRaidHelper = async ({client, channelId, users, collected}: ITe
   const usersAccount = await userService.getUsersById({
     userIds: users.map(user => user.id),
   });
+  const startTime = new Date();
 
   const messageOptions = generateMessageOptions({
     message: collected,
     usersAccount,
+    startTime,
   });
 
-  await djsMessageHelper.send({
+  const sentMessage = await djsMessageHelper.send({
     channelId,
     client,
     options: messageOptions,
   });
-
-
+  if (!sentMessage) return;
+  const event = await createMessageEditedListener({
+    messageId: collected.id,
+    timer: '5m',
+  });
+  if (!event) return;
+  event.on('edited', (newMessage) => {
+    const messageOptions = generateMessageOptions({
+      message: newMessage,
+      usersAccount,
+      startTime,
+    });
+    djsMessageHelper.edit({
+      client,
+      message: sentMessage,
+      options: messageOptions,
+    });
+  });
 };
 
 interface IGenerateMessageOptions {
   message: Message;
   usersAccount: IUser[];
+  startTime: Date;
 }
 
-const generateMessageOptions = ({message}: IGenerateMessageOptions): BaseMessageOptions => {
+
+const generateMessageOptions = ({message, usersAccount, startTime}: IGenerateMessageOptions): BaseMessageOptions => {
   const raidInfo = messageReaders.teamRaid(message);
   const embed = new EmbedBuilder()
     .setColor(BOT_COLOR.embed)
     .setTitle('Team Raid Helper');
+  const currentEnemy = raidInfo.enemies
+    .flatMap(enemy => enemy.flatMap(worker => worker))
+    .find(worker => worker.hp > 0);
 
   const mappedEnemies = [];
   for (const enemy of raidInfo.enemies) {
@@ -51,7 +80,7 @@ const generateMessageOptions = ({message}: IGenerateMessageOptions): BaseMessage
         type: worker.type,
         level: worker.level,
       });
-      const stats = `${BOT_EMOJI.worker[worker.type]} Lv ${worker.level} | DEF: ${calcOneShotPower({
+      const stats = `${BOT_EMOJI.worker[worker.type]} | DEF: ${calcOneShotPower({
         enemyPower,
         enemyHp: worker.maxHp,
         decimalPlace: 3,
@@ -64,6 +93,44 @@ const generateMessageOptions = ({message}: IGenerateMessageOptions): BaseMessage
     name: raidInfo.enemyGuild,
     value: mappedEnemies.join('\n'),
   });
+
+  for (const member of raidInfo.members) {
+    const user = usersAccount.find(user => user.username === member.username);
+    const workersInfo: string[] = [];
+    if (user) {
+      for (const workerInfo of member.workers) {
+
+        const worker = user.workers[workerInfo.type];
+        const workerPower = calcWorkerPower({
+          type: workerInfo.type,
+          level: worker.level,
+          decimalPlace: 3,
+        });
+        const enemyPower = currentEnemy ? calcWorkerPower({
+          type: currentEnemy.type,
+          level: currentEnemy.level,
+          decimalPlace: 3,
+        }) : null;
+        const damage = enemyPower ? calcWorkerDmg({
+          def: enemyPower,
+          atk: workerPower,
+          type: 'team',
+        }) : 0;
+        const stats = `${BOT_EMOJI.worker[workerInfo.type]} AT: ${workerPower} | DMG: ${damage}`;
+        workersInfo.push(workerInfo.used ? `~~${stats}~~` : stats);
+      }
+    } else {
+      workersInfo.push('Not registered');
+    }
+
+    embed.addFields({
+      name: member.username,
+      value: workersInfo.join('\n'),
+      inline: true,
+    });
+  }
+
+  embed.setDescription(`Timer: ${timestampHelper.relative({time: new Date(startTime.getTime() + TEAM_RAID_DURATION)})}`);
 
   return {
     embeds: [embed],

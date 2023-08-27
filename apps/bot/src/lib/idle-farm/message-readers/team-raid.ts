@@ -13,7 +13,11 @@ interface IEnemyWorker {
 interface IMemberWorker {
   type: ValuesOf<typeof IDLE_FARM_WORKER_TYPE>;
   used: boolean;
+}
+
+interface IPlayer {
   username: string;
+  workers: IMemberWorker[];
 }
 
 export const _teamRaidReader = (message: Message) => {
@@ -42,21 +46,30 @@ export const _teamRaidReader = (message: Message) => {
     enemies.push(workers);
   }
 
-  const members: IMemberWorker[][] = [];
+  const members: IPlayer[] = [];
   for (const row of components) {
-    const member: IMemberWorker[] = [];
     for (const button of row.components) {
       if (!(button instanceof ButtonComponent)) continue;
       const type = typedObjectEntries(IDLE_FARM_WORKER_TYPE).find(([, value]) => button.emoji?.name === `${value}worker`)?.[0];
-      const username = button.label;
+      const username = button.label!;
       const used = button.disabled;
-      member.push({
-        type: type!,
-        username: username!,
-        used,
-      });
+      const member = members.find(member => member.username === username);
+      if (member) {
+        member.workers.push({
+          type: type!,
+          used,
+        });
+      } else {
+        members.push({
+          username,
+          workers: [{
+            type: type!,
+            used,
+          }],
+        });
+      }
+
     }
-    members.push(member);
   }
 
   return {enemyGuild: enemyGuild!, enemies, members};

@@ -17,7 +17,7 @@ declare global {
   interface PrefixCommand {
     name: string;
     commands: string[];
-    execute: (client: Client, message: Message, args: string[]) => void | Promise<void>;
+    execute: (client: Client, message: Message<true>, args: string[]) => void | Promise<void>;
     preCheck: ICommandPreCheck;
     type: ValuesOf<typeof PREFIX_COMMAND_TYPE>;
   }

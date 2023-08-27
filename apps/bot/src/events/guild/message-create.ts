@@ -27,7 +27,7 @@ export default <BotEvent>{
       }
     }
 
-    if (isSentByUser(message)) {
+    if (isSentByUser(message) && message.inGuild()) {
       const result = searchCommand(client, message);
       if (!result) return;
 

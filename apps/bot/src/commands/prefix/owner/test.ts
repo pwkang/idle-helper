@@ -1,5 +1,6 @@
 import {PREFIX_COMMAND_TYPE} from '@idle-helper/constants';
-import {idleRaid} from '../../../lib/idle-farm/progress/raid';
+import commandHelper from '../../../lib/idle-helper/command-helper';
+import {sendConfirmationMessage} from '../../../lib/idle-farm/guild/team-raid';
 
 
 export default <PrefixCommand>{
@@ -9,27 +10,27 @@ export default <PrefixCommand>{
   preCheck: {},
   execute: async (client, message) => {
 
-    // const channel = await client.channels.fetch('1135513485837619200');
-    // if (!channel?.isTextBased()) return;
-    // const msg = await channel.messages.fetch('1144428380725448835');
-    //
-    //
-    // await commandHelper.raid.teamRaid({
-    //   client,
-    //   channelId: message.channel.id,
-    //   users: [
-    //     message.author,
-    //     ...message.mentions.users.map(user => user),
-    //   ],
-    //   collected: msg,
-    // });
+    const channel = await client.channels.fetch('1135513485837619200');
+    if (!channel?.isTextBased()) return;
+    const msg = await channel.messages.fetch('1144423364472098957');
+    
+    const involvedUsers = new Set([
+      message.author,
+      ...message.mentions.users.map(user => user),
+    ]);
 
-    const msg = await message.channel.messages.fetch('1144660209676079145');
-    idleRaid({
-      author: message.author,
+    sendConfirmationMessage({
+      channelId: message.channel.id,
       client,
-      isSlashCommand: true,
-      message: msg,
+      users: [...involvedUsers],
     });
+
+    await commandHelper.raid.teamRaid({
+      client,
+      channelId: message.channel.id,
+      users: [...involvedUsers],
+      collected: msg,
+    });
+
   },
 };
