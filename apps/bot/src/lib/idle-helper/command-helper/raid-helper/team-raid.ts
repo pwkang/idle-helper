@@ -101,27 +101,31 @@ const generateMessageOptions = ({
     if (user) {
       for (const workerInfo of member.workers) {
         const worker = user.workers[workerInfo.type];
-        const workerPower = calcWorkerPower({
-          type: workerInfo.type,
-          level: worker.level,
-          decimalPlace: 3,
-        });
-        const enemyPower = currentEnemy
-          ? calcWorkerPower({
+        if (worker) {
+          const workerPower = calcWorkerPower({
+            type: workerInfo.type,
+            level: worker.level,
+            decimalPlace: 3,
+          });
+          const enemyPower = currentEnemy
+            ? calcWorkerPower({
               type: currentEnemy.type,
               level: currentEnemy.level,
               decimalPlace: 3,
             })
-          : null;
-        const damage = enemyPower
-          ? calcWorkerDmg({
+            : null;
+          const damage = enemyPower
+            ? calcWorkerDmg({
               def: enemyPower,
               atk: workerPower,
               type: 'team',
             })
-          : 0;
-        const stats = `${BOT_EMOJI.worker[workerInfo.type]} AT: ${workerPower} | DMG: ${damage}`;
-        workersInfo.push(workerInfo.used ? `~~${stats}~~` : stats);
+            : 0;
+          const stats = `${BOT_EMOJI.worker[workerInfo.type]} AT: ${workerPower} | DMG: ${damage}`;
+          workersInfo.push(workerInfo.used ? `~~${stats}~~` : stats);
+        } else {
+          workersInfo.push(`${BOT_EMOJI.worker[workerInfo.type]} ??`);
+        }
       }
     } else {
       workersInfo.push('Not registered');
@@ -135,7 +139,7 @@ const generateMessageOptions = ({
   }
 
   embed.setDescription(
-    `Timer: ${timestampHelper.relative({time: new Date(startTime.getTime() + TEAM_RAID_DURATION)})}`
+    `Timer: ${timestampHelper.relative({time: new Date(startTime.getTime() + TEAM_RAID_DURATION)})}`,
   );
 
   return {
