@@ -101,6 +101,7 @@ const generateMessageOptions = ({
     if (user) {
       for (const workerInfo of member.workers) {
         const worker = user.workers[workerInfo.type];
+        let stats = '';
         if (worker) {
           const workerPower = calcWorkerPower({
             type: workerInfo.type,
@@ -121,11 +122,11 @@ const generateMessageOptions = ({
               type: 'team',
             })
             : 0;
-          const stats = `${BOT_EMOJI.worker[workerInfo.type]} AT: ${workerPower} | DMG: ${damage}`;
-          workersInfo.push(workerInfo.used ? `~~${stats}~~` : stats);
+          stats = `${BOT_EMOJI.worker[workerInfo.type]} AT: ${workerPower} | DMG: ${damage}`;
         } else {
-          workersInfo.push(`${BOT_EMOJI.worker[workerInfo.type]} ??`);
+          stats = `${BOT_EMOJI.worker[workerInfo.type]} ??`;
         }
+        workersInfo.push(workerInfo.used ? `~~${stats}~~` : stats);
       }
     } else {
       workersInfo.push('Not registered');
