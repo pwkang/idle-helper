@@ -8,7 +8,7 @@ export default <BotEvent>{
   once: false,
   execute: async (client, message: Message) => {
     if (message.inGuild() && !isServerWhitelisted(message.guildId)) return;
-    if (isBotSlashCommand(message) && isNotDeferred(message) && message.interaction?.user) {
+    if (isBotSlashCommand(message) && isNotDeferred(message) && message.interaction?.user && message.inGuild()) {
       const interactionUser = message.interaction.user;
       const messages = searchSlashMessages(client, message);
       if (!messages.size) return;
@@ -44,7 +44,7 @@ export default <BotEvent>{
       await result.command.execute(client, message, result.args);
     }
 
-    if (isSentByBot(message)) {
+    if (isSentByBot(message) && message.inGuild()) {
       const commands = searchBotMatchedCommands(client, message);
       if (!commands.size) return;
 
@@ -145,7 +145,7 @@ const isSentByBot = (message: Message) => message.author.bot;
 
 const isNotDeferred = (message: Message) => !(message.content === '' && !message.embeds.length);
 
-const searchBotMatchedCommands = (client: Client, message: Message) =>
+const searchBotMatchedCommands = (client: Client, message: Message<true>) =>
   client.botMessages.filter((cmd) => message.author.id === cmd.bot && cmd.match(message));
 
 interface IGenerateArgs {

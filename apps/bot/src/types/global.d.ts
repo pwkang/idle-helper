@@ -53,14 +53,14 @@ declare global {
     commandName: string[];
     bot: ValuesOf<typeof SLASH_MESSAGE_BOT_TYPE>;
     preCheck: ICommandPreCheck;
-    execute: (client: Client, message: Message, author: User) => Promise<void>;
+    execute: (client: Client, message: Message<true>, author: User) => Promise<void>;
   }
 
   interface BotMessage {
     name: string;
-    match: (message: Message) => boolean;
+    match: (message: Message<true>) => boolean;
     bot: string;
-    execute: (client: Client, message: Message) => Promise<void>;
+    execute: (client: Client, message: Message<true>) => Promise<void>;
   }
 
   interface BotEvent {

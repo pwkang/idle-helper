@@ -1,5 +1,6 @@
 export interface IGuildToggle {
   teamRaid: {
+    helper: boolean;
     reminder: boolean;
   };
 }

@@ -10,6 +10,7 @@ export const guildSchema = new Schema<IGuild>({
   leaderId: String,
   toggle: {
     teamRaid: {
+      helper: {type: Boolean, default: true},
       reminder: {type: Boolean, default: true},
     },
   },

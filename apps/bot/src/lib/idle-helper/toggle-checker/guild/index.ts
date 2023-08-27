@@ -1,5 +1,5 @@
 import {guildService} from '../../../../services/database/guild.service';
-import {_toggleTeamRaidReminder} from './toggle-user-checker-list';
+import {_toggleTeamRaidHelper, _toggleTeamRaidReminder} from './toggle-user-checker-list';
 
 interface IToggleGuildChecker {
   serverId: string;
@@ -14,6 +14,7 @@ const toggleGuildChecker = async ({guildRoleId, serverId}: IToggleGuildChecker) 
 
   return {
     teamRaid: {
+      helper: _toggleTeamRaidHelper({toggle: guild.toggle}),
       reminder: _toggleTeamRaidReminder({toggle: guild.toggle}),
     },
   };

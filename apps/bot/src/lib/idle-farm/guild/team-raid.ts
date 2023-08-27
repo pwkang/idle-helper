@@ -7,6 +7,7 @@ import {typedObjectEntries} from '@idle-helper/utils';
 import {calcWorkerPower} from '../calculator/worker-power';
 import {djsMessageHelper} from '../../discordjs/message';
 import commandHelper from '../../idle-helper/command-helper';
+import toggleGuildChecker from '../../idle-helper/toggle-checker/guild';
 
 interface IIdleGuild {
   client: Client;
@@ -28,14 +29,37 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
   ];
   event.on('embed', async (embed, collected) => {
     if (isAbleToStart({embed})) {
-      sendConfirmationMessage({
+      const roles = await commandHelper.guild.getUserGuildRoles({
+        client,
+        server: message.guild,
+        userId: message.author.id,
+      });
+      if (!roles) return;
+      if (roles.size > 1) {
+        await djsMessageHelper.send({
+          channelId: message.channel.id,
+          client,
+          options: {
+            embeds: [commandHelper.guild.renderMultipleGuildEmbed(roles)],
+          },
+        });
+        return event.stop();
+      }
+      const guildRoleId = roles.first()!.id;
+      const toggleGuild = await toggleGuildChecker({
+        guildRoleId,
+        serverId: message.guild.id,
+      });
+      if (!toggleGuild?.teamRaid.helper) return event.stop();
+
+      await sendConfirmationMessage({
         channelId: message.channel.id,
         client,
         users: involvedUsers,
       });
     }
     if (isTeamRaid(embed)) {
-      commandHelper.raid.teamRaid({
+      await commandHelper.raid.teamRaid({
         channelId: message.channel.id,
         collected,
         users: involvedUsers,
@@ -44,13 +68,14 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
       event.stop();
     }
   });
-  event.on('content', async (content, collected) => {
+  event.on('content', async (_, collected) => {
     if (isNotEnoughPlayer(collected) || hasOtherGuildMember(collected)) {
       event.stop();
     }
   });
   if (isSlashCommand) event.triggerCollect(message);
 };
+
 
 interface ISendConfirmationMessage {
   channelId: string;

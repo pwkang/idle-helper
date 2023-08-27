@@ -49,6 +49,11 @@ const guild = (guildToggle: IGuildToggle): IToggleEmbedsInfo[] => {
       inline: true,
       children: [
         {
+          value: guildToggle.teamRaid.helper,
+          label: 'Team Raid Helper',
+          path: 'toggle.teamRaid.helper',
+        },
+        {
           value: guildToggle.teamRaid.reminder,
           path: 'toggle.teamRaid.reminder',
           label: 'Team Raid Reminder',
