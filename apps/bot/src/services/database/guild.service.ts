@@ -186,7 +186,7 @@ const updateToggle = async ({serverId, roleId, query}: IUpdateToggle): Promise<I
     query,
     {
       new: true,
-    },
+    }
   );
   return guild ?? null;
 };
@@ -209,7 +209,7 @@ const resetToggle = async ({serverId, roleId}: IResetToggle): Promise<IGuild | n
     },
     {
       new: true,
-    },
+    }
   );
   return guild ?? null;
 };
@@ -228,7 +228,7 @@ const registerUserToGuild = async ({serverId, roleId, userId}: IRegisterToGuild)
       membersId: {$in: [userId]},
     },
     {$pull: {membersId: userId}},
-    {new: true},
+    {new: true}
   );
 };
 

@@ -1,4 +1,11 @@
-import {ActionRowBuilder, BaseMessageOptions, ButtonBuilder, ButtonStyle, EmbedBuilder, User} from 'discord.js';
+import {
+  ActionRowBuilder,
+  BaseMessageOptions,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+  User,
+} from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
 import {BOT_COLOR, IDLE_FARM_DONOR_TIER} from '@idle-helper/constants';
 
@@ -34,10 +41,22 @@ export const _setDonor = ({author}: ISetDonor) => {
 };
 
 const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-  new ButtonBuilder().setCustomId(IDLE_FARM_DONOR_TIER.nonDonor).setLabel('Non-donor').setStyle(ButtonStyle.Primary),
-  new ButtonBuilder().setCustomId(IDLE_FARM_DONOR_TIER.common).setLabel('Common').setStyle(ButtonStyle.Primary),
-  new ButtonBuilder().setCustomId(IDLE_FARM_DONOR_TIER.talented).setLabel('Talented').setStyle(ButtonStyle.Primary),
-  new ButtonBuilder().setCustomId(IDLE_FARM_DONOR_TIER.wise).setLabel('Wise +').setStyle(ButtonStyle.Primary),
+  new ButtonBuilder()
+    .setCustomId(IDLE_FARM_DONOR_TIER.nonDonor)
+    .setLabel('Non-donor')
+    .setStyle(ButtonStyle.Primary),
+  new ButtonBuilder()
+    .setCustomId(IDLE_FARM_DONOR_TIER.common)
+    .setLabel('Common')
+    .setStyle(ButtonStyle.Primary),
+  new ButtonBuilder()
+    .setCustomId(IDLE_FARM_DONOR_TIER.talented)
+    .setLabel('Talented')
+    .setStyle(ButtonStyle.Primary),
+  new ButtonBuilder()
+    .setCustomId(IDLE_FARM_DONOR_TIER.wise)
+    .setLabel('Wise +')
+    .setStyle(ButtonStyle.Primary)
 );
 
 const RESPONSE_MSG = {

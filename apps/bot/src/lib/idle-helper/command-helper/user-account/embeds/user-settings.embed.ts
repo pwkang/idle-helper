@@ -48,7 +48,9 @@ export const _getUserSettingsEmbed = ({userProfile, author}: IGetUserSettingsEmb
     },
     {
       icon: BOT_EMOJI.other.idleCoin,
-      value: `Donor tier: **${DONOR_TIER_LABEL[userProfile.config.donorTier ?? IDLE_FARM_DONOR_TIER.nonDonor]}**`,
+      value: `Donor tier: **${
+        DONOR_TIER_LABEL[userProfile.config.donorTier ?? IDLE_FARM_DONOR_TIER.nonDonor]
+      }**`,
     },
   ];
 

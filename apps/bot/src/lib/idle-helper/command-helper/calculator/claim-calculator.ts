@@ -34,5 +34,4 @@ export const _claimCalculator = async ({author, client, message}: IClaimCalculat
     client,
     channelId: message.channel.id,
   });
-
 };

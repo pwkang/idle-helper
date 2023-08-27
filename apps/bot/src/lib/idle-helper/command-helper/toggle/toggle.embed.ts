@@ -32,7 +32,7 @@ export const renderEmbed = ({embedsInfo}: IGetToggleEmbed): EmbedBuilder => {
     renderFieldValue({
       info,
       index,
-    }),
+    })
   );
   embed.addFields(fields);
   return embed;

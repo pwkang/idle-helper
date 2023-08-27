@@ -16,7 +16,7 @@ const toggleUserChecker = async ({userId}: IToggleUserChecker) => {
   const userAccount = await userService.findUser({userId});
   if (!userAccount?.toggle) return null;
   const userToggle = userAccount.toggle;
-  
+
   return {
     reminder: {
       claim: _toggleClaimReminder({toggle: userToggle}),

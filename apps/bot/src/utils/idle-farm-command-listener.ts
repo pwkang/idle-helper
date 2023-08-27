@@ -27,12 +27,11 @@ type TExtraProps = {
 
 const filter = (m: Message) => m.author.id === IDLE_FARM_ID;
 
-export const createIdleFarmCommandListener = (
-  {
-    channelId,
-    client,
-    author,
-  }: IIdleFarmCommandListener) => {
+export const createIdleFarmCommandListener = ({
+  channelId,
+  client,
+  author,
+}: IIdleFarmCommandListener) => {
   const channel = client.channels.cache.get(channelId);
   if (!channel) return;
   let collector: MessageCollector | undefined;
@@ -131,14 +130,13 @@ function isUserSpamming({author, collected}: IChecker) {
   const embed = collected.embeds[0];
   if (!embed) return false;
   return (
-    embed.author?.name === author.username && embed.fields[0]?.name.includes('please don\'t spam')
+    embed.author?.name === author.username && embed.fields[0]?.name.includes("please don't spam")
   );
 }
 
 const isLoadingContent = ({collected}: IChecker) =>
   (collected.content === '' && collected.embeds.length === 0) ||
   collected.content === 'loading the guild member list...';
-
 
 function isUserInCommand({author, collected}: IChecker) {
   return (

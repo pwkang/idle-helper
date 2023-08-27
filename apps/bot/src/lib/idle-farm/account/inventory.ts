@@ -14,7 +14,13 @@ interface IIdleInventory {
   isCalc?: boolean;
 }
 
-export const idleInventory = ({author, client, isSlashCommand, message, isCalc}: IIdleInventory) => {
+export const idleInventory = ({
+  author,
+  client,
+  isSlashCommand,
+  message,
+  isCalc,
+}: IIdleInventory) => {
   const event = createIdleFarmCommandListener({
     author,
     client,
@@ -64,7 +70,6 @@ const checkUser = async ({author, channelId, client}: IUserChecker) => {
     });
   }
   return !embed;
-
 };
 
 interface IChecker {

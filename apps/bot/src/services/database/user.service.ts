@@ -1,6 +1,10 @@
 import {mongoClient} from '@idle-helper/services';
 import {IUser, IUserToggle, IUserWorker, userSchema} from '@idle-helper/models';
-import {IDLE_FARM_DONOR_TIER, IDLE_FARM_FARM_TYPE, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import {
+  IDLE_FARM_DONOR_TIER,
+  IDLE_FARM_FARM_TYPE,
+  IDLE_FARM_WORKER_TYPE,
+} from '@idle-helper/constants';
 import {UpdateQuery} from 'mongoose';
 
 const dbUser = mongoClient.model<IUser>('users', userSchema);
@@ -85,7 +89,7 @@ const claimFarm = async ({userId}: IClaimFarm): Promise<IUser | null> => {
     },
     {
       new: true,
-    },
+    }
   );
 
   return user ?? null;
@@ -123,7 +127,7 @@ const saveUserWorkers = async ({userId, workers}: ISaveUserWorkers): Promise<IUs
     },
     {
       new: true,
-    },
+    }
   );
   return user ?? null;
 };
@@ -155,7 +159,7 @@ const setClaimReminders = async ({
     },
     {
       new: true,
-    },
+    }
   );
   return user ?? null;
 };
@@ -178,7 +182,7 @@ const updateReminderChannel = async ({
     },
     {
       new: true,
-    },
+    }
   );
   return user ?? null;
 };
@@ -218,7 +222,7 @@ const resetUserToggle = async ({userId}: IResetUserToggle): Promise<IUser | null
     },
     {
       new: true,
-    },
+    }
   );
   return user ?? null;
 };
@@ -251,10 +255,9 @@ const updateIdleFarmDonorTier = async ({tier, userId}: IUpdateIdleFarmDonorTier)
     },
     {
       new: true,
-    },
+    }
   );
   return user ?? null;
-
 };
 export const userService = {
   registerUser,

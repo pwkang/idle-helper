@@ -23,12 +23,10 @@ interface IItemInfo {
 }
 
 export const generateEmbed = ({items, marketItems, author, user, title}: IGenerateEmbed) => {
-  const embed = new EmbedBuilder()
-    .setColor(BOT_COLOR.embed)
-    .setAuthor({
-      name: `${author.username} — ${title}`,
-      iconURL: author.avatarURL() ?? undefined,
-    });
+  const embed = new EmbedBuilder().setColor(BOT_COLOR.embed).setAuthor({
+    name: `${author.username} — ${title}`,
+    iconURL: author.avatarURL() ?? undefined,
+  });
   const itemsInfo: IItemInfo[] = [];
   const taxRate = TAX_RATE[user.config.donorTier];
   typedObjectEntries(items).map(([key, value]) => {
@@ -46,19 +44,27 @@ export const generateEmbed = ({items, marketItems, author, user, title}: IGenera
   for (let i = 0; i < itemsInfo.length; i += 15) {
     embed.addFields({
       name: '\u200b',
-      value: itemsInfo.slice(i, i + 15).map(item => {
-        return `${item.emoji} **${item.name}**: \`${item.totalPrice.toLocaleString()}\`${item.isOverstocked ? ' :warning:' : ''}`;
-      }).join('\n'),
+      value: itemsInfo
+        .slice(i, i + 15)
+        .map((item) => {
+          return `${item.emoji} **${item.name}**: \`${item.totalPrice.toLocaleString()}\`${
+            item.isOverstocked ? ' :warning:' : ''
+          }`;
+        })
+        .join('\n'),
       inline: true,
     });
   }
-  const oldestUpdatedDate = itemsInfo.sort((a, b) => a.lastUpdatedAt.getTime() - b.lastUpdatedAt.getTime())[0]?.lastUpdatedAt;
+  const oldestUpdatedDate = itemsInfo.sort(
+    (a, b) => a.lastUpdatedAt.getTime() - b.lastUpdatedAt.getTime()
+  )[0]?.lastUpdatedAt;
   embed.setDescription(`Total value: **${totalValue.toLocaleString()}** ${BOT_EMOJI.other.idlon} `);
   embed.setFooter({
-    text: `Tax: ${TAX_RATE_LABEL[user.config.donorTier]} | Last updated${oldestUpdatedDate ? '' : ': N/A'}`,
+    text: `Tax: ${TAX_RATE_LABEL[user.config.donorTier]} | Last updated${
+      oldestUpdatedDate ? '' : ': N/A'
+    }`,
   });
-  if (oldestUpdatedDate)
-    embed.setTimestamp(oldestUpdatedDate);
+  if (oldestUpdatedDate) embed.setTimestamp(oldestUpdatedDate);
   return embed;
 };
 

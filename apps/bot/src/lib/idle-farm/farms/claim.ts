@@ -73,7 +73,6 @@ const idleClaimSuccess = async ({author, message, client}: IIdleClaimSuccess) =>
   });
 };
 
-
 interface IUserChecker {
   author: User;
   channelId: string;
@@ -96,9 +95,7 @@ const checkUser = async ({author, channelId, client}: IUserChecker) => {
     });
   }
   return !embed;
-
 };
-
 
 const isIdleClaimSuccess = ({author, embed}: IMessageEmbedChecker) =>
   embed.author?.name === `${author.username} — claim`;

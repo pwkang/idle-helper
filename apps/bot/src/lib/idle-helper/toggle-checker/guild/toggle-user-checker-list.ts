@@ -7,5 +7,4 @@ interface IToggleTeamRaidReminder {
 export const _toggleTeamRaidReminder = ({toggle}: IToggleTeamRaidReminder) =>
   toggle.teamRaid.reminder;
 
-export const _toggleTeamRaidHelper = ({toggle}: IToggleTeamRaidReminder) =>
-  toggle.teamRaid.helper;
+export const _toggleTeamRaidHelper = ({toggle}: IToggleTeamRaidReminder) => toggle.teamRaid.helper;

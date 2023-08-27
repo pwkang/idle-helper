@@ -22,7 +22,7 @@ interface ITeamRaidHelper {
 
 export const _teamRaidHelper = async ({client, channelId, users, collected}: ITeamRaidHelper) => {
   const usersAccount = await userService.getUsersById({
-    userIds: users.map(user => user.id),
+    userIds: users.map((user) => user.id),
   });
   const startTime = new Date();
 
@@ -63,15 +63,16 @@ interface IGenerateMessageOptions {
   startTime: Date;
 }
 
-
-const generateMessageOptions = ({message, usersAccount, startTime}: IGenerateMessageOptions): BaseMessageOptions => {
+const generateMessageOptions = ({
+  message,
+  usersAccount,
+  startTime,
+}: IGenerateMessageOptions): BaseMessageOptions => {
   const raidInfo = messageReaders.teamRaid(message);
-  const embed = new EmbedBuilder()
-    .setColor(BOT_COLOR.embed)
-    .setTitle('Team Raid Helper');
+  const embed = new EmbedBuilder().setColor(BOT_COLOR.embed).setTitle('Team Raid Helper');
   const currentEnemy = raidInfo.enemies
-    .flatMap(enemy => enemy.flatMap(worker => worker))
-    .find(worker => worker.hp > 0);
+    .flatMap((enemy) => enemy.flatMap((worker) => worker))
+    .find((worker) => worker.hp > 0);
 
   const mappedEnemies = [];
   for (const enemy of raidInfo.enemies) {
@@ -95,27 +96,30 @@ const generateMessageOptions = ({message, usersAccount, startTime}: IGenerateMes
   });
 
   for (const member of raidInfo.members) {
-    const user = usersAccount.find(user => user.username === member.username);
+    const user = usersAccount.find((user) => user.username === member.username);
     const workersInfo: string[] = [];
     if (user) {
       for (const workerInfo of member.workers) {
-
         const worker = user.workers[workerInfo.type];
         const workerPower = calcWorkerPower({
           type: workerInfo.type,
           level: worker.level,
           decimalPlace: 3,
         });
-        const enemyPower = currentEnemy ? calcWorkerPower({
-          type: currentEnemy.type,
-          level: currentEnemy.level,
-          decimalPlace: 3,
-        }) : null;
-        const damage = enemyPower ? calcWorkerDmg({
-          def: enemyPower,
-          atk: workerPower,
-          type: 'team',
-        }) : 0;
+        const enemyPower = currentEnemy
+          ? calcWorkerPower({
+              type: currentEnemy.type,
+              level: currentEnemy.level,
+              decimalPlace: 3,
+            })
+          : null;
+        const damage = enemyPower
+          ? calcWorkerDmg({
+              def: enemyPower,
+              atk: workerPower,
+              type: 'team',
+            })
+          : 0;
         const stats = `${BOT_EMOJI.worker[workerInfo.type]} AT: ${workerPower} | DMG: ${damage}`;
         workersInfo.push(workerInfo.used ? `~~${stats}~~` : stats);
       }
@@ -130,7 +134,9 @@ const generateMessageOptions = ({message, usersAccount, startTime}: IGenerateMes
     });
   }
 
-  embed.setDescription(`Timer: ${timestampHelper.relative({time: new Date(startTime.getTime() + TEAM_RAID_DURATION)})}`);
+  embed.setDescription(
+    `Timer: ${timestampHelper.relative({time: new Date(startTime.getTime() + TEAM_RAID_DURATION)})}`
+  );
 
   return {
     embeds: [embed],

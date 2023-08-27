@@ -118,16 +118,20 @@ const generateEmbed = ({userWorkers, raidMessage}: IGenerateEmbed) => {
       level: workerInfo.level,
       decimalPlace: 2,
     });
-    const enemyPower = currentEnemy ? calcWorkerPower({
-      type: currentEnemy.worker,
-      decimalPlace: 2,
-      level: currentEnemy.level,
-    }) : null;
-    const damage = enemyPower ? calcWorkerDmg({
-      type: 'player',
-      atk: power,
-      def: enemyPower,
-    }) : '-';
+    const enemyPower = currentEnemy
+      ? calcWorkerPower({
+          type: currentEnemy.worker,
+          decimalPlace: 2,
+          level: currentEnemy.level,
+        })
+      : null;
+    const damage = enemyPower
+      ? calcWorkerDmg({
+          type: 'player',
+          atk: power,
+          def: enemyPower,
+        })
+      : '-';
     const value = `${BOT_EMOJI.worker[type]} Lv ${workerInfo.level} | AT: ${power} | DMG: ${damage}`;
     const isWorkerUsed = workers.find((w) => w.type === type)?.used;
     workersInfo.push(isWorkerUsed ? `~~${value}~~` : value);
@@ -148,7 +152,7 @@ const generateEmbed = ({userWorkers, raidMessage}: IGenerateEmbed) => {
       decimalPlace: 2,
     });
     const value = `${BOT_EMOJI.worker[worker]}Lv ${level} | AT: ${power}`;
-    enemyFarmsInfo.push(health ? isCurrentEnemy ? `**${value}**` : value : `~~${value}~~`);
+    enemyFarmsInfo.push(health ? (isCurrentEnemy ? `**${value}**` : value) : `~~${value}~~`);
   }
   embed.addFields({
     name: `${BOT_EMOJI.other.farm} Enemy farms`,

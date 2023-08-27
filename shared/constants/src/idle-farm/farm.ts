@@ -16,5 +16,4 @@ export const IDLE_FARM_FARM_TYPE = {
   ironSmelter: 'iron smelter',
   copperSmelter: 'copper smelter',
   aluminumSmelter: 'aluminum smelter',
-
 } as const;

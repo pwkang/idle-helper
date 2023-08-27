@@ -13,8 +13,10 @@ const transformWorkerPower = (workerPower?: Record<string, number>) => {
 const transformMarketItem = (marketItem?: any): IMarketItem => {
   return {
     price: marketItem.price === undefined ? 0 : Number(marketItem.price),
-    isOverstocked: marketItem.isOverstocked === undefined ? false : Boolean(marketItem.isOverstocked),
-    lastUpdatedAt: marketItem.lastUpdatedAt === undefined ? new Date() : new Date(marketItem.lastUpdatedAt),
+    isOverstocked:
+      marketItem.isOverstocked === undefined ? false : Boolean(marketItem.isOverstocked),
+    lastUpdatedAt:
+      marketItem.lastUpdatedAt === undefined ? new Date() : new Date(marketItem.lastUpdatedAt),
   };
 };
 

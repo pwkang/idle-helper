@@ -19,7 +19,10 @@ type TExtraProps = {
   stop: () => void;
 };
 
-export const createMessageEditedListener = async ({messageId, timer}: ICreateMessageEditedListener) => {
+export const createMessageEditedListener = async ({
+  messageId,
+  timer,
+}: ICreateMessageEditedListener) => {
   await redisMessageEdited.register({
     messageId,
   });

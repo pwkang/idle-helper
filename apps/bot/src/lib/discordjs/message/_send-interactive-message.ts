@@ -13,7 +13,7 @@ import djsInteractionHelper from '../interaction';
 
 type TEventCB = (
   collected: BaseInteraction | StringSelectMenuInteraction,
-  customId: string,
+  customId: string
 ) => Promise<InteractionUpdateOptions | null> | InteractionUpdateOptions | null;
 
 export interface SendInteractiveMessageProps {
@@ -43,16 +43,11 @@ export default async function _sendInteractiveMessage<EventType extends string>(
     idle: ms('1m'),
   });
 
-  function every(
-    callback: TEventCB,
-  ) {
+  function every(callback: TEventCB) {
     allEventsFn = callback;
   }
 
-  function on(
-    customId: EventType extends undefined ? string : EventType,
-    callback: TEventCB,
-  ) {
+  function on(customId: EventType extends undefined ? string : EventType, callback: TEventCB) {
     registeredEvents.set(customId, callback);
   }
 

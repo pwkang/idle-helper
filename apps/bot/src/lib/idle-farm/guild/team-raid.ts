@@ -23,10 +23,7 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
     channelId: message.channel.id,
   });
   if (!event) return;
-  const involvedUsers = [
-    message.author,
-    ...message.mentions.users.map(user => user),
-  ];
+  const involvedUsers = [message.author, ...message.mentions.users.map((user) => user)];
   event.on('embed', async (embed, collected) => {
     if (isAbleToStart({embed})) {
       const roles = await commandHelper.guild.getUserGuildRoles({
@@ -76,16 +73,19 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
   if (isSlashCommand) event.triggerCollect(message);
 };
 
-
 interface ISendConfirmationMessage {
   channelId: string;
   client: Client;
   users: User[];
 }
 
-export const sendConfirmationMessage = async ({channelId, client, users}: ISendConfirmationMessage) => {
+export const sendConfirmationMessage = async ({
+  channelId,
+  client,
+  users,
+}: ISendConfirmationMessage) => {
   const usersAccount = await userService.getUsersById({
-    userIds: users.map(user => user.id),
+    userIds: users.map((user) => user.id),
   });
 
   const embed = generateConfirmationEmbed({
@@ -99,7 +99,6 @@ export const sendConfirmationMessage = async ({channelId, client, users}: ISendC
       embeds: [embed],
     },
   });
-
 };
 
 interface IGenerateConfirmationEmbed {
@@ -108,14 +107,12 @@ interface IGenerateConfirmationEmbed {
 }
 
 const generateConfirmationEmbed = ({authors, users}: IGenerateConfirmationEmbed) => {
-  const embed = new EmbedBuilder()
-    .setColor(BOT_COLOR.embed)
-    .setAuthor({
-      name: 'Team Raid Confirmation',
-    });
+  const embed = new EmbedBuilder().setColor(BOT_COLOR.embed).setAuthor({
+    name: 'Team Raid Confirmation',
+  });
 
   for (const author of authors) {
-    const user = users.find(user => user.userId === author.id)!;
+    const user = users.find((user) => user.userId === author.id)!;
     if (user) {
       const top3Workers = typedObjectEntries(user.workers)
         .map(([type, worker]) => ({
@@ -132,7 +129,11 @@ const generateConfirmationEmbed = ({authors, users}: IGenerateConfirmationEmbed)
       const totalPower = top3Workers.reduce((acc, worker) => acc + worker.power, 0);
       embed.addFields({
         name: `${author.username} • ${totalPower}`,
-        value: top3Workers.map(worker => `${BOT_EMOJI.worker[worker.type]} Lv ${worker.level} | AT: ${worker.power}`).join('\n'),
+        value: top3Workers
+          .map(
+            (worker) => `${BOT_EMOJI.worker[worker.type]} Lv ${worker.level} | AT: ${worker.power}`
+          )
+          .join('\n'),
         inline: true,
       });
     } else {
@@ -156,6 +157,8 @@ const isAbleToStart = ({embed}: IIsAbleToStart) =>
 
 const isTeamRaid = (embed: Embed) => embed.description?.includes('You are raiding');
 
-const isNotEnoughPlayer = (message: Message) => message.content.includes('you need at least 2 players');
+const isNotEnoughPlayer = (message: Message) =>
+  message.content.includes('you need at least 2 players');
 
-const hasOtherGuildMember = (message: Message) => message.content.includes('with players of your guild');
+const hasOtherGuildMember = (message: Message) =>
+  message.content.includes('with players of your guild');

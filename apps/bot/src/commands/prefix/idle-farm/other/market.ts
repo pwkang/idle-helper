@@ -1,4 +1,8 @@
-import {PREFIX_COMMAND_TYPE, USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
+import {
+  PREFIX_COMMAND_TYPE,
+  USER_ACC_OFF_ACTIONS,
+  USER_NOT_REGISTERED_ACTIONS,
+} from '@idle-helper/constants';
 import {idleMarket} from '../../../../lib/idle-farm/other/market';
 
 export default <PrefixCommand>{

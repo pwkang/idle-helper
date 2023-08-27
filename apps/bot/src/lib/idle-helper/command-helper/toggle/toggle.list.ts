@@ -37,7 +37,6 @@ const user = (userToggle: IUserToggle): IToggleEmbedsInfo[] => {
         },
       ],
     },
-
   ];
 };
 

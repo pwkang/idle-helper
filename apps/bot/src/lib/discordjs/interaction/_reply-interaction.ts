@@ -20,7 +20,7 @@ export interface IReplyInteraction {
 
 type TEventCB = (
   collected: BaseInteraction | StringSelectMenuInteraction,
-  customId: string,
+  customId: string
 ) => Promise<InteractionUpdateOptions | null> | InteractionUpdateOptions | null;
 
 export default async function _replyInteraction<T>({
@@ -52,16 +52,11 @@ export default async function _replyInteraction<T>({
     idle: ms('1m'),
   });
 
-  function on(
-    customId: T extends undefined ? string : T,
-    callback: TEventCB,
-  ) {
+  function on(customId: T extends undefined ? string : T, callback: TEventCB) {
     registeredEvents.set(customId, callback);
   }
 
-  function every(
-    callback: TEventCB,
-  ) {
+  function every(callback: TEventCB) {
     allEventsFn = callback;
   }
 

@@ -36,7 +36,7 @@ export const generateSlashCommands = (slashCommands: SlashCommand[]) => {
   for (const subcommandGroup of subcommandGroups) {
     const {commandName, name} = subcommandGroup as SlashCommandSubcommandGroup;
     const subcommands = slashCommands.filter(
-      (sc) => sc?.type === 'subcommand' && sc.groupName === name && sc.commandName === commandName,
+      (sc) => sc?.type === 'subcommand' && sc.groupName === name && sc.commandName === commandName
     );
     const command = generatedSlashCommands.get(commandName);
     if (!command) continue;

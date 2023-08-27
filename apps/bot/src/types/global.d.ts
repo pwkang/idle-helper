@@ -77,7 +77,6 @@ declare global {
     execute: (client: Client) => Promise<void>;
   }
 
-
   namespace NodeJS {
     interface ProcessEnv {
       BOT_TOKEN: string;
