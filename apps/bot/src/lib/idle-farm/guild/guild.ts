@@ -8,13 +8,13 @@ import {redisGuildMembers} from '../../../services/redis/guild-members.redis';
 
 interface IIdleGuild {
   client: Client;
-  message: Message;
+  message: Message<true>;
   author: User;
   isSlashCommand?: boolean;
 }
 
 export const idleGuild = async ({author, client, isSlashCommand, message}: IIdleGuild) => {
-  if (!message.inGuild() || !!message.mentions.users.size) return;
+  if (message.mentions.users.size) return;
   const event = createIdleFarmCommandListener({
     author,
     client,

@@ -19,7 +19,7 @@ export const _createGuildSlashCommand = async ({
       Routes.applicationGuildCommands(client.user.id!, guild.id),
       {
         body: commands,
-      },
+      }
     );
     return data as ApplicationCommand;
   } catch (e: any) {

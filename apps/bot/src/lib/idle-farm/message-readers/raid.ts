@@ -26,10 +26,10 @@ export const _raidReader = ({message}: IRaidReader) => {
   for (const row of embed.fields[0].value.split('\n')) {
     if (isNoWorker(row)) continue;
     const farm = typedObjectEntries(IDLE_FARM_FARM_TYPE).find(([, value]) =>
-      row.includes(value),
+      row.includes(value)
     )?.[0];
     const worker = typedObjectEntries(IDLE_FARM_WORKER_TYPE).find(([, value]) =>
-      row.includes(value),
+      row.includes(value)
     )?.[0];
     const level = Number(row.match(/Lv(\d+)/)?.[1]);
     const health = Number(row.match(/`(\d+)\/\d+`$/)?.[1]);
@@ -47,7 +47,7 @@ export const _raidReader = ({message}: IRaidReader) => {
     if (button instanceof ButtonComponent) {
       const worker = button.data as IButtonComponentData;
       const type = typedObjectEntries(IDLE_FARM_WORKER_TYPE).find(([, value]) =>
-        worker.custom_id.includes(value),
+        worker.custom_id.includes(value)
       )?.[0];
       const used = worker.disabled;
       workers.push({

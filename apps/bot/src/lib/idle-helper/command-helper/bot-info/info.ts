@@ -34,7 +34,7 @@ export const _info = async ({client, server}: IInfo): Promise<EmbedBuilder> => {
       name: '**Cluster**',
       value: `${clusterId + 1}/${totalCluster}`,
       inline: true,
-    },
+    }
   );
 
   embed.addFields({

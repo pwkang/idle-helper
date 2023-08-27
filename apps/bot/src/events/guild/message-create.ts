@@ -8,7 +8,12 @@ export default <BotEvent>{
   once: false,
   execute: async (client, message: Message) => {
     if (message.inGuild() && !isServerWhitelisted(message.guildId)) return;
-    if (isBotSlashCommand(message) && isNotDeferred(message) && message.interaction?.user) {
+    if (
+      isBotSlashCommand(message) &&
+      isNotDeferred(message) &&
+      message.interaction?.user &&
+      message.inGuild()
+    ) {
       const interactionUser = message.interaction.user;
       const messages = searchSlashMessages(client, message);
       if (!messages.size) return;
@@ -27,7 +32,7 @@ export default <BotEvent>{
       }
     }
 
-    if (isSentByUser(message)) {
+    if (isSentByUser(message) && message.inGuild()) {
       const result = searchCommand(client, message);
       if (!result) return;
 
@@ -44,7 +49,7 @@ export default <BotEvent>{
       await result.command.execute(client, message, result.args);
     }
 
-    if (isSentByBot(message)) {
+    if (isSentByBot(message) && message.inGuild()) {
       const commands = searchBotMatchedCommands(client, message);
       if (!commands.size) return;
 
@@ -56,8 +61,8 @@ export default <BotEvent>{
 const searchSlashMessages = (client: Client, message: Message) =>
   client.slashMessages.filter((cmd) =>
     cmd.commandName.some(
-      (name) => name.toLowerCase() === message.interaction?.commandName?.toLowerCase(),
-    ),
+      (name) => name.toLowerCase() === message.interaction?.commandName?.toLowerCase()
+    )
   );
 
 const trimWhitespace = (str: string) => str.split('\n').join('').replace(/\s+/g, ' ').trim();
@@ -73,20 +78,20 @@ const isBotCommand = (client: Client, message: Message) =>
 
 const validateCommand = (commands: string[], args: string[]) => {
   return commands.some((cmd) =>
-    cmd.split(' ').every((name, i) => name?.toLowerCase() === args[i]?.toLowerCase()),
+    cmd.split(' ').every((name, i) => name?.toLowerCase() === args[i]?.toLowerCase())
   );
 };
 
 const getMatchedCommandLength = (commands: string[], args: string[]) => {
   const matched = commands.find((cmd) =>
-    cmd.split(' ').every((name, i) => name?.toLowerCase() === args[i]?.toLowerCase()),
+    cmd.split(' ').every((name, i) => name?.toLowerCase() === args[i]?.toLowerCase())
   );
   return matched?.split(' ').length ?? 0;
 };
 
 function searchCommand(
   client: Client,
-  message: Message,
+  message: Message
 ): {command: PrefixCommand; args: string[]} | null {
   const messageContent = trimWhitespace(message.content.toLowerCase());
   if (messageContent === '') return null;
@@ -122,7 +127,7 @@ function searchCommand(
   }
 
   const matchedCommands = client.prefixCommands.filter(
-    (cmd) => cmd.type === commandType && validateCommand(cmd.commands, args),
+    (cmd) => cmd.type === commandType && validateCommand(cmd.commands, args)
   );
   if (matchedCommands.size === 1) {
     command = matchedCommands.first();
@@ -130,7 +135,7 @@ function searchCommand(
     command = matchedCommands
       .sort(
         (a, b) =>
-          getMatchedCommandLength(b.commands, args) - getMatchedCommandLength(a.commands, args),
+          getMatchedCommandLength(b.commands, args) - getMatchedCommandLength(a.commands, args)
       )
       .first();
   }
@@ -145,7 +150,7 @@ const isSentByBot = (message: Message) => message.author.bot;
 
 const isNotDeferred = (message: Message) => !(message.content === '' && !message.embeds.length);
 
-const searchBotMatchedCommands = (client: Client, message: Message) =>
+const searchBotMatchedCommands = (client: Client, message: Message<true>) =>
   client.botMessages.filter((cmd) => message.author.id === cmd.bot && cmd.match(message));
 
 interface IGenerateArgs {

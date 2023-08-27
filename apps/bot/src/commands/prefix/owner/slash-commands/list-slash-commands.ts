@@ -38,13 +38,13 @@ export default <PrefixCommand>{
 | global |  guild | name 
 | --------------------------------
 ${slashCommands
-          .map(
-            (sc) =>
-              `| ${registeredGlobalSlashCommands.includes(sc.name) ? '  ✓   ' : '  ✗   '} | ${
-                registeredGuildSlashCommands.includes(sc.name) ? '  ✓   ' : '  ✗   '
-              } | ${sc.name}`
-          )
-          .join('\n')}
+  .map(
+    (sc) =>
+      `| ${registeredGlobalSlashCommands.includes(sc.name) ? '  ✓   ' : '  ✗   '} | ${
+        registeredGuildSlashCommands.includes(sc.name) ? '  ✓   ' : '  ✗   '
+      } | ${sc.name}`
+  )
+  .join('\n')}
 \`\`\` 
       `
       )

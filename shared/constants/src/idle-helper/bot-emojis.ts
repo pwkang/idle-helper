@@ -89,7 +89,6 @@ export const BOT_EMOJI = {
     wood: '<:wood:1140209888765681754>',
     yoghurt: '<:yoghurt:1140204801305620530>',
 
-
     woodBox: '<:box:1140206786134167562>',
     stickBox: '<:box:1140206786134167562>',
     appleBox: '<:box:1140206786134167562>',

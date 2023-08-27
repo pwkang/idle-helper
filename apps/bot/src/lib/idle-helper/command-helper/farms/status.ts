@@ -45,7 +45,7 @@ const getEmbed = ({userAccount, author}: IGetEmbed) => {
     : 0;
 
   embed.setDescription(
-    `Last claim at: **${duration ? convertMsToHumanReadableString(duration) : '-'}**`,
+    `Last claim at: **${duration ? convertMsToHumanReadableString(duration) : '-'}**`
   );
 
   return embed;

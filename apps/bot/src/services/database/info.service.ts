@@ -5,7 +5,7 @@ import {IDLE_FARM_ITEMS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 import {infoRedis} from '../redis/info.redis';
 import ms from 'ms';
 
-infoSchema.post('findOneAndUpdate', async function(doc) {
+infoSchema.post('findOneAndUpdate', async function (doc) {
   if (!doc) return;
   await infoRedis.setInfo(doc);
 });
@@ -48,7 +48,7 @@ const updateWorkerPower = async ({worker, level, power}: IUpdateWorkerPower) => 
     {
       upsert: true,
       new: true,
-    },
+    }
   );
 };
 
@@ -59,7 +59,6 @@ const init = async () => {
   }
   return info;
 };
-
 
 const getMarketItems = async (): Promise<IInfo['market']> => {
   const info = await getInfo();
@@ -73,19 +72,26 @@ interface IUpdateMarketItems extends Omit<IMarketItem, 'lastUpdatedAt'> {
 const updateMarketItems = async ({type, price, isOverstocked}: IUpdateMarketItems) => {
   const marketItems = await getMarketItems();
   const marketItem = marketItems[type];
-  if (marketItem?.lastUpdatedAt && new Date().getTime() - marketItem?.lastUpdatedAt.getTime() <= ms('5m')) return;
-  await dbInfo.findOneAndUpdate({}, {
-    $set: {
-      [`market.${type}`]: {
-        price,
-        lastUpdatedAt: new Date(),
-        isOverstocked,
+  if (
+    marketItem?.lastUpdatedAt &&
+    new Date().getTime() - marketItem?.lastUpdatedAt.getTime() <= ms('5m')
+  )
+    return;
+  await dbInfo.findOneAndUpdate(
+    {},
+    {
+      $set: {
+        [`market.${type}`]: {
+          price,
+          lastUpdatedAt: new Date(),
+          isOverstocked,
+        },
       },
     },
-  },
-  {
-    new: true,
-  });
+    {
+      new: true,
+    }
+  );
 };
 
 export const infoService = {

@@ -16,7 +16,7 @@ export const _deleteGuildSlashCommand = async ({
   if (!client.user) return [];
   try {
     await djsRestClient.delete(
-      Routes.applicationGuildCommand(client.user.id!, guild.id, commandId),
+      Routes.applicationGuildCommand(client.user.id!, guild.id, commandId)
     );
   } catch (e: any) {
     logger({

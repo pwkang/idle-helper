@@ -37,7 +37,6 @@ const user = (userToggle: IUserToggle): IToggleEmbedsInfo[] => {
         },
       ],
     },
-
   ];
 };
 
@@ -48,6 +47,11 @@ const guild = (guildToggle: IGuildToggle): IToggleEmbedsInfo[] => {
       title: 'General',
       inline: true,
       children: [
+        {
+          value: guildToggle.teamRaid.helper,
+          label: 'Team Raid Helper',
+          path: 'toggle.teamRaid.helper',
+        },
         {
           value: guildToggle.teamRaid.reminder,
           path: 'toggle.teamRaid.reminder',

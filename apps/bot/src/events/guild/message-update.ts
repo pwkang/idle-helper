@@ -40,6 +40,6 @@ const isFirstUpdateAfterDeferred = (oldMessage: Message) =>
 const searchSlashMessages = (client: Client, message: Message) =>
   client.slashMessages.filter((cmd) =>
     cmd.commandName.some(
-      (name) => name.toLowerCase() === message.interaction?.commandName?.toLowerCase(),
-    ),
+      (name) => name.toLowerCase() === message.interaction?.commandName?.toLowerCase()
+    )
   );

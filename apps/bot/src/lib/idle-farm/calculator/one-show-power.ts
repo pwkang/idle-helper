@@ -10,8 +10,13 @@ const DAMAGE = {
   team: 100,
 } as const;
 
-export const calcOneShotPower = ({enemyPower, enemyHp, decimalPlace, raidType}: ICalcOneShotPower) => {
-  const result = enemyPower * enemyHp / DAMAGE[raidType];
+export const calcOneShotPower = ({
+  enemyPower,
+  enemyHp,
+  decimalPlace,
+  raidType,
+}: ICalcOneShotPower) => {
+  const result = (enemyPower * enemyHp) / DAMAGE[raidType];
   return decimalPlace !== undefined ? Number(result.toFixed(decimalPlace)) : result;
 };
 

@@ -1,4 +1,8 @@
-import {PREFIX_COMMAND_TYPE, USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
+import {
+  PREFIX_COMMAND_TYPE,
+  USER_ACC_OFF_ACTIONS,
+  USER_NOT_REGISTERED_ACTIONS,
+} from '@idle-helper/constants';
 import {idleInventory} from '../../../../lib/idle-farm/account/inventory';
 
 export default <PrefixCommand>{
@@ -15,7 +19,7 @@ export default <PrefixCommand>{
       message,
       client,
       isSlashCommand: false,
-      isCalc: ['calc', 'c'].some(keyword => keyword === args[1]?.toLowerCase()),
+      isCalc: ['calc', 'c'].some((keyword) => keyword === args[1]?.toLowerCase()),
     });
   },
 };

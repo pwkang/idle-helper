@@ -12,7 +12,6 @@ interface IIdlonsCalculator {
   client: Client;
 }
 
-
 export const _inventoryCalculator = async ({message, client, author}: IIdlonsCalculator) => {
   let allItems: IAllItems = {};
   const inventory = messageReaders.inventory({

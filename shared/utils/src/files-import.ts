@@ -18,13 +18,13 @@ export const importFiles = <T>({options, path}: IImportFiles): Promise<IReturn<T
         const {fullPath, path} = entry;
         files.push(
           new Promise((resolve) => {
-            import(fullPath).then(file => {
+            import(fullPath).then((file) => {
               resolve({
                 data: file.default,
                 path,
               });
             });
-          }),
+          })
         );
       })
       .on('end', () => {

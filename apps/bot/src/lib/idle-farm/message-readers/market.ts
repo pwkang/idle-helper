@@ -17,7 +17,9 @@ export const _marketReader = ({embed}: IMarketReader) => {
   const items: IItem[] = [];
   const fields = embed.fields;
   for (const field of fields) {
-    const name = typedObjectEntries(IDLE_FARM_ITEMS).find(([, value]) => field.name.match(new RegExp(`\\*\\*${value}\\*\\*`)))?.[0];
+    const name = typedObjectEntries(IDLE_FARM_ITEMS).find(([, value]) =>
+      field.name.match(new RegExp(`\\*\\*${value}\\*\\*`))
+    )?.[0];
     const price = field.value.match(/\*\*Price\*\*: ([\d,]+) <:idlons:/)?.[1]?.replaceAll(',', '');
     const isOverstocked = field.name.includes('OVERSTOCKED');
     const priceRate = field.value.match(/`(.*)`/)?.[1]?.replaceAll('%', '');
@@ -30,5 +32,4 @@ export const _marketReader = ({embed}: IMarketReader) => {
     });
   }
   return items;
-
 };

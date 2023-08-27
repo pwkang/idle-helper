@@ -14,9 +14,12 @@ export const _inventoryReader = ({embed}: IInventoryReader): IInventoryItems => 
     const itemsRow = embed.fields[1].value.split('\n');
     for (const itemRow of itemsRow) {
       const type = typedObjectEntries(IDLE_FARM_ITEMS).find(([, name]) =>
-        itemRow.match(new RegExp(`\\*\\*${name}\\*\\*`)),
+        itemRow.match(new RegExp(`\\*\\*${name}\\*\\*`))
       )?.[0] as keyof typeof IDLE_FARM_ITEMS;
-      const amount = itemRow.match(/: ([\d,]+)$/)?.[1]?.replaceAll(',', '')?.trim();
+      const amount = itemRow
+        .match(/: ([\d,]+)$/)?.[1]
+        ?.replaceAll(',', '')
+        ?.trim();
       if (!type) continue;
       items[type] = amount ? parseInt(amount) : 0;
     }
