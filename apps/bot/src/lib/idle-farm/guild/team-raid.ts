@@ -68,7 +68,7 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
     }
   });
   event.on('content', async (_, collected) => {
-    if (isNotEnoughPlayer(collected) || hasOtherGuildMember(collected)) {
+    if (isNotEnoughPlayer(collected) || hasOtherGuildMember(collected) || hasNotEnoughPower(collected) || hasNotReachDirt2(collected)) {
       event.stop();
     }
   });
@@ -164,3 +164,9 @@ const isNotEnoughPlayer = (message: Message) =>
 
 const hasOtherGuildMember = (message: Message) =>
   message.content.includes('with players of your guild');
+
+const hasNotEnoughPower = (message: Message) =>
+  message.content.includes('The following player(s) do not have at least 80 energy');
+
+const hasNotReachDirt2 = (message: Message) =>
+  message.content.includes('dirt league II');
