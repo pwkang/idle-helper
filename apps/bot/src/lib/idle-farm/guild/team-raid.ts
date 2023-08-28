@@ -31,7 +31,9 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
         server: message.guild,
         userId: message.author.id,
       });
-      if (!roles?.size) return;
+      if (!roles?.size) {
+        return event.stop();
+      }
       if (roles.size > 1) {
         await djsMessageHelper.send({
           channelId: message.channel.id,
