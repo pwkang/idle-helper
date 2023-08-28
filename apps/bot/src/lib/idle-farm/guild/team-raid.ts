@@ -31,7 +31,9 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
         server: message.guild,
         userId: message.author.id,
       });
-      if (!roles?.size) return;
+      if (!roles?.size) {
+        return event.stop();
+      }
       if (roles.size > 1) {
         await djsMessageHelper.send({
           channelId: message.channel.id,
@@ -66,7 +68,12 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
     }
   });
   event.on('content', async (_, collected) => {
-    if (isNotEnoughPlayer(collected) || hasOtherGuildMember(collected)) {
+    if (
+      isNotEnoughPlayer(collected) ||
+      hasOtherGuildMember(collected) ||
+      hasNotEnoughPower(collected) ||
+      hasNotReachDirt2(collected)
+    ) {
       event.stop();
     }
   });
@@ -131,7 +138,7 @@ const generateConfirmationEmbed = ({authors, users}: IGenerateConfirmationEmbed)
         name: `${author.username} • ${totalPower}`,
         value: top3Workers
           .map(
-            (worker) => `${BOT_EMOJI.worker[worker.type]} Lv ${worker.level} | AT: ${worker.power}`,
+            (worker) => `${BOT_EMOJI.worker[worker.type]} Lv ${worker.level} | AT: ${worker.power}`
           )
           .join('\n'),
         inline: true,
@@ -162,3 +169,8 @@ const isNotEnoughPlayer = (message: Message) =>
 
 const hasOtherGuildMember = (message: Message) =>
   message.content.includes('with players of your guild');
+
+const hasNotEnoughPower = (message: Message) =>
+  message.content.includes('The following player(s) do not have at least 80 energy');
+
+const hasNotReachDirt2 = (message: Message) => message.content.includes('dirt league II');
