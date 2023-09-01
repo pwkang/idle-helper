@@ -128,9 +128,9 @@ const getMemberRoleStatusMessageOptions = ({
       name: 'Members with role',
       value: membersWithRole.slice(i, i + 30).length
         ? membersWithRole
-            .slice(i, i + 30)
-            .map((member) => messageFormatter.user(member.user.id))
-            .join('\n')
+          .slice(i, i + 30)
+          .map((member) => messageFormatter.user(member.user.id))
+          .join('\n')
         : 'None',
       inline: true,
     });
@@ -141,9 +141,9 @@ const getMemberRoleStatusMessageOptions = ({
       name: 'Non-members with role',
       value: nonMembersWithRole.slice(i, i + 30).length
         ? nonMembersWithRole
-            .slice(i, i + 30)
-            .map((member) => messageFormatter.user(member.user.id))
-            .join('\n')
+          .slice(i, i + 30)
+          .map((member) => messageFormatter.user(member.user.id))
+          .join('\n')
         : 'None',
       inline: true,
     });

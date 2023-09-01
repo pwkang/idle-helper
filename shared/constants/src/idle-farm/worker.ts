@@ -55,3 +55,23 @@ export const IDLE_FARM_WORKER_STATS = {
     intelligence: 3,
   },
 } as const;
+
+export const IDLE_FARM_WORKERS_LEVEL_AMOUNT = {
+  1: 1,
+  2: 2,
+  3: 4,
+  4: 10,
+  5: 20,
+  6: 40,
+  7: 80,
+  8: 160,
+  9: 250,
+  10: 500,
+  11: 1000,
+  12: 1600,
+  13: 2500,
+  14: 5000,
+  15: 8000,
+  16: 12000,
+  17: 18000,
+} as const;

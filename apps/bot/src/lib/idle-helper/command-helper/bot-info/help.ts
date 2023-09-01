@@ -43,7 +43,7 @@ const getEmbed = (client: Client) =>
       {
         name: 'Features',
         value: [
-          "- Raid Helper - send en embed with your & enemy's workers lvl & power during a raid",
+          '- Raid Helper - send en embed with your & enemy\'s workers lvl & power during a raid',
           '- Claim reminder upon idle for target hours',
           '- Setup server random event pings',
           '- View Last claim time `wh lc`',

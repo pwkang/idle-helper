@@ -7,6 +7,8 @@ const workerSchema = new Schema<IUserWorker>({
   exp: Number,
   power: Number,
   farm: String,
+  type: String,
+  amount: Number,
 });
 
 export const userSchema = new Schema<IUser>({
@@ -53,5 +55,11 @@ export const userSchema = new Schema<IUser>({
   commandsLastUsed: {
     daily: Date,
     claim: Date,
+  },
+  lastUpdated: {
+    toggle: Date,
+    username: Date,
+    workers: Date,
+    energy: Date,
   },
 });

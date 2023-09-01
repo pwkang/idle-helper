@@ -130,7 +130,7 @@ function isUserSpamming({author, collected}: IChecker) {
   const embed = collected.embeds[0];
   if (!embed) return false;
   return (
-    embed.author?.name === author.username && embed.fields[0]?.name.includes("please don't spam")
+    embed.author?.name === author.username && embed.fields[0]?.name.includes('please don\'t spam')
   );
 }
 

@@ -18,7 +18,9 @@ export interface IUserToggle extends Record<string, boolean | Record<string, boo
 }
 
 export interface IUserWorker {
+  type: keyof typeof IDLE_FARM_WORKER_TYPE;
   level: number;
+  amount: number;
   maxExp: number;
   exp: number;
   power: number;
@@ -46,5 +48,11 @@ export interface IUser {
   commandsLastUsed: {
     daily: Date;
     claim: Date;
+  };
+  lastUpdated: {
+    toggle: Date;
+    username: Date;
+    workers: Date;
+    energy: Date;
   };
 }

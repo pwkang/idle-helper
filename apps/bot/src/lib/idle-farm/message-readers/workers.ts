@@ -1,22 +1,14 @@
 import {Embed} from 'discord.js';
 import {IDLE_FARM_FARM_TYPE, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 import {typedObjectEntries} from '@idle-helper/utils';
+import {IUserWorker} from '@idle-helper/models';
 
 interface IWorkerReader {
   embed: Embed;
 }
 
-interface IWorkerInfo {
-  type: ValuesOf<typeof IDLE_FARM_WORKER_TYPE>;
-  level: number;
-  maxExp: number;
-  exp: number;
-  power: number;
-  farm: keyof typeof IDLE_FARM_FARM_TYPE;
-}
-
 export const _workerReader = ({embed}: IWorkerReader) => {
-  const workers: IWorkerInfo[] = [];
+  const workers: IUserWorker[] = [];
   const fields = embed.fields;
   for (const field of fields) {
     const type = typedObjectEntries(IDLE_FARM_WORKER_TYPE).find(([, value]) =>
@@ -29,6 +21,7 @@ export const _workerReader = ({embed}: IWorkerReader) => {
     )?.[0];
     const exp = field.value.match(/`\[(\d+)\/\d+]`/)?.[1] ?? 0;
     const maxExp = field.value.match(/`\[\d+\/(\d+)]`/)?.[1] ?? 0;
+    const amount = field.value.match(/`\[(\d+)\/\d+]`/)?.[1] ?? 0;
     workers.push({
       type: type!,
       level: Number(level),
@@ -36,6 +29,7 @@ export const _workerReader = ({embed}: IWorkerReader) => {
       farm: farm!,
       exp: Number(exp),
       maxExp: Number(maxExp),
+      amount: Number(amount),
     });
   }
   return workers;
