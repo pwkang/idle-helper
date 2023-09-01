@@ -7,6 +7,8 @@ const workerSchema = new Schema<IUserWorker>({
   exp: Number,
   power: Number,
   farm: String,
+  type: String,
+  amount: Number,
 });
 
 export const userSchema = new Schema<IUser>({

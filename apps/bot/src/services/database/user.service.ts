@@ -1,10 +1,6 @@
 import {mongoClient} from '@idle-helper/services';
 import {IUser, IUserToggle, IUserWorker, userSchema} from '@idle-helper/models';
-import {
-  IDLE_FARM_DONOR_TIER,
-  IDLE_FARM_FARM_TYPE,
-  IDLE_FARM_WORKER_TYPE,
-} from '@idle-helper/constants';
+import {IDLE_FARM_DONOR_TIER} from '@idle-helper/constants';
 import {UpdateQuery} from 'mongoose';
 
 const dbUser = mongoClient.model<IUser>('users', userSchema);
@@ -89,24 +85,16 @@ const claimFarm = async ({userId}: IClaimFarm): Promise<IUser | null> => {
     },
     {
       new: true,
-    }
+    },
   );
 
   return user ?? null;
 };
 
-interface IWorker {
-  type: ValuesOf<typeof IDLE_FARM_WORKER_TYPE>;
-  level: number;
-  maxExp: number;
-  exp: number;
-  power: number;
-  farm: keyof typeof IDLE_FARM_FARM_TYPE;
-}
 
 interface ISaveUserWorkers {
   userId: string;
-  workers: IWorker[];
+  workers: IUserWorker[];
 }
 
 const saveUserWorkers = async ({userId, workers}: ISaveUserWorkers): Promise<IUser | null> => {
@@ -118,6 +106,8 @@ const saveUserWorkers = async ({userId, workers}: ISaveUserWorkers): Promise<IUs
       maxExp: worker.maxExp,
       power: worker.power,
       level: worker.level,
+      amount: worker.amount,
+      type: worker.type,
     } as IUserWorker;
   }
   const user = await dbUser.findOneAndUpdate(
@@ -127,7 +117,7 @@ const saveUserWorkers = async ({userId, workers}: ISaveUserWorkers): Promise<IUs
     },
     {
       new: true,
-    }
+    },
   );
   return user ?? null;
 };
@@ -159,7 +149,7 @@ const setClaimReminders = async ({
     },
     {
       new: true,
-    }
+    },
   );
   return user ?? null;
 };
@@ -182,7 +172,7 @@ const updateReminderChannel = async ({
     },
     {
       new: true,
-    }
+    },
   );
   return user ?? null;
 };
@@ -222,7 +212,7 @@ const resetUserToggle = async ({userId}: IResetUserToggle): Promise<IUser | null
     },
     {
       new: true,
-    }
+    },
   );
   return user ?? null;
 };
@@ -255,7 +245,7 @@ const updateIdleFarmDonorTier = async ({tier, userId}: IUpdateIdleFarmDonorTier)
     },
     {
       new: true,
-    }
+    },
   );
   return user ?? null;
 };

@@ -1,9 +1,5 @@
 import {ValuesOf} from '../type';
-import {
-  IDLE_FARM_DONOR_TIER,
-  IDLE_FARM_FARM_TYPE,
-  IDLE_FARM_WORKER_TYPE,
-} from '@idle-helper/constants';
+import {IDLE_FARM_DONOR_TIER, IDLE_FARM_FARM_TYPE, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 
 export interface IUserToggle extends Record<string, boolean | Record<string, boolean>> {
   reminder: {
@@ -18,7 +14,9 @@ export interface IUserToggle extends Record<string, boolean | Record<string, boo
 }
 
 export interface IUserWorker {
+  type: keyof typeof IDLE_FARM_WORKER_TYPE;
   level: number;
+  amount: number;
   maxExp: number;
   exp: number;
   power: number;
