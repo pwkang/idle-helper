@@ -33,6 +33,7 @@ export const BOT_EMOJI = {
     idleCoin: '<:IDLEcoin:1140260422499442778>',
     idlucks: '<:idlucks:1141028891763425342>',
     idlon: '<:idlon:1141028895538298942>',
+    level: '<:level:1147110866748194846>',
   },
   items: {
     algae: '<:algae:1140204930918002748>',
