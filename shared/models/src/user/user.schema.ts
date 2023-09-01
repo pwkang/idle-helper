@@ -56,4 +56,10 @@ export const userSchema = new Schema<IUser>({
     daily: Date,
     claim: Date,
   },
+  lastUpdated: {
+    toggle: Date,
+    username: Date,
+    workers: Date,
+    energy: Date,
+  },
 });

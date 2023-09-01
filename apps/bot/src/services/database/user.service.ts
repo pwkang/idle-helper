@@ -98,7 +98,9 @@ interface ISaveUserWorkers {
 }
 
 const saveUserWorkers = async ({userId, workers}: ISaveUserWorkers): Promise<IUser | null> => {
-  const query: UpdateQuery<IUser> = {};
+  const query: UpdateQuery<IUser> = {
+    'lastUpdated.workers': new Date(),
+  };
   for (const worker of workers) {
     query[`workers.${worker.type}`] = {
       exp: worker.exp,
