@@ -13,12 +13,13 @@ export const _top3Workers = async ({author}: IListWorkers): Promise<BaseMessageO
   const userAccount = await userService.findUser({userId: author.id});
   if (!userAccount) return null;
 
-
   return {
-    embeds: [getEmbed({
-      author,
-      userAccount,
-    })],
+    embeds: [
+      getEmbed({
+        author,
+        userAccount,
+      }),
+    ],
   };
 };
 
@@ -28,12 +29,10 @@ interface IGetEmbed {
 }
 
 const getEmbed = ({userAccount, author}: IGetEmbed) => {
-  const embed = new EmbedBuilder()
-    .setColor(BOT_COLOR.embed)
-    .setAuthor({
-      name: `${author.username} — top 3 workers`,
-      iconURL: author.avatarURL() ?? undefined,
-    });
+  const embed = new EmbedBuilder().setColor(BOT_COLOR.embed).setAuthor({
+    name: `${author.username} — top 3 workers`,
+    iconURL: author.avatarURL() ?? undefined,
+  });
 
   const workers: string[] = [];
   const top3Workers = typedObjectEntries(userAccount.workers)
@@ -54,13 +53,14 @@ const getEmbed = ({userAccount, author}: IGetEmbed) => {
 
   for (const worker of top3Workers) {
     const emoji = BOT_EMOJI.worker[worker.type];
-    workers.push(`${emoji} ${BOT_EMOJI.other.level} ${worker.level} :boom: ${calcWorkerPower({
-      type: worker.type,
-      level: worker.level,
-      decimalPlace: 2,
-    })}`);
+    workers.push(
+      `${emoji} ${BOT_EMOJI.other.level} ${worker.level} :boom: ${calcWorkerPower({
+        type: worker.type,
+        level: worker.level,
+        decimalPlace: 2,
+      })}`
+    );
   }
   embed.setDescription(workers.join('\n'));
   return embed;
-
 };

@@ -7,18 +7,17 @@ interface IWorkerReader {
   embed: Embed;
 }
 
-
 export const _workerReader = ({embed}: IWorkerReader) => {
   const workers: IUserWorker[] = [];
   const fields = embed.fields;
   for (const field of fields) {
     const type = typedObjectEntries(IDLE_FARM_WORKER_TYPE).find(([, value]) =>
-      field.name.includes(value),
+      field.name.includes(value)
     )?.[0];
     const level = field.value.match(/\*\*Level\*\*: (\d+) /)?.[1] ?? 0;
     const power = field.value.match(/\*\*Power\*\*: (\d+)/)?.[1] ?? 0;
     const farm = typedObjectEntries(IDLE_FARM_FARM_TYPE).find(([, value]) =>
-      field.value.includes(value),
+      field.value.includes(value)
     )?.[0];
     const exp = field.value.match(/`\[(\d+)\/\d+]`/)?.[1] ?? 0;
     const maxExp = field.value.match(/`\[\d+\/(\d+)]`/)?.[1] ?? 0;

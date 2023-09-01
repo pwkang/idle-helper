@@ -1,5 +1,9 @@
 import {ValuesOf} from '../type';
-import {IDLE_FARM_DONOR_TIER, IDLE_FARM_FARM_TYPE, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import {
+  IDLE_FARM_DONOR_TIER,
+  IDLE_FARM_FARM_TYPE,
+  IDLE_FARM_WORKER_TYPE,
+} from '@idle-helper/constants';
 
 export interface IUserToggle extends Record<string, boolean | Record<string, boolean>> {
   reminder: {

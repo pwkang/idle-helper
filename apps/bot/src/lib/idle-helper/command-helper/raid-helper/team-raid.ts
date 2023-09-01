@@ -110,17 +110,17 @@ const generateMessageOptions = ({
           });
           const enemyPower = currentEnemy
             ? calcWorkerPower({
-                type: currentEnemy.type,
-                level: currentEnemy.level,
-                decimalPlace: 3,
-              })
+              type: currentEnemy.type,
+              level: currentEnemy.level,
+              decimalPlace: 3,
+            })
             : null;
           const damage = enemyPower
             ? calcWorkerDmg({
-                def: enemyPower,
-                atk: workerPower,
-                type: 'team',
-              })
+              def: enemyPower,
+              atk: workerPower,
+              type: 'team',
+            })
             : 0;
           stats = `${BOT_EMOJI.worker[workerInfo.type]} AT: ${workerPower} | DMG: ${damage}`;
         } else {

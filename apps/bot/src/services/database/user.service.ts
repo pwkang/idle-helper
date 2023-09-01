@@ -85,12 +85,11 @@ const claimFarm = async ({userId}: IClaimFarm): Promise<IUser | null> => {
     },
     {
       new: true,
-    },
+    }
   );
 
   return user ?? null;
 };
-
 
 interface ISaveUserWorkers {
   userId: string;
@@ -119,7 +118,7 @@ const saveUserWorkers = async ({userId, workers}: ISaveUserWorkers): Promise<IUs
     },
     {
       new: true,
-    },
+    }
   );
   return user ?? null;
 };
@@ -151,7 +150,7 @@ const setClaimReminders = async ({
     },
     {
       new: true,
-    },
+    }
   );
   return user ?? null;
 };
@@ -174,7 +173,7 @@ const updateReminderChannel = async ({
     },
     {
       new: true,
-    },
+    }
   );
   return user ?? null;
 };
@@ -214,7 +213,7 @@ const resetUserToggle = async ({userId}: IResetUserToggle): Promise<IUser | null
     },
     {
       new: true,
-    },
+    }
   );
   return user ?? null;
 };
@@ -247,7 +246,7 @@ const updateIdleFarmDonorTier = async ({tier, userId}: IUpdateIdleFarmDonorTier)
     },
     {
       new: true,
-    },
+    }
   );
   return user ?? null;
 };

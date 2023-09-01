@@ -120,17 +120,17 @@ const generateEmbed = ({userWorkers, raidMessage}: IGenerateEmbed) => {
     });
     const enemyPower = currentEnemy
       ? calcWorkerPower({
-          type: currentEnemy.worker,
-          decimalPlace: 2,
-          level: currentEnemy.level,
-        })
+        type: currentEnemy.worker,
+        decimalPlace: 2,
+        level: currentEnemy.level,
+      })
       : null;
     const damage = enemyPower
       ? calcWorkerDmg({
-          type: 'player',
-          atk: power,
-          def: enemyPower,
-        })
+        type: 'player',
+        atk: power,
+        def: enemyPower,
+      })
       : '-';
     const value = `${BOT_EMOJI.worker[type]} Lv ${workerInfo.level} | AT: ${power} | DMG: ${damage}`;
     const isWorkerUsed = workers.find((w) => w.type === type)?.used;
