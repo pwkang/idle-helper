@@ -56,7 +56,7 @@ export const IDLE_FARM_WORKER_STATS = {
   },
 } as const;
 
-export const IDLE_FARM_WORKERS_LEVEL_AMOUNT = {
+export const IDLE_FARM_WORKERS_LEVEL_AMOUNT: Record<number, number> = {
   1: 1,
   2: 2,
   3: 4,

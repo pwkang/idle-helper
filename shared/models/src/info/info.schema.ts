@@ -1,7 +1,7 @@
 import {IInfo, TMarketItems} from './info.type';
 import {Schema, SchemaDefinition, SchemaDefinitionType} from 'mongoose';
 import {typedObjectEntries} from '@idle-helper/utils';
-import {IDLE_FARM_ITEMS} from '@idle-helper/constants';
+import {IDLE_FARM_ITEMS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 
 export const infoSchema = new Schema<IInfo>({
   workerPower: {
@@ -21,4 +21,10 @@ export const infoSchema = new Schema<IInfo>({
     };
     return acc;
   }, {} as SchemaDefinition<SchemaDefinitionType<TMarketItems>>),
+  leaderboard: {
+    ...typedObjectEntries(IDLE_FARM_WORKER_TYPE).reduce((acc, [key]) => {
+      acc[key] = [{name: String, value: String}];
+      return acc;
+    }, {} as SchemaDefinition<SchemaDefinitionType<IInfo['leaderboard']>>),
+  },
 });

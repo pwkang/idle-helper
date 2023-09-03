@@ -5,7 +5,7 @@ import {IDLE_FARM_ITEMS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 import {infoRedis} from '../redis/info.redis';
 import ms from 'ms';
 
-infoSchema.post('findOneAndUpdate', async function (doc) {
+infoSchema.post('findOneAndUpdate', async function(doc) {
   if (!doc) return;
   await infoRedis.setInfo(doc);
 });
@@ -48,7 +48,7 @@ const updateWorkerPower = async ({worker, level, power}: IUpdateWorkerPower) => 
     {
       upsert: true,
       new: true,
-    }
+    },
   );
 };
 
@@ -90,8 +90,32 @@ const updateMarketItems = async ({type, price, isOverstocked}: IUpdateMarketItem
     },
     {
       new: true,
-    }
+    },
   );
+};
+
+interface IUpdateLeaderboard {
+  type: keyof IInfo['leaderboard'];
+  values: Array<{name: string; value: string}>;
+}
+
+const updateLeaderboard = async ({type, values}: IUpdateLeaderboard) => {
+  await dbInfo.findOneAndUpdate(
+    {},
+    {
+      $set: {
+        [`leaderboard.${type}`]: values,
+      },
+    },
+    {
+      new: true,
+    },
+  );
+};
+
+const getLeaderboard = async (): Promise<IInfo['leaderboard']> => {
+  const info = await getInfo();
+  return info?.leaderboard;
 };
 
 export const infoService = {
@@ -100,4 +124,6 @@ export const infoService = {
   init,
   updateMarketItems,
   getMarketItems,
+  updateLeaderboard,
+  getLeaderboard,
 };
