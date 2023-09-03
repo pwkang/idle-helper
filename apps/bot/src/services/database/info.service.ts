@@ -5,7 +5,7 @@ import {IDLE_FARM_ITEMS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 import {infoRedis} from '../redis/info.redis';
 import ms from 'ms';
 
-infoSchema.post('findOneAndUpdate', async function(doc) {
+infoSchema.post('findOneAndUpdate', async function (doc) {
   if (!doc) return;
   await infoRedis.setInfo(doc);
 });
@@ -48,7 +48,7 @@ const updateWorkerPower = async ({worker, level, power}: IUpdateWorkerPower) => 
     {
       upsert: true,
       new: true,
-    },
+    }
   );
 };
 
@@ -90,7 +90,7 @@ const updateMarketItems = async ({type, price, isOverstocked}: IUpdateMarketItem
     },
     {
       new: true,
-    },
+    }
   );
 };
 
@@ -109,7 +109,7 @@ const updateLeaderboard = async ({type, values}: IUpdateLeaderboard) => {
     },
     {
       new: true,
-    },
+    }
   );
 };
 

@@ -1,6 +1,6 @@
 import {userService} from '../../../services/database/user.service';
 import {typedObjectEntries} from '@idle-helper/utils';
-import {BOT_EMOJI, IDLE_FARM_WORKER_TYPE, IDLE_FARM_WORKERS_LEVEL_AMOUNT} from '@idle-helper/constants';
+import {IDLE_FARM_WORKER_TYPE, IDLE_FARM_WORKERS_LEVEL_AMOUNT} from '@idle-helper/constants';
 import {infoService} from '../../../services/database/info.service';
 
 export const _updateWorkerLeaderboard = async () => {
@@ -11,9 +11,11 @@ export const _updateWorkerLeaderboard = async () => {
     });
     await infoService.updateLeaderboard({
       type: worker,
-      values: users.map(user => ({
+      values: users.map((user) => ({
         name: user.username,
-        value: `${BOT_EMOJI.other.level} ${user.workers[worker].level} \`[${user.workers[worker].amount}/${IDLE_FARM_WORKERS_LEVEL_AMOUNT[user.workers[worker].level + 1] ?? '???'}]\``,
+        value: `Level ${user.workers[worker].level} \`[${user.workers[worker].amount}/${
+          IDLE_FARM_WORKERS_LEVEL_AMOUNT[user.workers[worker].level + 1] ?? '???'
+        }]\``,
       })),
     });
   }

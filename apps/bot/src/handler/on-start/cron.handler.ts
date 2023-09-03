@@ -16,12 +16,16 @@ export default async function loadCronJob(client: Client) {
   });
   commands.forEach(({data}) => {
     if (!data?.name || data.disabled) return;
-    schedule(data.expression, () => {
-      if (data.firstClusterOnly && client.cluster && client.cluster?.id !== 0) return;
-      data.execute(client);
-    }, {
-      ...data.cronOptions,
-      timezone: 'Asia/Kuala_Lumpur',
-    });
+    schedule(
+      data.expression,
+      () => {
+        if (data.firstClusterOnly && client.cluster && client.cluster?.id !== 0) return;
+        data.execute(client);
+      },
+      {
+        ...data.cronOptions,
+        timezone: 'Asia/Kuala_Lumpur',
+      }
+    );
   });
 }
