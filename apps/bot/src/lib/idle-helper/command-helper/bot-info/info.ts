@@ -1,5 +1,7 @@
 import {Client, EmbedBuilder, Guild} from 'discord.js';
 import {BOT_COLOR, BOT_INVITE_LINK, SUPPORT_SERVER_INVITE_LINK} from '@idle-helper/constants';
+import {userService} from '../../../../services/database/user.service';
+import convertMsToHumanReadableString from '../../../../utils/convert-ms-to-human-readable-string';
 
 interface IInfo {
   client: Client;
@@ -11,6 +13,7 @@ export const _info = async ({client, server}: IInfo): Promise<EmbedBuilder> => {
 
   const uptime = getUptime(client);
   const totalGuilds = await getTotalGuilds(client);
+  const totalUsers = await userService.calcTotalUsers();
   const {clusterId, totalCluster} = getClusterInfo(client);
   const {shardId, totalShard} = getShardInfo(client, server);
 
@@ -26,6 +29,11 @@ export const _info = async ({client, server}: IInfo): Promise<EmbedBuilder> => {
       inline: true,
     },
     {
+      name: '**Users**',
+      value: totalUsers.toLocaleString(),
+      inline: true,
+    },
+    {
       name: '**Shard**',
       value: `${shardId + 1}/${totalShard}`,
       inline: true,
@@ -34,13 +42,12 @@ export const _info = async ({client, server}: IInfo): Promise<EmbedBuilder> => {
       name: '**Cluster**',
       value: `${clusterId + 1}/${totalCluster}`,
       inline: true,
-    }
+    },
+    {
+      name: '**Links**',
+      value: `**[Invite Link](${BOT_INVITE_LINK}) | [Support Server](${SUPPORT_SERVER_INVITE_LINK})**`,
+    },
   );
-
-  embed.addFields({
-    name: '**Lnks**',
-    value: `**[Invite Link](${BOT_INVITE_LINK}) | [Support Server](${SUPPORT_SERVER_INVITE_LINK})**`,
-  });
 
   return embed;
 };
@@ -104,16 +111,8 @@ const getShardInfo = (client: Client, server: Guild): IShardInfoResult => {
 
 const getUptime = (client: Client): string => {
   const uptime = client.uptime ?? 0;
-  const days = Math.floor(uptime / 86400000);
-  const hours = Math.floor(uptime / 3600000) % 24;
-  const minutes = Math.floor(uptime / 60000) % 60;
-  const seconds = Math.floor(uptime / 1000) % 60;
 
-  let str = '';
-  if (days > 0) str += `${days}d `;
-  if (hours > 0) str += `${hours}h `;
-  if (minutes > 0) str += `${minutes}m `;
-  if (seconds > 0) str += `${seconds}s `;
+  const str = convertMsToHumanReadableString(uptime);
 
   return str.trim();
 };

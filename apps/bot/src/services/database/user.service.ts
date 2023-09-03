@@ -85,7 +85,7 @@ const claimFarm = async ({userId}: IClaimFarm): Promise<IUser | null> => {
     },
     {
       new: true,
-    }
+    },
   );
 
   return user ?? null;
@@ -118,7 +118,7 @@ const saveUserWorkers = async ({userId, workers}: ISaveUserWorkers): Promise<IUs
     },
     {
       new: true,
-    }
+    },
   );
   return user ?? null;
 };
@@ -150,7 +150,7 @@ const setClaimReminders = async ({
     },
     {
       new: true,
-    }
+    },
   );
   return user ?? null;
 };
@@ -173,7 +173,7 @@ const updateReminderChannel = async ({
     },
     {
       new: true,
-    }
+    },
   );
   return user ?? null;
 };
@@ -213,7 +213,7 @@ const resetUserToggle = async ({userId}: IResetUserToggle): Promise<IUser | null
     },
     {
       new: true,
-    }
+    },
   );
   return user ?? null;
 };
@@ -246,7 +246,7 @@ const updateIdleFarmDonorTier = async ({tier, userId}: IUpdateIdleFarmDonorTier)
     },
     {
       new: true,
-    }
+    },
   );
   return user ?? null;
 };
@@ -276,6 +276,10 @@ const getTopWorkers = async ({type, limit}: IGetTopWorkers) => {
   return users;
 };
 
+const calcTotalUsers = async () => {
+  return dbUser.estimatedDocumentCount({});
+};
+
 export const userService = {
   registerUser,
   findUser,
@@ -293,4 +297,5 @@ export const userService = {
   getUsersById,
   updateIdleFarmDonorTier,
   getTopWorkers,
+  calcTotalUsers,
 };

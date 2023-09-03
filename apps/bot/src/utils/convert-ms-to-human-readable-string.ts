@@ -65,7 +65,7 @@ export default function convertMsToHumanReadableString(milliseconds: number) {
     stringParts.push(`${minutes}m`);
     hasValue = true;
   }
-  if (seconds > 0 || hasValue) {
+  if (seconds >= 0 || hasValue) {
     stringParts.push(`${seconds}s`);
   }
 
