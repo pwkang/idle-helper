@@ -1,6 +1,6 @@
 import {mongoClient} from '@idle-helper/services';
 import {IUser, IUserToggle, IUserWorker, userSchema} from '@idle-helper/models';
-import {IDLE_FARM_DONOR_TIER} from '@idle-helper/constants';
+import {IDLE_FARM_DONOR_TIER, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 import {UpdateQuery} from 'mongoose';
 
 const dbUser = mongoClient.model<IUser>('users', userSchema);
@@ -250,6 +250,32 @@ const updateIdleFarmDonorTier = async ({tier, userId}: IUpdateIdleFarmDonorTier)
   );
   return user ?? null;
 };
+
+interface IGetTopWorkers {
+  type: ValuesOf<typeof IDLE_FARM_WORKER_TYPE>;
+  limit: number;
+}
+
+const getTopWorkers = async ({type, limit}: IGetTopWorkers) => {
+  const users = await dbUser
+    .find({
+      [`workers.${type}`]: {
+        $exists: true,
+      },
+      'lastUpdated.workers': {
+        $exists: true,
+      },
+    })
+    .sort({
+      [`workers.${type}.level`]: -1,
+      [`workers.${type}.amount`]: -1,
+    })
+    .limit(limit)
+    .lean();
+
+  return users;
+};
+
 export const userService = {
   registerUser,
   findUser,
@@ -266,4 +292,5 @@ export const userService = {
   resetUserToggle,
   getUsersById,
   updateIdleFarmDonorTier,
+  getTopWorkers,
 };

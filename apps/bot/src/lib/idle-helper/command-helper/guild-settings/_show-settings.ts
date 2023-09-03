@@ -7,7 +7,7 @@ import {
   StringSelectMenuBuilder,
   StringSelectMenuInteraction,
 } from 'discord.js';
-import {generateNavigationRow, NAVIGATION_ROW_BUTTONS} from '../../../../utils/pagination-row';
+import {generateNavigationRow} from '../../../../utils/pagination-row';
 import {_getGuildSettingsEmbed} from './embed/guild-settings.embed';
 import messageFormatter from '../../../discordjs/message-formatter';
 import {getGuildToggleEmbed} from '../toggle/type/guild.toggle';
@@ -98,20 +98,7 @@ export const _showSettings = async ({server, type, initialGuildRoleId}: IShowSet
       currentGuildRoleId = interaction.values[0];
     }
     if (interaction.isButton()) {
-      switch (customId) {
-        case NAVIGATION_ROW_BUTTONS.first:
-          page = 0;
-          break;
-        case NAVIGATION_ROW_BUTTONS.prev:
-          page--;
-          break;
-        case NAVIGATION_ROW_BUTTONS.next:
-          page++;
-          break;
-        case NAVIGATION_ROW_BUTTONS.last:
-          page = Math.ceil(guilds.length / ITEMS_PER_PAGE) - 1;
-          break;
-      }
+      page = Number(customId);
     }
     return {
       embeds: [getEmbed()],

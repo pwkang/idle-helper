@@ -8,6 +8,7 @@ import {_guildHelper} from './guild';
 import {_calculatorHelper} from './calculator';
 import {_raidHelper} from './raid-helper';
 import {_workersHelper} from './workers';
+import {_leaderboardHelper} from './leaderboard';
 
 const commandHelper = {
   toggle: _toggleHelper,
@@ -20,6 +21,7 @@ const commandHelper = {
   calculator: _calculatorHelper,
   raid: _raidHelper,
   workers: _workersHelper,
+  leaderboard: _leaderboardHelper,
 };
 
 export default commandHelper;

@@ -94,10 +94,36 @@ const updateMarketItems = async ({type, price, isOverstocked}: IUpdateMarketItem
   );
 };
 
+interface IUpdateLeaderboard {
+  type: keyof IInfo['leaderboard'];
+  values: Array<{name: string; value: string}>;
+}
+
+const updateLeaderboard = async ({type, values}: IUpdateLeaderboard) => {
+  await dbInfo.findOneAndUpdate(
+    {},
+    {
+      $set: {
+        [`leaderboard.${type}`]: values,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+};
+
+const getLeaderboard = async (): Promise<IInfo['leaderboard']> => {
+  const info = await getInfo();
+  return info?.leaderboard;
+};
+
 export const infoService = {
   getWorkerPower,
   updateWorkerPower,
   init,
   updateMarketItems,
   getMarketItems,
+  updateLeaderboard,
+  getLeaderboard,
 };

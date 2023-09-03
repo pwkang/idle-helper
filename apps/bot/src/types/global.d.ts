@@ -74,6 +74,7 @@ declare global {
     expression: string;
     disabled?: boolean;
     cronOptions: ScheduleOptions;
+    firstClusterOnly?: boolean;
     execute: (client: Client) => Promise<void>;
   }
 
