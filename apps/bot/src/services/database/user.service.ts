@@ -227,8 +227,8 @@ const getUsersById = async ({userIds}: IGetUsersById): Promise<IUser[]> => {
     userId: {
       $in: userIds,
     },
-  });
-  return users;
+  }).lean();
+  return users ?? [];
 };
 
 interface IUpdateIdleFarmDonorTier {

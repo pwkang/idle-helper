@@ -113,15 +113,16 @@ interface IGenerateConfirmationEmbed {
   authors: User[];
 }
 
-const generateConfirmationEmbed = ({authors, users}: IGenerateConfirmationEmbed) => {
+export const generateConfirmationEmbed = ({authors, users}: IGenerateConfirmationEmbed) => {
   const embed = new EmbedBuilder().setColor(BOT_COLOR.embed).setAuthor({
     name: 'Team Raid Confirmation',
   });
 
   for (const author of authors) {
     const user = users.find((user) => user.userId === author.id)!;
-    if (user) {
+    if (user.workers) {
       const top3Workers = typedObjectEntries(user.workers)
+        .filter(([, worker]) => worker)
         .map(([type, worker]) => ({
           level: worker.level,
           exp: worker.exp,
@@ -138,7 +139,7 @@ const generateConfirmationEmbed = ({authors, users}: IGenerateConfirmationEmbed)
         name: `${author.username} • ${totalPower}`,
         value: top3Workers
           .map(
-            (worker) => `${BOT_EMOJI.worker[worker.type]} Lv ${worker.level} | AT: ${worker.power}`
+            (worker) => `${BOT_EMOJI.worker[worker.type]} Lv ${worker.level} | AT: ${worker.power}`,
           )
           .join('\n'),
         inline: true,
