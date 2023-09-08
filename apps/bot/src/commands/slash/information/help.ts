@@ -18,10 +18,15 @@ export default <SlashCommand>{
       channelId: interaction.channelId,
       serverId: interaction.guildId,
     });
-    await djsInteractionHelper.replyInteraction({
+    const event = await djsInteractionHelper.replyInteraction({
       client,
       options: botInfo.render(),
       interaction,
+      interactive: true,
+    });
+    if (!event) return;
+    event.every((newInteraction) => {
+      return botInfo.replyInteraction(newInteraction);
     });
   },
 };
