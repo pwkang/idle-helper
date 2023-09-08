@@ -1,7 +1,7 @@
-import commandHelper from '../../../lib/idle-helper/command-helper';
-import djsInteractionHelper from '../../../lib/discordjs/interaction';
 import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
 import {SLASH_COMMAND} from '../constant';
+import djsInteractionHelper from '../../../lib/discordjs/interaction';
+import commandHelper from '../../../lib/idle-helper/command-helper';
 
 export default <SlashCommand>{
   name: SLASH_COMMAND.help.name,
@@ -12,11 +12,21 @@ export default <SlashCommand>{
   },
   type: 'command',
   execute: async (client, interaction) => {
-    const botInfo = commandHelper.botInfo.help({client});
-    await djsInteractionHelper.replyInteraction({
+    if (!interaction.inGuild()) return;
+    const botInfo = commandHelper.botInfo.help({
+      client,
+      channelId: interaction.channelId,
+      serverId: interaction.guildId,
+    });
+    const event = await djsInteractionHelper.replyInteraction({
       client,
       options: botInfo.render(),
       interaction,
+      interactive: true,
+    });
+    if (!event) return;
+    event.every((newInteraction) => {
+      return botInfo.replyInteraction(newInteraction);
     });
   },
 };

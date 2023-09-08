@@ -109,11 +109,11 @@ export const SLASH_COMMAND = {
   },
   invite: {
     name: 'invite',
-    description: 'Invite EPIC Helper to another server or join the official server',
+    description: 'Invite IDLE Helper to another server or join the official server',
   },
   help: {
     name: 'help',
-    description: 'Show all commands or information of EPIC Helper',
+    description: 'Show all commands or information of IDLE Helper',
   },
   lastClaim: {
     name: 'last-claim',
