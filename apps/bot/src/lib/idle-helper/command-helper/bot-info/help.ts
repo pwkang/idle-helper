@@ -1,13 +1,17 @@
-import {BaseMessageOptions, Client, EmbedBuilder} from 'discord.js';
 import {
-  BOT_CLICKABLE_SLASH_COMMANDS,
-  BOT_COLOR,
-  IDLE_FARM_CLICKABLE_SLASH_COMMANDS,
-  PREFIX,
-  SUPPORT_SERVER_INVITE_LINK,
-} from '@idle-helper/constants';
+  ActionRowBuilder,
+  BaseInteraction,
+  BaseMessageOptions,
+  ButtonBuilder,
+  ButtonStyle,
+  Client,
+  EmbedBuilder,
+  StringSelectMenuBuilder,
+} from 'discord.js';
+import {BOT_COLOR, BOT_INVITE_LINK, SUPPORT_SERVER_INVITE_LINK} from '@idle-helper/constants';
 import {helpConfig} from './help.config';
 import messageFormatter from '../../../discordjs/message-formatter';
+import {generateNavigationRow} from '../../../../utils/pagination-row';
 
 interface IHelp {
   client: Client;
@@ -16,21 +20,40 @@ interface IHelp {
 }
 
 export const _help = ({client, channelId, serverId}: IHelp) => {
-  const page = 0;
-  const categoryId: string | undefined = 'commands';
-  const selectMenuId: string | undefined = 'user';
+  let page = 0;
+  let categoryId: string | undefined;
+  let selectMenuId: string | undefined;
 
   function render(): BaseMessageOptions {
     const embed = getEmbed({
       client, page, categoryId, selectMenuId, channelId, serverId,
     });
+    const components = getComponents({page, categoryId, selectMenuId});
     return {
       embeds: [embed],
+      components,
     };
+  }
+
+  function replyInteraction(interaction: BaseInteraction): BaseMessageOptions {
+    if (interaction.isButton() && new RegExp('^category:').test(interaction.customId)) {
+      categoryId = interaction.customId.replace('category:', '');
+      selectMenuId = undefined;
+      page = 0;
+    }
+    if (interaction.isButton() && !isNaN(Number(interaction.customId))) {
+      page = Number(interaction.customId);
+    }
+    if (interaction.isStringSelectMenu()) {
+      selectMenuId = interaction.values[0];
+      page = 0;
+    }
+    return render();
   }
 
   return {
     render,
+    replyInteraction,
   };
 };
 
@@ -51,55 +74,140 @@ const getEmbed = ({client, categoryId, page, selectMenuId, channelId, serverId}:
     .setColor(BOT_COLOR.embed)
     .setThumbnail(client.user?.displayAvatarURL() ?? null);
 
-  const category = helpConfig.find(v => v.id === categoryId);
-  if (!category) {
-    setHomePage(embed);
-  } else {
-    const selectedMenuItem = category.selectMenu.items?.find(v => v.id === selectMenuId);
-    embed.setTitle(category.home.title);
-    embed.setDescription(category.home.description.join('\n'));
+  const category = helpConfig.find(v => v.id === categoryId) ?? helpConfig[0];
+  const selectedMenuItem = category.selectMenu.items?.find(v => v.id === selectMenuId);
+  embed.setTitle(category.home.title);
+  embed.setDescription(category.home.description.join('\n'));
 
-    if (selectedMenuItem && selectedMenuItem.commands) {
-      const range = {
-        start: page * LINES_PER_PAGE,
-        end: (page + 1) * LINES_PER_PAGE,
-      };
-      let currentLines = 0;
-      let description = '';
-      for (let i = 0; i < selectedMenuItem.commands.length; i++) {
-        const command = selectedMenuItem.commands[i];
-        if (currentLines >= range.start && currentLines < range.end) {
-          description += [command.name.map(name => convertCommandName({
-            name,
-            channelId,
-            serverId,
-          })).join(' | '),
-          command.description.map(d => `- ${d}`).join('\n'),
-          '',
-          '',
-          ].join('\n');
-          currentLines += command.description.length;
-        }
+  if (selectedMenuItem && selectedMenuItem.commands) {
+    const range = {
+      start: page * LINES_PER_PAGE,
+      end: (page + 1) * LINES_PER_PAGE,
+    };
+    let currentLines = 0;
+    let description = '';
+    for (let i = 0; i < selectedMenuItem.commands.length; i++) {
+      const command = selectedMenuItem.commands[i];
+      if (currentLines >= range.start && currentLines < range.end) {
+        description += [command.name.map(name => convertCommandName({
+          name,
+          channelId,
+          serverId,
+        })).join(' | '),
+        command.description.map(d => `- ${d}`).join('\n'),
+        '',
+        '',
+        ].join('\n');
       }
+      currentLines += command.description.length;
+    }
+    if (description) {
       embed.setDescription(description);
-
-    } else if (selectedMenuItem && selectedMenuItem.info) {
-      const info = selectedMenuItem.info[page];
-      embed.setTitle(info.title);
-      embed.setDescription(info.description.join('\n'));
-      if (info.image) embed.setImage(info.image);
-    } else {
-      embed.addFields(...category.home.fields.map(v => ({
-        name: v.name,
-        value: v.value.join('\n'),
-        inline: v.inline,
-      })));
     }
 
-
+  } else if (selectedMenuItem && selectedMenuItem.info) {
+    const info = selectedMenuItem.info[page];
+    embed.setTitle(info.title);
+    embed.setDescription(info.description.join('\n'));
+    if (info.image) embed.setImage(info.image);
+  } else {
+    embed.addFields(...category.home.fields.map(v => ({
+      name: v.name,
+      value: v.value.join('\n'),
+      inline: v.inline,
+    })));
   }
 
+
   return embed;
+};
+
+interface IGetComponents {
+  page: number;
+  categoryId?: string;
+  selectMenuId?: string;
+}
+
+const getComponents = ({
+  selectMenuId, categoryId, page,
+}: IGetComponents) => {
+  const rows = [];
+  const category = helpConfig.find(v => v.id === categoryId) ?? helpConfig[0];
+  const selectMenu = category?.selectMenu.items.find(v => v.id === selectMenuId);
+
+  if (category && selectMenu) {
+    if (selectMenu.commands) {
+      const totalLines = selectMenu.commands.reduce((acc, cur) => acc + cur.description.length, 0);
+      const totalPages = Math.ceil(totalLines / LINES_PER_PAGE);
+      if (totalPages > 1) {
+        rows.push(
+          generateNavigationRow({
+            itemsPerPage: LINES_PER_PAGE,
+            page,
+            total: totalLines,
+          }),
+        );
+      }
+    } else if (selectMenu.info) {
+      const totalPages = selectMenu.info.length;
+      if (totalPages > 1) {
+        rows.push(
+          generateNavigationRow({
+            itemsPerPage: 1,
+            page,
+            total: totalPages,
+          }),
+        );
+      }
+    }
+  }
+
+  const categoryRow = new ActionRowBuilder<ButtonBuilder>();
+
+  for (const category of helpConfig) {
+    categoryRow.addComponents(
+      new ButtonBuilder()
+        .setCustomId(`category:${category.id}`)
+        .setLabel(category.label)
+        .setStyle(ButtonStyle.Primary),
+    );
+  }
+  rows.push(categoryRow);
+
+  const selectMenuRow = new ActionRowBuilder<StringSelectMenuBuilder>();
+  if (category.selectMenu?.items?.length) {
+    selectMenuRow.addComponents(
+      new StringSelectMenuBuilder()
+        .setCustomId('selectMenu')
+        .setPlaceholder(category.selectMenu.name)
+        .setOptions(category.selectMenu.items.map(v => ({
+          value: v.id,
+          label: v.label,
+          description: v.description,
+          emoji: v.emoji,
+          default: v.id === selectMenuId,
+        }))),
+    );
+  }
+  rows.push(selectMenuRow);
+
+
+  const linksRow = new ActionRowBuilder<ButtonBuilder>()
+    .addComponents(
+      new ButtonBuilder()
+        .setLabel('Invite')
+        .setStyle(ButtonStyle.Link)
+        .setURL(BOT_INVITE_LINK),
+    )
+    .addComponents(
+      new ButtonBuilder()
+        .setLabel('Support')
+        .setStyle(ButtonStyle.Link)
+        .setURL(SUPPORT_SERVER_INVITE_LINK),
+    );
+  rows.push(linksRow);
+
+  return rows;
 };
 
 interface IConvertName {
@@ -109,39 +217,15 @@ interface IConvertName {
 }
 
 const convertCommandName = ({name, channelId, serverId}: IConvertName) => {
-  if (name.startsWith('</')) {
+  if (new RegExp('^</.*:\\d+>$').test(name)) {
     return name;
   } else {
-    return `[${name}](${messageFormatter.channelUrl({
-      serverId,
-      channelId,
-    })})`;
+    return messageFormatter.hyperlink({
+      url: messageFormatter.channelUrl({
+        serverId,
+        channelId,
+      }),
+      text: name,
+    });
   }
 };
-
-function setHomePage(embed: EmbedBuilder) {
-  embed.setDescription([
-    `**Prefix:** \`${PREFIX.bot}\`, \`@IDLE Helper\``,
-    `- Use ${BOT_CLICKABLE_SLASH_COMMANDS.accountRegister} to register to the bot`,
-    `- Register your workers via ${IDLE_FARM_CLICKABLE_SLASH_COMMANDS.workerStats}`,
-    '- Start idling',
-  ].join('\n'))
-    .addFields(
-      {
-        name: 'Features',
-        value: [
-          'Raid Helper',
-          'Claim Reminder',
-          'Team Raid Helper',
-          'Random Events Pings',
-          'Last Claim Duration',
-          'Global Worker Leaderboard',
-          'Inventory idlons Calculator',
-          'etc...',
-        ].map(v => `- ${v}`).join('\n'),
-      }, {
-        name: 'Have a question?',
-        value: `Join our [Support server](${SUPPORT_SERVER_INVITE_LINK})`,
-      },
-    );
-}

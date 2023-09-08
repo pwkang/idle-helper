@@ -1,4 +1,4 @@
-import {BOT_CLICKABLE_SLASH_COMMANDS} from '@idle-helper/constants';
+import {BOT_CLICKABLE_SLASH_COMMANDS, IDLE_FARM_CLICKABLE_SLASH_COMMANDS, PREFIX} from '@idle-helper/constants';
 
 export type IHelpConfig = Category[]
 
@@ -53,22 +53,37 @@ export const helpConfig: IHelpConfig = [
     id: 'commands',
     label: 'Commands',
     home: {
-      description: ['**Prefix**: `wr` (not-changable)'],
+      description: [
+        `**Prefix:** \`${PREFIX.bot}\`, \`@IDLE Helper\``,
+      ],
       title: 'EPIC Helper Help',
       fields: [
         {
-          name: 'Basic',
-          value: ['Type `wrregister` to register to the bot',
-            'Use `/cd` to register the reminder',
-            'Type `wrdonor` if you are EPIC RPG donor',
-            'Type `wrdonorp` if you wish to hunt with partner\'s cooldown',
-            'You can now play EPIC RPG as usual! Bot will reminds you when your command is ready!'],
-          inline: false,
+          name: 'Start',
+          value: [
+            `- Use ${BOT_CLICKABLE_SLASH_COMMANDS.accountRegister} to register to the bot`,
+            `- Register your workers via ${IDLE_FARM_CLICKABLE_SLASH_COMMANDS.workerStats}`,
+            '- Start idling',
+          ],
+        },
+        {
+          name: 'Features',
+          value: [
+            '- Raid Helper',
+            '- Claim Reminder',
+            '- Team Raid Helper',
+            '- Random Events Pings',
+            '- Last Claim Duration',
+            '- Global Worker Leaderboard',
+            '- Inventory idlons Calculator',
+            '- etc...',
+          ],
         },
         {
           name: 'Have a question?',
-          value: ['Checkout the Guide and FAQ buttons below',
-            'Or join the [support server](https://discord.gg/NXUUX45ySv) if you can\'t find an answer here'],
+          value: [
+            '- Checkout the Guide and FAQ buttons below',
+            '- Or join the [support server](https://discord.gg/NXUUX45ySv) if you can\'t find an answer here'],
           inline: false,
         },
       ],
