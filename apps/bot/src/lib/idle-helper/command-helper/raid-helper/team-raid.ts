@@ -98,7 +98,7 @@ const generateMessageOptions = ({
   for (const member of raidInfo.members) {
     const user = usersAccount.find((user) => user.username === member.username);
     const workersInfo: string[] = [];
-    if (user) {
+    if (user?.workers) {
       for (const workerInfo of member.workers) {
         const worker = user.workers[workerInfo.type];
         let stats = '';
@@ -140,7 +140,7 @@ const generateMessageOptions = ({
   }
 
   embed.setDescription(
-    `Timer: ${timestampHelper.relative({time: new Date(startTime.getTime() + TEAM_RAID_DURATION)})}`
+    `Timer: ${timestampHelper.relative({time: new Date(startTime.getTime() + TEAM_RAID_DURATION)})}`,
   );
 
   return {
