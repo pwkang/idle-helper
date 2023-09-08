@@ -119,8 +119,8 @@ export const generateConfirmationEmbed = ({authors, users}: IGenerateConfirmatio
   });
 
   for (const author of authors) {
-    const user = users.find((user) => user.userId === author.id)!;
-    if (user.workers) {
+    const user = users.find((user) => user.userId === author.id);
+    if (user?.workers) {
       const top3Workers = typedObjectEntries(user.workers)
         .filter(([, worker]) => worker)
         .map(([type, worker]) => ({
