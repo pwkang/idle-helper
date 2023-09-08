@@ -8,7 +8,7 @@ export default <PrefixCommand>{
   preCheck: {},
   type: PREFIX_COMMAND_TYPE.bot,
   execute: async (client, message) => {
-    const botHelp = commandHelper.botInfo.help({client});
+    const botHelp = commandHelper.botInfo.help({client, channelId: message.channel.id, serverId: message.guild?.id});
     await djsMessageHelper.send({
       client,
       options: botHelp.render(),

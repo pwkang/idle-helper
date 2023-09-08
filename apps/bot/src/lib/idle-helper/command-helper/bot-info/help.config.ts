@@ -1,9 +1,10 @@
+import {BOT_CLICKABLE_SLASH_COMMANDS} from '@idle-helper/constants';
+
 export type IHelpConfig = Category[]
 
 export interface Category {
   id: string;
   label: string;
-  linesPerPage: number;
   home: Home;
   selectMenu: SelectMenu;
 }
@@ -11,7 +12,7 @@ export interface Category {
 export interface Home {
   description: string[];
   title: string;
-  embeds?: Embed[];
+  fields: Embed[];
 }
 
 export interface Embed {
@@ -26,6 +27,7 @@ export interface SelectMenu {
 }
 
 export type SelectMenuItem = {
+  id: string;
   label: string;
   emoji: string;
   description?: string;
@@ -46,15 +48,14 @@ export interface Info {
 }
 
 
-const helpConfig: IHelpConfig = [
+export const helpConfig: IHelpConfig = [
   {
     id: 'commands',
     label: 'Commands',
-    linesPerPage: 8,
     home: {
       description: ['**Prefix**: `wr` (not-changable)'],
       title: 'EPIC Helper Help',
-      embeds: [
+      fields: [
         {
           name: 'Basic',
           value: ['Type `wrregister` to register to the bot',
@@ -76,12 +77,13 @@ const helpConfig: IHelpConfig = [
       name: 'Browse commands',
       items: [
         {
+          id: 'user',
           label: 'User',
           emoji: '🕵️',
           description: 'View and modify personal settings',
           commands: [
             {
-              name: ['register', '/account register'],
+              name: ['register', '/account register', BOT_CLICKABLE_SLASH_COMMANDS.accountRegister],
               description: ['Register and start using the bot'],
             },
             {
@@ -90,7 +92,7 @@ const helpConfig: IHelpConfig = [
             },
             {
               name: ['off', '/account off'],
-              description: ['Turn off everythings including `reminder`, `enchant mute`, `stats`, `rpg i <area>`, `update pets`'],
+              description: ['Turn off every things including `reminder`, `enchant mute`, `stats`, `rpg i <area>`, `update pets`'],
             },
             {
               name: ['settings', '/account settings'],
@@ -142,6 +144,7 @@ const helpConfig: IHelpConfig = [
           ],
         },
         {
+          id: 'server',
           label: 'Server',
           emoji: '🌏',
           description: 'View server settings or information',
@@ -201,6 +204,7 @@ const helpConfig: IHelpConfig = [
           ],
         },
         {
+          id: 'guild',
           label: 'Guild',
           emoji: '🏛️',
           description: 'View guild settings or information',
@@ -272,6 +276,7 @@ const helpConfig: IHelpConfig = [
           ],
         },
         {
+          id: 'donor',
           label: 'Donor',
           emoji: '✨',
           description: 'View donor-only commands',
@@ -304,6 +309,7 @@ const helpConfig: IHelpConfig = [
           ],
         },
         {
+          id: 'other',
           label: 'Other',
           emoji: '⚙️',
           description: 'Miscellaneous commands',
@@ -345,16 +351,21 @@ const helpConfig: IHelpConfig = [
   {
     id: 'qna',
     label: 'Guide & FAQ',
-    linesPerPage: 8,
     home: {
       title: 'EPIC Helper Guide & FAQ',
-      description: ['You can find the answer of most frequently asked question here\n',
-        'If you couldn\'t find the answer here, feel free to join the [support server](https://discord.gg/NXUUX45ySv) and ask us'],
+      description: ['You can find the answer of most frequently asked question here\n'],
+      fields: [
+        {
+          name: 'Have other questions?',
+          value: ['Join the [support server](https://discord.gg/NXUUX45ySv) and ask us'],
+        },
+      ],
     },
     selectMenu: {
       name: 'Browse Guide',
       items: [
         {
+          id: 'user-guide',
           label: 'User related',
           emoji: '🕵️',
           commands: [
@@ -401,6 +412,7 @@ const helpConfig: IHelpConfig = [
           ],
         },
         {
+          id: 'server-guide',
           label: 'Server related',
           emoji: '🌏',
           commands: [
@@ -435,6 +447,7 @@ const helpConfig: IHelpConfig = [
           ],
         },
         {
+          id: 'guild-guide',
           label: 'Guild related',
           emoji: '🏛️',
           commands: [
@@ -480,6 +493,7 @@ const helpConfig: IHelpConfig = [
           ],
         },
         {
+          id: 'donor-guide',
           label: 'Donor related',
           emoji: '✨',
           commands: [
