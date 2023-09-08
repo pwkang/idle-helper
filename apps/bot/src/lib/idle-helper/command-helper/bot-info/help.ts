@@ -111,11 +111,12 @@ const getEmbed = ({client, categoryId, page, selectMenuId, channelId, serverId}:
     embed.setDescription(info.description.join('\n'));
     if (info.image) embed.setImage(info.image);
   } else {
-    embed.addFields(...category.home.fields.map(v => ({
-      name: v.name,
-      value: v.value.join('\n'),
-      inline: v.inline,
-    })));
+    if (category.home.fields)
+      embed.addFields(...category.home.fields.map(v => ({
+        name: v.name,
+        value: v.value.join('\n'),
+        inline: v.inline,
+      })));
   }
 
 
