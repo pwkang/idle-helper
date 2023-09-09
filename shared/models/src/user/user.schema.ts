@@ -32,6 +32,9 @@ export const userSchema = new Schema<IUser>({
       claim: {type: Boolean, default: false},
       inventory: {type: Boolean, default: true},
     },
+    autoSend: {
+      profile: {type: Boolean, default: false},
+    },
   },
   username: String,
   workers: {

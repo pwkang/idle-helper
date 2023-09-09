@@ -3,6 +3,7 @@ import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-li
 import {userService} from '../../../services/database/user.service';
 import {getLastClaimEmbed} from '../../idle-helper/command-helper/farms/status';
 import {djsMessageHelper} from '../../discordjs/message';
+import toggleUserChecker from '../../idle-helper/toggle-checker/user';
 
 interface IIdleProfile {
   client: Client;
@@ -21,7 +22,7 @@ export const idleProfile = ({author, client, isSlashCommand, message}: IIdleProf
   event.on('embed', async (embed, collected) => {
     if (isIdleProfile({embed, author})) {
       event.stop();
-      idleProfileSuccess({embed, author, message: collected, client});
+      await idleProfileSuccess({embed, author, message: collected, client});
     }
   });
   if (isSlashCommand) event.triggerCollect(message);
@@ -40,6 +41,11 @@ const idleProfileSuccess = async ({author, message, client}: IIdleProfileSuccess
     userId: author.id,
   });
   if (!userAccount) return;
+  const toggleUser = await toggleUserChecker({
+    userId: author.id,
+  });
+  if (!toggleUser?.autoSend?.profile) return;
+
   const lastClaimEmbed = getLastClaimEmbed({
     author,
     userAccount,
