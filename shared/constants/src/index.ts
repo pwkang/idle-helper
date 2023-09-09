@@ -13,3 +13,4 @@ export * from './idle-farm/items';
 export * from './idle-farm/bot';
 export * from './idle-farm/worker';
 export * from './idle-farm/farm';
+export * from './idle-farm/league';

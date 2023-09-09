@@ -15,7 +15,7 @@ export const _farmStatus = async ({author}: IFarmStatus) => {
   if (!userAccount) return null;
 
   const render = (): BaseMessageOptions => {
-    const embed = getEmbed({
+    const embed = getLastClaimEmbed({
       userAccount,
       author,
     });
@@ -34,7 +34,7 @@ interface IGetEmbed {
   userAccount: IUser;
 }
 
-const getEmbed = ({userAccount, author}: IGetEmbed) => {
+export const getLastClaimEmbed = ({userAccount, author}: IGetEmbed) => {
   const embed = new EmbedBuilder().setColor(BOT_COLOR.embed).setAuthor({
     name: `${author.username} - last claim`,
     iconURL: author.avatarURL() ?? undefined,
@@ -45,7 +45,7 @@ const getEmbed = ({userAccount, author}: IGetEmbed) => {
     : 0;
 
   embed.setDescription(
-    `Last claim at: **${duration ? convertMsToHumanReadableString(duration) : '-'}**`
+    `Last claim at: **${duration ? convertMsToHumanReadableString(duration) : '-'}**`,
   );
 
   return embed;

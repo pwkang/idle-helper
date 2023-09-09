@@ -11,10 +11,10 @@ interface IIdleFarmCommandListener {
 }
 
 type TEventTypes = {
-  embed: [Embed, Message];
-  content: [Message['content'], Message];
+  embed: [Embed, Message<true>];
+  content: [Message['content'], Message<true>];
   cooldown: [number];
-  attachments: [Message['attachments'], Message];
+  attachments: [Message['attachments'], Message<true>];
 };
 
 type TExtraProps = {
@@ -67,6 +67,7 @@ export const createIdleFarmCommandListener = ({
   collector.on('collect', messageCollected);
 
   async function messageCollected(collected: Message) {
+    if (!collected.inGuild()) return;
     if (isLoadingContent({collected, author})) {
       return awaitEdit(collected.id);
     }
