@@ -21,3 +21,5 @@ export const _toggleCalculatorClaim = ({toggle}: IToggleCalculator) =>
 
 export const _toggleCalculatorInventory = ({toggle}: IToggleCalculator) =>
   toggle.calculator.all && toggle.calculator.inventory;
+
+export const _toggleAutoSendOnProfile = ({toggle}: IToggleCalculator) => toggle.autoSend.profile;

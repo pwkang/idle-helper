@@ -1,5 +1,6 @@
 import {userService} from '../../../../services/database/user.service';
 import {
+  _toggleAutoSendOnProfile,
   _toggleCalculatorClaim,
   _toggleCalculatorInventory,
   _toggleClaimReminder,
@@ -25,6 +26,9 @@ const toggleUserChecker = async ({userId}: IToggleUserChecker) => {
     calculator: {
       claim: _toggleCalculatorClaim({toggle: userToggle}),
       inventory: _toggleCalculatorInventory({toggle: userToggle}),
+    },
+    autoSend: {
+      profile: _toggleAutoSendOnProfile({toggle: userToggle}),
     },
   };
 };

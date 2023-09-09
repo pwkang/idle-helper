@@ -35,6 +35,11 @@ const user = (userToggle: IUserToggle): IToggleEmbedsInfo[] => {
             },
           ],
         },
+        {
+          value: userToggle.autoSend.profile,
+          path: 'toggle.autoSend.profile',
+          label: 'Send last-claim @ `idle p`',
+        },
       ],
     },
   ];
