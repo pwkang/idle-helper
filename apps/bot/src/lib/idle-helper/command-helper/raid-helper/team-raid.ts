@@ -98,7 +98,7 @@ const generateMessageOptions = ({
   for (const member of raidInfo.members) {
     const user = usersAccount.find((user) => user.username === member.username);
     const workersInfo: string[] = [];
-    if (user?.workers) {
+    if (user?.lastUpdated.workers) {
       for (const workerInfo of member.workers) {
         const worker = user.workers[workerInfo.type];
         let stats = '';
@@ -129,7 +129,7 @@ const generateMessageOptions = ({
         workersInfo.push(workerInfo.used ? `~~${stats}~~` : stats);
       }
     } else {
-      workersInfo.push('Not registered');
+      workersInfo.push('No workers registered');
     }
 
     embed.addFields({
