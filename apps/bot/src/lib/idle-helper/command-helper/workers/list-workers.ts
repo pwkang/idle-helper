@@ -35,20 +35,24 @@ const getEmbed = ({userAccount, author}: IGetEmbed) => {
   });
 
   const workers: string[] = [];
-  for (const [workerType] of typedObjectEntries(IDLE_FARM_WORKER_TYPE)) {
-    const worker = userAccount.workers[workerType];
-    const emoji = BOT_EMOJI.worker[workerType];
-    if (worker) {
-      workers.push(
-        `${emoji} ${BOT_EMOJI.other.level} ${worker.level} :boom: ${calcWorkerPower({
-          type: workerType,
-          level: worker.level,
-          decimalPlace: 2,
-        })}`
-      );
-    } else {
-      workers.push(`${BOT_EMOJI.worker[workerType]} -`);
+  if (userAccount.lastUpdated.workers) {
+    for (const [workerType] of typedObjectEntries(IDLE_FARM_WORKER_TYPE)) {
+      const worker = userAccount.workers[workerType];
+      const emoji = BOT_EMOJI.worker[workerType];
+      if (worker) {
+        workers.push(
+          `${emoji} ${BOT_EMOJI.other.level} ${worker.level} :boom: ${calcWorkerPower({
+            type: workerType,
+            level: worker.level,
+            decimalPlace: 2,
+          })}`,
+        );
+      } else {
+        workers.push(`${BOT_EMOJI.worker[workerType]} -`);
+      }
     }
+  } else {
+    workers.push('No workers registered');
   }
   embed.setDescription(workers.reverse().join('\n'));
   return embed;

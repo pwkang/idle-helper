@@ -63,7 +63,7 @@ const getEmbed = ({userAccount, author}: IGetEmbed) => {
       );
     }
   } else {
-    workers.push('You have not register your workers yet.');
+    workers.push('No workers registered');
   }
 
   embed.setDescription(workers.join('\n'));

@@ -129,7 +129,7 @@ const generateMessageOptions = ({
         workersInfo.push(workerInfo.used ? `~~${stats}~~` : stats);
       }
     } else {
-      workersInfo.push('Not registered');
+      workersInfo.push('No workers registered');
     }
 
     embed.addFields({
