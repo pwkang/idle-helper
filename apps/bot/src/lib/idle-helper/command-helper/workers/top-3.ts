@@ -35,32 +35,37 @@ const getEmbed = ({userAccount, author}: IGetEmbed) => {
   });
 
   const workers: string[] = [];
-  const top3Workers = typedObjectEntries(userAccount.workers)
-    .map(([type, worker]) => ({
-      level: worker.level,
-      exp: worker.exp,
-      maxExp: worker.maxExp,
-      farm: worker.farm,
-      type,
-      power: calcWorkerPower({type, level: worker.level, decimalPlace: 3}),
-    }))
-    .sort((a, b) => b.power - a.power)
-    .slice(0, 3);
-  const totalPower = top3Workers.reduce((acc, worker) => acc + worker.power, 0);
-
-  workers.push(`Total power: **${totalPower}** :boom:`);
-  workers.push('');
-
-  for (const worker of top3Workers) {
-    const emoji = BOT_EMOJI.worker[worker.type];
-    workers.push(
-      `${emoji} ${BOT_EMOJI.other.level} ${worker.level} :boom: ${calcWorkerPower({
-        type: worker.type,
+  if (userAccount.lastUpdated.workers) {
+    const top3Workers = typedObjectEntries(userAccount.workers)
+      .map(([type, worker]) => ({
         level: worker.level,
-        decimalPlace: 2,
-      })}`
-    );
+        exp: worker.exp,
+        maxExp: worker.maxExp,
+        farm: worker.farm,
+        type,
+        power: calcWorkerPower({type, level: worker.level, decimalPlace: 3}),
+      }))
+      .sort((a, b) => b.power - a.power)
+      .slice(0, 3);
+    const totalPower = top3Workers.reduce((acc, worker) => acc + worker.power, 0);
+
+    workers.push(`Total power: **${totalPower}** :boom:`);
+    workers.push('');
+
+    for (const worker of top3Workers) {
+      const emoji = BOT_EMOJI.worker[worker.type];
+      workers.push(
+        `${emoji} ${BOT_EMOJI.other.level} ${worker.level} :boom: ${calcWorkerPower({
+          type: worker.type,
+          level: worker.level,
+          decimalPlace: 2,
+        })}`,
+      );
+    }
+  } else {
+    workers.push('You have not register your workers yet.');
   }
+
   embed.setDescription(workers.join('\n'));
   return embed;
 };
