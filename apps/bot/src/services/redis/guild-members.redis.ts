@@ -28,6 +28,14 @@ const getGuildInfo = async ({userId}: IGetGuildInfo): Promise<IRedisData | null>
   return fromRedis(data);
 };
 
+interface IRemoveGuildInfo {
+  userId: string;
+}
+
+const removeGuildInfo = async ({userId}: IRemoveGuildInfo) => {
+  await redisService.del(`${prefix}${userId}`);
+};
+
 const fromRedis = (data: any): IRedisData => {
   const parsed = JSON.parse(data);
   return {
@@ -54,4 +62,5 @@ const toRedis = ({serverId, guildRoleId, userId}: IToRedis) => {
 export const redisGuildMembers = {
   setGuildMember,
   getGuildInfo,
+  removeGuildInfo,
 };

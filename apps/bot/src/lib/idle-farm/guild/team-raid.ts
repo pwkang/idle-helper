@@ -26,25 +26,24 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
   const involvedUsers = [message.author, ...message.mentions.users.map((user) => user)];
   event.on('embed', async (embed, collected) => {
     if (isAbleToStart({embed})) {
-      const roles = await commandHelper.guild.getUserGuildRoles({
+      const result = await commandHelper.guild.verifyGuild({
         client,
         server: message.guild,
         userId: message.author.id,
       });
-      if (!roles?.size) {
-        return event.stop();
-      }
-      if (roles.size > 1) {
+      if (result.errorEmbed) {
         await djsMessageHelper.send({
-          channelId: message.channel.id,
           client,
+          channelId: message.channel.id,
           options: {
-            embeds: [commandHelper.guild.renderMultipleGuildEmbed(roles)],
+            embeds: [result.errorEmbed],
           },
         });
-        return event.stop();
+        return;
       }
-      const guildRoleId = roles.first()!.id;
+      const userGuild = result.guild;
+      if (!userGuild) return;
+      const guildRoleId = userGuild?.roleId;
       const toggleGuild = await toggleGuildChecker({
         guildRoleId,
         serverId: message.guild.id,
