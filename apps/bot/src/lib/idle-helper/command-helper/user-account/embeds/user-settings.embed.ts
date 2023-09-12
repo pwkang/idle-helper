@@ -6,6 +6,8 @@ import messageFormatter from '../../../../discordjs/message-formatter';
 export interface IGetUserSettingsEmbed {
   author: User;
   userProfile: IUser;
+  guildName?: string;
+  guildServerName?: string;
 }
 
 interface IHelperSettings {
@@ -20,7 +22,7 @@ const DONOR_TIER_LABEL = {
   [IDLE_FARM_DONOR_TIER.wise]: 'Wise +',
 } as const;
 
-export const _getUserSettingsEmbed = ({userProfile, author}: IGetUserSettingsEmbed) => {
+export const _getUserSettingsEmbed = ({userProfile, author, guildServerName, guildName}: IGetUserSettingsEmbed) => {
   const embed = new EmbedBuilder()
     .setAuthor({
       name: `${author.username}'s settings`,
@@ -54,6 +56,14 @@ export const _getUserSettingsEmbed = ({userProfile, author}: IGetUserSettingsEmb
     },
   ];
 
+
+  if (guildName && guildServerName)
+    helperSettings.push({
+      icon: '🏰',
+      value: `Guild: **${guildName}** @ ${guildServerName}`,
+    });
+
+  
   embed.addFields({
     name: 'IDLE Helper Settings',
     value: helperSettings.map((setting) => `${setting.icon} - ${setting.value}`).join('\n'),
