@@ -60,7 +60,7 @@ export const SLASH_COMMAND = {
     },
     randomEvents: {
       name: 'random-events',
-      description: 'set message to send when random events occur (type "clear" to remove)',
+      description: 'set message to send when random events spawned',
     },
   },
   guild: {
