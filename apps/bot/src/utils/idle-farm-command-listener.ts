@@ -1,4 +1,4 @@
-import {Client, Embed, Message, MessageCollector, TextChannel, User} from 'discord.js';
+import {Client, Embed, Message, MessageCollector, TextChannel, ThreadChannel, User} from 'discord.js';
 import {TypedEventEmitter} from './typed-event-emitter';
 import {IDLE_FARM_ID} from '@idle-helper/constants';
 import {createMessageEditedListener} from './message-edited-listener';
@@ -36,6 +36,9 @@ export const createIdleFarmCommandListener = ({
   if (!channel) return;
   let collector: MessageCollector | undefined;
   if (channel instanceof TextChannel) {
+    collector = channel.createMessageCollector({time: ms('1m'), filter});
+  }
+  if (channel instanceof ThreadChannel) {
     collector = channel.createMessageCollector({time: ms('1m'), filter});
   }
   if (!collector) return;
