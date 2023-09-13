@@ -1,5 +1,5 @@
 import type {Channel, Client, Message, MessageCreateOptions, MessagePayload} from 'discord.js';
-import {PermissionsBitField, TextChannel} from 'discord.js';
+import {PermissionsBitField, TextChannel, ThreadChannel} from 'discord.js';
 import {logger} from '@idle-helper/utils';
 
 const requiredPermissions = [PermissionsBitField.Flags.SendMessages];
@@ -48,5 +48,20 @@ async function checkTypeAndSend({
       return;
     }
   }
-  return sentMessage;
+  if (channel instanceof ThreadChannel) {
+    const threadChannel = channel as ThreadChannel;
+    if (!threadChannel.permissionsFor(client.user!)?.has(requiredPermissions)) return;
+    try {
+      sentMessage = await threadChannel.send(options);
+    } catch (error: any) {
+      logger({
+        message: error.message,
+        logLevel: 'warn',
+        variant: 'sendMessage',
+        clusterId: client.cluster?.id,
+      });
+      return;
+    }
+    return sentMessage;
+  }
 }
