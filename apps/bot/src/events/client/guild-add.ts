@@ -1,5 +1,6 @@
 import {Events, Guild} from 'discord.js';
 import {serverService} from '../../services/database/server.service';
+import {redisServerInfo} from '../../services/redis/server-info.redis';
 
 export default <BotEvent>{
   eventName: Events.GuildCreate,
@@ -12,5 +13,10 @@ export default <BotEvent>{
         name: guild.name,
       });
     }
+    
+    redisServerInfo.setServerName({
+      serverId: guild.id,
+      name: guild.name,
+    });
   },
 };

@@ -7,6 +7,8 @@ import {
 } from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
 import {_getUserSettingsEmbed} from './embeds/user-settings.embed';
+import {guildService} from '../../../../services/database/guild.service';
+import {redisServerInfo} from '../../../../services/redis/server-info.redis';
 
 interface IAccountSettings {
   author: User;
@@ -21,10 +23,18 @@ export const _accountSettings = async ({author}: IAccountSettings) => {
     userId: author.id,
   });
   if (!userProfile) return null;
+  const guild = await guildService.findUserGuild({
+    userId: author.id,
+  });
+  const guildServer = guild
+    ? await redisServerInfo.getServerInfo({serverId: guild?.serverId})
+    : null;
 
   const userSettingsEmbed = _getUserSettingsEmbed({
     author,
     userProfile,
+    guildName: guild?.info.name,
+    guildServerName: guildServer?.name,
   });
 
   function render({type}: IRender) {
@@ -65,6 +75,6 @@ const getActionRow = ({selected}: IGetActionRow) => {
         label: 'Settings',
         value: 'settings',
         default: selected === PAGE_TYPE.settings,
-      })
+      }),
   );
 };

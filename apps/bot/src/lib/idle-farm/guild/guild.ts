@@ -4,7 +4,6 @@ import messageReaders from '../message-readers';
 import commandHelper from '../../idle-helper/command-helper';
 import {djsMessageHelper} from '../../discordjs/message';
 import {guildService} from '../../../services/database/guild.service';
-import {redisGuildMembers} from '../../../services/redis/guild-members.redis';
 
 interface IIdleGuild {
   client: Client;
@@ -23,31 +22,33 @@ export const idleGuild = async ({author, client, isSlashCommand, message}: IIdle
   if (!event) return;
   event.on('embed', async (embed) => {
     if (isIdleGuild({embed})) {
-      const roles = await commandHelper.guild.getUserGuildRoles({
-        client: author.client,
-        userId: author.id,
+      const result = await commandHelper.guild.verifyGuild({
+        client,
         server: message.guild,
+        userId: author.id,
       });
-      if (!roles || !roles.size) return;
-      if (roles.size > 1) {
-        return djsMessageHelper.send({
-          channelId: message.channel.id,
+      if (result.errorEmbed) {
+        await djsMessageHelper.send({
           client,
+          channelId: message.channel.id,
           options: {
-            embeds: [commandHelper.guild.renderMultipleGuildEmbed(roles)],
+            embeds: [result.errorEmbed],
           },
         });
+        return;
       }
-      const guildRole = roles.first()!;
-      idleGuildSuccess({
+      const userGuild = result.guild;
+      if (!userGuild) return;
+      const guildRoleId = userGuild?.roleId;
+      await idleGuildSuccess({
         embed,
-        guildRoleId: guildRole.id,
+        guildRoleId,
         server: message.guild,
         isSlashCommand,
       });
-      registerUserToGuild({
+      await guildService.registerUserToGuild({
         serverId: message.guild.id,
-        roleId: guildRole.id,
+        roleId: guildRoleId,
         userId: author.id,
       });
       event.stop();
@@ -91,28 +92,6 @@ const idleGuildSuccess = async ({
   });
 };
 
-interface IRegisterUserToGuild {
-  userId: string;
-  serverId: string;
-  roleId: string;
-}
-
-const registerUserToGuild = async ({userId, serverId, roleId}: IRegisterUserToGuild) => {
-  const cached = await redisGuildMembers.getGuildInfo({
-    userId,
-  });
-  if (cached?.guildRoleId === roleId && cached?.serverId === serverId) return;
-  await guildService.registerUserToGuild({
-    userId,
-    serverId,
-    roleId,
-  });
-  await redisGuildMembers.setGuildMember({
-    guildRoleId: roleId,
-    serverId,
-    userId,
-  });
-};
 
 interface IChecker {
   embed: Embed;
