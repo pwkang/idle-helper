@@ -36,7 +36,6 @@ export const _topPowerListing = async ({serverId, authorId, client}: ITopPowerLi
   const users = await userService.getUsersById({
     userIds: guildMembers,
   });
-  const displayType: ValuesOf<typeof USER_DISPLAY_TYPE> = USER_DISPLAY_TYPE.mentions;
 
   const render = (): BaseMessageOptions => {
     if (!isServerAdmin)
@@ -54,7 +53,6 @@ export const _topPowerListing = async ({serverId, authorId, client}: ITopPowerLi
         renderEmbed({
           guild: availableGuilds[0],
           users,
-          displayType,
         }),
       ],
     };
@@ -65,15 +63,9 @@ export const _topPowerListing = async ({serverId, authorId, client}: ITopPowerLi
   };
 };
 
-const USER_DISPLAY_TYPE = {
-  mentions: 'mentions',
-  username: 'username',
-} as const;
-
 interface IRenderEmbed {
   guild: IGuild;
   users: IUser[];
-  displayType: ValuesOf<typeof USER_DISPLAY_TYPE>;
 }
 
 interface IUserPower {
@@ -84,7 +76,7 @@ interface IUserPower {
 
 const USERS_PER_FIELD = 10;
 
-const renderEmbed = ({users, guild, displayType}: IRenderEmbed) => {
+const renderEmbed = ({users, guild}: IRenderEmbed) => {
   const embed = new EmbedBuilder()
     .setColor(BOT_COLOR.embed)
     .setTitle(guild.info.name);
