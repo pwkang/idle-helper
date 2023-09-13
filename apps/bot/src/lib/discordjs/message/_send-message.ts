@@ -62,6 +62,6 @@ async function checkTypeAndSend({
       });
       return;
     }
-    return sentMessage;
   }
+  return sentMessage;
 }
