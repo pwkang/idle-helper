@@ -2,8 +2,9 @@ import {BaseMessageOptions, EmbedBuilder, User} from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
 import {IUser} from '@idle-helper/models';
 import {BOT_COLOR, BOT_EMOJI} from '@idle-helper/constants';
-import {typedObjectEntries} from '@idle-helper/utils';
 import {calcWorkerPower} from '../../../idle-farm/calculator/worker-power';
+import {getTop3Power} from '../../../../utils/getTop3Power';
+import {getTop3Workers} from '../../../../utils/getTop3Workers';
 
 interface IListWorkers {
   author: User;
@@ -36,18 +37,8 @@ const getEmbed = ({userAccount, author}: IGetEmbed) => {
 
   const workers: string[] = [];
   if (userAccount.lastUpdated.workers) {
-    const top3Workers = typedObjectEntries(userAccount.workers)
-      .map(([type, worker]) => ({
-        level: worker.level,
-        exp: worker.exp,
-        maxExp: worker.maxExp,
-        farm: worker.farm,
-        type,
-        power: calcWorkerPower({type, level: worker.level, decimalPlace: 3}),
-      }))
-      .sort((a, b) => b.power - a.power)
-      .slice(0, 3);
-    const totalPower = top3Workers.reduce((acc, worker) => acc + worker.power, 0);
+    const top3Workers = getTop3Workers(userAccount);
+    const totalPower = getTop3Power(userAccount);
 
     workers.push(`Total power: **${totalPower}** :boom:`);
     workers.push('');

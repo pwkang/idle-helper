@@ -69,7 +69,8 @@ interface IGetAllGuilds {
 }
 
 const getAllGuilds = async ({serverId}: IGetAllGuilds) => {
-  return dbGuild.find({serverId});
+  const guilds = await dbGuild.find({serverId}).lean();
+  return guilds.map(toGuild);
 };
 
 interface IUpdateGuildReminder {

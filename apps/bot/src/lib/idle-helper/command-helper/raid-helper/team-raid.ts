@@ -98,7 +98,7 @@ const generateMessageOptions = ({
   for (const member of raidInfo.members) {
     const user = usersAccount.find((user) => user.username === member.username);
     const workersInfo: string[] = [];
-    if (user?.lastUpdated.workers) {
+    if (user?.lastUpdated?.workers) {
       for (const workerInfo of member.workers) {
         const worker = user.workers[workerInfo.type];
         let stats = '';
