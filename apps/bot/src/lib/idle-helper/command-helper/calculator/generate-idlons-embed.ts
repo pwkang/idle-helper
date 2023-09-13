@@ -31,10 +31,13 @@ export const generateEmbed = ({items, marketItems, author, user, title}: IGenera
   const taxRate = TAX_RATE[user.config.donorTier];
   typedObjectEntries(items).map(([key, value]) => {
     if (!marketItems[key]) return;
+    let totalPrice = (value ?? 0) * marketItems[key].price;
+    if (totalPrice > 0) totalPrice *= taxRate;
+    totalPrice = Math.round(totalPrice);
     itemsInfo.push({
       name: IDLE_FARM_ITEMS[key],
       emoji: BOT_EMOJI.items[key],
-      totalPrice: Math.round((value ?? 0) * marketItems[key].price * taxRate),
+      totalPrice,
       isOverstocked: marketItems[key].isOverstocked,
       lastUpdatedAt: marketItems[key].lastUpdatedAt,
     });
@@ -56,7 +59,7 @@ export const generateEmbed = ({items, marketItems, author, user, title}: IGenera
     });
   }
   const oldestUpdatedDate = itemsInfo.sort(
-    (a, b) => a.lastUpdatedAt.getTime() - b.lastUpdatedAt.getTime()
+    (a, b) => a.lastUpdatedAt.getTime() - b.lastUpdatedAt.getTime(),
   )[0]?.lastUpdatedAt;
   embed.setDescription(`Total value: **${totalValue.toLocaleString()}** ${BOT_EMOJI.other.idlon} `);
   embed.setFooter({
