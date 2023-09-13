@@ -18,5 +18,9 @@ export const _getRandomEventSettingsEmbed = ({serverAccount, guild}: IServerSett
     });
   }
 
+  embed.setFooter({
+    text: 'Trying to disable? Type \'clear\' during configuration',
+  });
+
   return embed;
 };
