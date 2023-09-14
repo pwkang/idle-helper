@@ -38,7 +38,7 @@ export const _topPowerListing = async ({serverId, authorId, client}: ITopPowerLi
   });
 
   const render = (): BaseMessageOptions => {
-    if (!isServerAdmin)
+    if (!isServerAdmin && !availableGuilds.length)
       return {
         content: 'You must be server admin to use this command.',
       };
