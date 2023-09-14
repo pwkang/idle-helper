@@ -89,21 +89,21 @@ const renderEmbed = ({users, guild, page}: IRenderEmbed) => {
   if (guild.membersId?.length) {
     for (const memberId of guild.membersId) {
       const user = users.find(user => user.userId === memberId);
-      if (!user) {
+      if (user) {
+        const top3Power = getTop3Power(user);
+        const top3Workers = getTop3Workers(user);
+        userPowers.push({
+          userId: user.userId,
+          username: user.username,
+          power: top3Power,
+          workers: top3Workers.map(worker => worker.type),
+        });
+      } else {
         userPowers.push({
           userId: memberId,
           power: 0,
         });
-        continue;
       }
-      const top3Power = getTop3Power(user);
-      const top3Workers = getTop3Workers(user);
-      userPowers.push({
-        userId: user.userId,
-        username: user.username,
-        power: top3Power,
-        workers: top3Workers.map(worker => worker.type),
-      });
     }
   }
 
@@ -147,6 +147,8 @@ const renderEmbed = ({users, guild, page}: IRenderEmbed) => {
   ];
 
   embed.setDescription(description.join('\n'));
+
+  embed.setFooter({text: 'Guild members are not listed? Type `idle guild list` to register them.'});
 
   return embed;
 };

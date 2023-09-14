@@ -1,4 +1,4 @@
-import {Client, Embed, Guild, Message, User} from 'discord.js';
+import {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import messageReaders from '../message-readers';
 import commandHelper from '../../idle-helper/command-helper';
@@ -40,11 +40,10 @@ export const idleGuildList = async ({author, client, isSlashCommand, message}: I
       }
       const userGuild = result.guild;
       if (!userGuild) return;
-      const guildRoleId = userGuild?.roleId;
       await idleGuildListSuccess({
         embed,
-        guildRoleId,
-        server: message.guild,
+        guildRoleId: userGuild.roleId,
+        guildServerId: userGuild.serverId,
         author,
       });
     }
@@ -55,19 +54,19 @@ export const idleGuildList = async ({author, client, isSlashCommand, message}: I
 interface IIdleGuildSuccess {
   embed: Embed;
   guildRoleId: string;
-  server: Guild;
+  guildServerId: string;
   author: User;
 }
 
 const idleGuildListSuccess = async ({
   embed,
   guildRoleId,
-  server,
   author,
+  guildServerId,
 }: IIdleGuildSuccess) => {
   const guildInfo = messageReaders.guildList({embed});
   await guildService.registerUsersToGuild({
-    serverId: server.id,
+    serverId: guildServerId,
     roleId: guildRoleId,
     usersId: [author.id, ...guildInfo.ids],
   });

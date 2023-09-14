@@ -247,6 +247,13 @@ export const helpConfig: IHelpConfig = [
               name: [guildMemberTracker],
               description: ['Track guild member status'],
             },
+            {
+              name: ['guild power'],
+              description: [
+                'alias: `guild p`',
+                'View list of guild members sorted by total top 3 power',
+              ],
+            },
           ],
         },
         {
