@@ -14,12 +14,14 @@ export default <PrefixCommand>{
     const topPowerListing = await commandHelper.guild.topPowerListing({
       client,
       authorId: message.author.id,
-      serverId: message.guild.id,
+      server: message.guild,
     });
-    await djsMessageHelper.send({
+    const event = await djsMessageHelper.interactiveSend({
       client,
       options: topPowerListing.render(),
       channelId: message.channel.id,
     });
+    if (!event) return;
+    event.every(topPowerListing.replyInteraction);
   },
 };

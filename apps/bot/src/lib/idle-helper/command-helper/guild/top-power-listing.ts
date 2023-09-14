@@ -1,27 +1,29 @@
 import {guildService} from '../../../../services/database/guild.service';
 import {userChecker} from '../../user-checker';
-import {BaseMessageOptions, Client, EmbedBuilder} from 'discord.js';
+import {BaseInteraction, BaseMessageOptions, Client, EmbedBuilder, Guild} from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
 import {IGuild, IUser} from '@idle-helper/models';
 import {BOT_COLOR} from '@idle-helper/constants';
 import {getTop3Power} from '../../../../utils/getTop3Power';
 import messageFormatter from '../../../discordjs/message-formatter';
+import {isSelectingGuild} from '../generator/guild-selector-components';
+import commandHelper from '../index';
 
 interface ITopPowerListing {
-  serverId: string;
+  server: Guild;
   authorId: string;
   client: Client,
 }
 
-export const _topPowerListing = async ({serverId, authorId, client}: ITopPowerListing) => {
+export const _topPowerListing = async ({server, authorId, client}: ITopPowerListing) => {
   const serverGuilds = await guildService.getAllGuilds({
-    serverId,
+    serverId: server.id,
   });
   const userGuild = await guildService.findUserGuild({
     userId: authorId,
   });
   const isServerAdmin = await userChecker.isServerAdmin({
-    serverId,
+    serverId: server.id,
     userId: authorId,
     client,
   });
@@ -36,30 +38,51 @@ export const _topPowerListing = async ({serverId, authorId, client}: ITopPowerLi
   const users = await userService.getUsersById({
     userIds: guildMembers,
   });
+  let paginatePage = 0;
+  let selectedGuildRoleId = availableGuilds[0]?.roleId;
 
   const render = (): BaseMessageOptions => {
     if (!isServerAdmin && !availableGuilds.length)
       return {
         content: 'You must be server admin to use this command.',
       };
-    if (!availableGuilds.length)
+    if (!selectedGuildRoleId)
       return {
         content: 'No guilds found.',
       };
 
-
     return {
       embeds: [
         renderEmbed({
-          guild: availableGuilds[0],
+          guild: availableGuilds.find(guild => guild.roleId === selectedGuildRoleId)!,
           users,
         }),
       ],
+      components: commandHelper.generator.guildSelectorComponents({
+        server,
+        page: paginatePage,
+        guilds: availableGuilds,
+        currentGuildRoleId: selectedGuildRoleId,
+      }),
     };
+  };
+
+  const replyInteraction = (interaction: BaseInteraction) => {
+    if (interaction.isButton()) {
+      const customId = interaction.customId;
+      if (!isNaN(Number(customId))) {
+        paginatePage = Number(customId);
+      }
+    }
+    if (isSelectingGuild(interaction)) {
+      selectedGuildRoleId = interaction.values[0];
+    }
+    return render();
   };
 
   return {
     render,
+    replyInteraction,
   };
 };
 
