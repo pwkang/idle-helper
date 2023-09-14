@@ -1,9 +1,4 @@
-import {idleGuild} from '../../../../lib/idle-farm/guild/guild';
-import {
-  SLASH_MESSAGE_BOT_TYPE,
-  USER_ACC_OFF_ACTIONS,
-  USER_NOT_REGISTERED_ACTIONS,
-} from '@idle-helper/constants';
+import {SLASH_MESSAGE_BOT_TYPE, USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
 
 export default <SlashMessage>{
   name: 'guild-stats',
@@ -13,12 +8,12 @@ export default <SlashMessage>{
     userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
   },
   bot: SLASH_MESSAGE_BOT_TYPE.idleFarm,
-  execute: async (client, message, author) => {
-    await idleGuild({
-      author,
-      client,
-      message,
-      isSlashCommand: true,
-    });
+  execute: async () => {
+    // await idleGuild({
+    //   author,
+    //   client,
+    //   message,
+    //   isSlashCommand: true,
+    // });
   },
 };

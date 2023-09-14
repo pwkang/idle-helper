@@ -221,25 +221,27 @@ const resetToggle = async ({serverId, roleId}: IResetToggle): Promise<IGuild | n
 interface IRegisterToGuild {
   serverId: string;
   roleId: string;
-  userId: string;
+  usersId: string[];
 }
 
-const registerUserToGuild = async ({serverId, roleId, userId}: IRegisterToGuild) => {
-  await dbGuild.findOneAndUpdate({serverId, roleId}, {$addToSet: {membersId: userId}}, {new: true});
+const registerUsersToGuild = async ({serverId, roleId, usersId}: IRegisterToGuild) => {
+  await dbGuild.findOneAndUpdate({serverId, roleId}, {$addToSet: {membersId: {$each: usersId}}}, {new: true});
   await dbGuild.findOneAndUpdate(
     {
       $or: [{serverId: {$ne: serverId}}, {roleId: {$ne: roleId}}],
-      membersId: {$in: [userId]},
+      membersId: {$in: usersId},
     },
-    {$pull: {membersId: userId}},
+    {$pull: {membersId: {$in: usersId}}},
     {new: true},
   );
 
-  await redisGuildMembers.setGuildMember({
-    guildRoleId: roleId,
-    serverId,
-    userId,
-  });
+  for (const userId of usersId) {
+    await redisGuildMembers.setGuildMember({
+      guildRoleId: roleId,
+      serverId,
+      userId,
+    });
+  }
 };
 
 interface IRemoveUserFromGuild {
@@ -307,7 +309,7 @@ export const guildService = {
   updateGuildInfo,
   updateToggle,
   resetToggle,
-  registerUserToGuild,
+  registerUsersToGuild,
   removeUserFromGuild,
   getAllGuildMembers,
   findUserGuild,
