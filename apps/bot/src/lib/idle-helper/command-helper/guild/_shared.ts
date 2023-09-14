@@ -46,6 +46,10 @@ export const verifyGuild = async ({userId, client, server}: IVerifyGuild) => {
       roleId: userGuild.roleId,
       userId,
     });
+    return {
+      guild: null,
+      errorEmbed: null,
+    };
   }
 
   return {

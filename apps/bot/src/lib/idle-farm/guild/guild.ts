@@ -1,4 +1,4 @@
-import {Client, Embed, Guild, Message, User} from 'discord.js';
+import {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import messageReaders from '../message-readers';
 import commandHelper from '../../idle-helper/command-helper';
@@ -43,7 +43,7 @@ export const idleGuild = async ({author, client, isSlashCommand, message}: IIdle
       await idleGuildSuccess({
         embed,
         guildRoleId,
-        server: message.guild,
+        guildServerId: userGuild.serverId,
         isSlashCommand,
       });
       await guildService.registerUsersToGuild({
@@ -61,20 +61,20 @@ interface IIdleGuildSuccess {
   embed: Embed;
   guildRoleId: string;
   isSlashCommand?: boolean;
-  server: Guild;
+  guildServerId: string;
 }
 
 const idleGuildSuccess = async ({
   embed,
   guildRoleId,
   isSlashCommand,
-  server,
+  guildServerId,
 }: IIdleGuildSuccess) => {
   const guildInfo = messageReaders.guild({embed});
   if (isSlashCommand) {
     // return if guild name is not matched in slash command
     const currentGuild = await guildService.findGuild({
-      serverId: server.id,
+      serverId: guildServerId,
       roleId: guildRoleId,
     });
     if (currentGuild && currentGuild.info.name !== guildInfo.name) return;
@@ -82,11 +82,11 @@ const idleGuildSuccess = async ({
   const guild = await guildService.registerReminder({
     readyIn: guildInfo.readyIn,
     roleId: guildRoleId,
-    serverId: server.id,
+    serverId: guildServerId,
   });
   if (!guild) return;
   await guildService.updateGuildInfo({
-    serverId: server.id,
+    serverId: guildServerId,
     roleId: guildRoleId,
     name: guildInfo.name === guild.info.name ? undefined : guildInfo.name,
   });
