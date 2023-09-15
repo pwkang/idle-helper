@@ -83,7 +83,7 @@ interface IUserPower {
 const renderEmbed = ({users, guild, page}: IRenderEmbed) => {
   const embed = new EmbedBuilder()
     .setColor(BOT_COLOR.embed)
-    .setTitle(guild.info.name);
+    .setTitle(guild.info?.name ?? 'Guild');
 
   const userPowers: IUserPower[] = [];
   if (guild.membersId?.length) {
