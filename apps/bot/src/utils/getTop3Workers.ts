@@ -5,6 +5,7 @@ import {calcWorkerPower} from '../lib/idle-farm/calculator/worker-power';
 export const getTop3Workers = (user: IUser) => {
   if (!user.lastUpdated?.workers) return [];
   return typedObjectEntries(user.workers)
+    .filter(([, worker]) => worker)
     .map(([type, worker]) => ({
       level: worker.level,
       exp: worker.exp,
