@@ -39,16 +39,23 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
             embeds: [result.errorEmbed],
           },
         });
+        event.stop();
         return;
       }
       const userGuild = result.guild;
-      if (!userGuild) return;
+      if (!userGuild) {
+        event.stop();
+        return;
+      }
       const guildRoleId = userGuild?.roleId;
       const toggleGuild = await toggleGuildChecker({
         guildRoleId,
         serverId: message.guild.id,
       });
-      if (!toggleGuild?.teamRaid.helper) return event.stop();
+      if (!toggleGuild?.teamRaid.helper) {
+        event.stop();
+        return;
+      }
 
       await sendConfirmationMessage({
         channelId: message.channel.id,
