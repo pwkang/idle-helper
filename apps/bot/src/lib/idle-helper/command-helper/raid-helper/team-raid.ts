@@ -90,10 +90,11 @@ const generateMessageOptions = ({
       mappedEnemies.push(worker.hp === 0 ? `~~${stats}~~` : stats);
     }
   }
-  embed.addFields({
-    name: raidInfo.enemyGuild,
-    value: mappedEnemies.join('\n'),
-  });
+  if (mappedEnemies.length)
+    embed.addFields({
+      name: raidInfo.enemyGuild,
+      value: mappedEnemies.join('\n'),
+    });
 
   for (const member of raidInfo.members) {
     const user = usersAccount.find((user) => user.username === member.username);

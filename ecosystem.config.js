@@ -3,6 +3,7 @@ module.exports = {
     {
       name: 'idle-helper',
       script: './apps/bot/dist/index.js',
+      time: true,
     },
   ],
-}
+};
