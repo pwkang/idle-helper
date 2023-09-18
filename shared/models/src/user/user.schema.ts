@@ -63,6 +63,11 @@ export const userSchema = new Schema<IUser>({
     daily: Date,
     claim: Date,
   },
+  reminder: {
+    vote: {
+      readyAt: Date,
+    },
+  },
   lastUpdated: {
     toggle: Date,
     username: Date,
