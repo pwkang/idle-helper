@@ -6,6 +6,7 @@ import {djsMessageHelper} from '../../discordjs/message';
 import convertMsToHumanReadableString from '../../../utils/convert-ms-to-human-readable-string';
 import messageFormatter from '../../discordjs/message-formatter';
 import toggleUserChecker from '../toggle-checker/user';
+import {IDLE_FARM_TIME_BOOSTER_DURATION} from '@idle-helper/constants';
 
 interface ISendReminder {
   userId: string;
@@ -27,7 +28,7 @@ const sendReminder = async ({client, userId}: ISendReminder) => {
     channelId: userAccount.config.channelId,
     options: {
       content: `${messageFormatter.user(
-        userId
+        userId,
       )}, You have been idle for **${convertMsToHumanReadableString(idleDuration)}**`,
     },
   });
@@ -45,9 +46,18 @@ const updateReminder = async ({userId}: IUpdateReminder) => {
     userId,
   });
   if (!userAccount?.farms.lastClaimedAt) return;
-  const workedDuration = Date.now() - userAccount.farms.lastClaimedAt.getTime();
+
+  const timeSpeederUsed = userAccount.farms.itemsUsed.timeSpeeder ?? 0;
+  const timeCompressorUsed = userAccount.farms.itemsUsed.timeCompressor ?? 0;
+
+  const extraTime =
+    IDLE_FARM_TIME_BOOSTER_DURATION.timeSpeeder * timeSpeederUsed +
+    IDLE_FARM_TIME_BOOSTER_DURATION.timeCompressor * timeCompressorUsed;
+
+  const workedDuration = Date.now() - userAccount.farms.lastClaimedAt.getTime() + extraTime;
+
   const nextReminderTime = Math.min(
-    ...userAccount.farms.reminderHours.filter((h) => ms(`${h}h`) > workedDuration)
+    ...userAccount.farms.reminderHours.filter((h) => ms(`${h}h`) > workedDuration),
   );
   if (nextReminderTime === Infinity) return;
   const remindAt = new Date(userAccount.farms.lastClaimedAt.getTime() + ms(`${nextReminderTime}h`));

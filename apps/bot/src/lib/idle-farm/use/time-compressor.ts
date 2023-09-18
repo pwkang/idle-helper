@@ -1,6 +1,7 @@
 import {Client, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import {userService} from '../../../services/database/user.service';
+import claimReminder from '../../idle-helper/reminder/claim-reminder';
 
 interface IUseTimeCompressor {
   client: Client;
@@ -38,6 +39,10 @@ export const idleUseTimeCompressorSuccess = async ({author, message}: IIdleUseTi
   await userService.addTimeCompressorUsage({
     userId: author.id,
     amount: Number(amount),
+  });
+
+  await claimReminder.update({
+    userId: author.id,
   });
 };
 

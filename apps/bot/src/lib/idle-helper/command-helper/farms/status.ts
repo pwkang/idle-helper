@@ -1,9 +1,8 @@
 import {BaseMessageOptions, EmbedBuilder, User} from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
 import {IUser} from '@idle-helper/models';
-import {BOT_COLOR, BOT_EMOJI} from '@idle-helper/constants';
+import {BOT_COLOR, BOT_EMOJI, IDLE_FARM_TIME_BOOSTER_DURATION} from '@idle-helper/constants';
 import convertMsToHumanReadableString from '../../../../utils/convert-ms-to-human-readable-string';
-import ms from 'ms';
 
 interface IFarmStatus {
   author: User;
@@ -35,11 +34,6 @@ interface IGetEmbed {
   userAccount: IUser;
 }
 
-const DURATION = {
-  timeSpeeder: ms('2h'),
-  timeCompressor: ms('4h'),
-} as const;
-
 export const getLastClaimEmbed = ({userAccount, author}: IGetEmbed) => {
   const embed = new EmbedBuilder().setColor(BOT_COLOR.embed).setAuthor({
     name: `${author.username} - last claim`,
@@ -52,7 +46,10 @@ export const getLastClaimEmbed = ({userAccount, author}: IGetEmbed) => {
     ? Date.now() - userAccount.farms.lastClaimedAt.getTime()
     : 0;
 
-  const totalDuration = duration + timeSpeederUsed * DURATION.timeSpeeder + timeCompressorUsed * DURATION.timeCompressor;
+  const totalDuration =
+    duration +
+    timeSpeederUsed * IDLE_FARM_TIME_BOOSTER_DURATION.timeSpeeder +
+    timeCompressorUsed * IDLE_FARM_TIME_BOOSTER_DURATION.timeCompressor;
 
   embed.setDescription(
     `Total idling: **${totalDuration ? convertMsToHumanReadableString(totalDuration) : '-'}**`,
