@@ -1,7 +1,7 @@
 import {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import messageReaders from '../message-readers';
-import {userService} from '../../../services/database/user.service';
+import {userReminderServices} from '../../../services/database/user-reminder.service';
 
 interface IIdleVote {
   client: Client;
@@ -37,15 +37,14 @@ interface IIdleMarketSuccess {
 const idleVoteSuccess = async ({message, author}: IIdleMarketSuccess) => {
   const voteInfo = messageReaders.vote(message.embeds[0]);
   if (voteInfo.readyIn) {
-    await userService.registerReminder({
+    await userReminderServices.saveUserVoteCooldown({
       userId: author.id,
       readyAt: new Date(Date.now() + voteInfo.readyIn),
-      reminder: 'vote',
     });
   } else {
-    await userService.removeReminder({
+    await userReminderServices.deleteUserCooldowns({
       userId: author.id,
-      reminder: 'vote',
+      types: ['vote'],
     });
   }
 };

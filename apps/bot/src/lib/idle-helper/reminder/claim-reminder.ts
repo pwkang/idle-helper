@@ -1,12 +1,12 @@
 import {Client} from 'discord.js';
 import {userService} from '../../../services/database/user.service';
 import ms from 'ms';
-import {redisClaimReminder} from '../../../services/redis/claim-reminder.redis';
 import {djsMessageHelper} from '../../discordjs/message';
 import convertMsToHumanReadableString from '../../../utils/convert-ms-to-human-readable-string';
 import messageFormatter from '../../discordjs/message-formatter';
 import toggleUserChecker from '../toggle-checker/user';
 import commandHelper from '../command-helper';
+import {userReminderServices} from '../../../services/database/user-reminder.service';
 
 interface ISendReminder {
   userId: string;
@@ -54,7 +54,10 @@ const updateReminder = async ({userId}: IUpdateReminder) => {
   );
   if (nextReminderTime === Infinity) return;
   const remindAt = new Date(userAccount.farms.lastClaimedAt.getTime() + ms(`${nextReminderTime}h`));
-  await redisClaimReminder.setUser(userId, remindAt);
+  await userReminderServices.saveUserClaimCooldown({
+    userId,
+    readyAt: remindAt,
+  });
 };
 
 const claimReminder = {

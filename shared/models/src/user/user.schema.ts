@@ -25,6 +25,8 @@ export const userSchema = new Schema<IUser>({
   toggle: {
     reminder: {
       claim: {type: Boolean, default: true},
+      vote: {type: Boolean, default: true},
+      daily: {type: Boolean, default: true},
     },
     raidHelper: {type: Boolean, default: true},
     calculator: {
