@@ -49,6 +49,10 @@ export const userSchema = new Schema<IUser>({
   farms: {
     lastClaimedAt: Date,
     reminderHours: [Number],
+    itemsUsed: {
+      timeCompressor: {type: Number, default: 0},
+      timeSpeeder: {type: Number, default: 0},
+    },
   },
   config: {
     onOff: {type: Boolean, default: true},
