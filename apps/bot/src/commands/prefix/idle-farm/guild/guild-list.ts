@@ -5,8 +5,8 @@ export default <PrefixCommand>{
   name: 'guild-list',
   commands: ['guild list', 'clan list'],
   preCheck: {
-    userAccOff: USER_ACC_OFF_ACTIONS.askToTurnOn,
-    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.askToRegister,
+    userAccOff: USER_ACC_OFF_ACTIONS.skip,
+    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
   },
   type: PREFIX_COMMAND_TYPE.idleFarm,
   execute: async (client, message) => {
