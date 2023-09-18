@@ -4,7 +4,9 @@ import {
   _toggleCalculatorClaim,
   _toggleCalculatorInventory,
   _toggleClaimReminder,
+  _toggleDailyReminder,
   _toggleRaidHelper,
+  _toggleVoteReminder,
 } from './toggle-user-checker-list';
 
 interface IToggleUserChecker {
@@ -21,6 +23,8 @@ const toggleUserChecker = async ({userId}: IToggleUserChecker) => {
   return {
     reminder: {
       claim: _toggleClaimReminder({toggle: userToggle}),
+      vote: _toggleVoteReminder({toggle: userToggle}),
+      daily: _toggleDailyReminder({toggle: userToggle}),
     },
     raidHelper: _toggleRaidHelper({toggle: userToggle}),
     calculator: {

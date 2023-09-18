@@ -7,8 +7,7 @@ export default <PrefixCommand>{
   type: PREFIX_COMMAND_TYPE.dev,
   preCheck: {},
   execute: async (client, message) => {
-    claimReminder.send({
-      client,
+    claimReminder.update({
       userId: message.author.id,
     });
   },

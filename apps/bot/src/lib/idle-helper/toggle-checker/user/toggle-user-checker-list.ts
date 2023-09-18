@@ -6,6 +6,10 @@ interface IToggleClaimReminder {
 
 export const _toggleClaimReminder = ({toggle}: IToggleClaimReminder) => toggle.reminder.claim;
 
+export const _toggleVoteReminder = ({toggle}: IToggleClaimReminder) => toggle.reminder.vote;
+
+export const _toggleDailyReminder = ({toggle}: IToggleClaimReminder) => toggle.reminder.daily;
+
 interface IToggleRaidHelper {
   toggle: IUserToggle;
 }

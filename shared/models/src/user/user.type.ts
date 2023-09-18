@@ -4,6 +4,8 @@ import {IDLE_FARM_DONOR_TIER, IDLE_FARM_FARM_TYPE, IDLE_FARM_WORKER_TYPE} from '
 export interface IUserToggle extends Record<string, boolean | Record<string, boolean>> {
   reminder: {
     claim: boolean;
+    vote: boolean;
+    daily: boolean;
   };
   raidHelper: boolean;
   calculator: {
@@ -52,6 +54,11 @@ export interface IUser {
     daily: Date;
     claim: Date;
   };
+  reminder: {
+    vote: {
+      readyAt: Date;
+    }
+  },
   lastUpdated: {
     toggle: Date;
     username: Date;

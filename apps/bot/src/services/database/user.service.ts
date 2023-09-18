@@ -322,6 +322,47 @@ const addTimeSpeederUsage = async ({userId, amount}: IAddTimeSpeederUsage) => {
   return user ?? null;
 };
 
+interface IRegisterReminder {
+  userId: string;
+  reminder: 'vote';
+  readyAt: Date;
+}
+
+const registerReminder = async ({userId, reminder, readyAt}: IRegisterReminder) => {
+  const user = await dbUser.findOneAndUpdate(
+    {userId},
+    {
+      $set: {
+        [`reminder.${reminder}.readyAt`]: readyAt,
+      },
+    },
+    {
+      new: true,
+    },
+  );
+  return user ?? null;
+};
+
+interface IRemoveReminder {
+  userId: string;
+  reminder: 'vote';
+}
+
+const removeReminder = async ({userId, reminder}: IRemoveReminder) => {
+  const user = await dbUser.findOneAndUpdate(
+    {userId},
+    {
+      $unset: {
+        [`reminder.${reminder}.readyAt`]: '',
+      },
+    },
+    {
+      new: true,
+    },
+  );
+  return user ?? null;
+};
+
 export const userService = {
   registerUser,
   findUser,
@@ -342,4 +383,6 @@ export const userService = {
   calcTotalUsers,
   addTimeCompressorUsage,
   addTimeSpeederUsage,
+  registerReminder,
+  removeReminder,
 };

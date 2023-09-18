@@ -15,3 +15,4 @@ export * from './idle-farm/worker';
 export * from './idle-farm/farm';
 export * from './idle-farm/league';
 export * from './idle-farm/info';
+export * from './idle-farm/reminder';

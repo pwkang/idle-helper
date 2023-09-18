@@ -136,7 +136,7 @@ const generateMessageOptions = ({
 
 
     embed.addFields({
-      name: member.username,
+      name: member.username || 'unknown',
       value: workersInfo.join('\n'),
       inline: true,
     });
