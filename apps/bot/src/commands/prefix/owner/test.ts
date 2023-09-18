@@ -1,12 +1,15 @@
 import {PREFIX_COMMAND_TYPE} from '@idle-helper/constants';
-import {leaderboard} from '../../../lib/idle-helper/leaderboard';
+import claimReminder from '../../../lib/idle-helper/reminder/claim-reminder';
 
 export default <PrefixCommand>{
   name: 'test',
   commands: ['test'],
   type: PREFIX_COMMAND_TYPE.dev,
   preCheck: {},
-  execute: async () => {
-    leaderboard.workers();
+  execute: async (client, message) => {
+    claimReminder.send({
+      client,
+      userId: message.author.id,
+    });
   },
 };

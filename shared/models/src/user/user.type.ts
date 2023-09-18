@@ -43,6 +43,10 @@ export interface IUser {
   farms: {
     lastClaimedAt: Date;
     reminderHours: number[];
+    itemsUsed: {
+      timeCompressor: number;
+      timeSpeeder: number;
+    }
   };
   commandsLastUsed: {
     daily: Date;

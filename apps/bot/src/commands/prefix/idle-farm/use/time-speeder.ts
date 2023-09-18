@@ -1,16 +1,16 @@
 import {PREFIX_COMMAND_TYPE, USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
-import {idleGuildList} from '../../../../lib/idle-farm/guild/guild-list';
+import {idleUseTimeSpeeder} from '../../../../lib/idle-farm/use/time-speeder';
 
 export default <PrefixCommand>{
-  name: 'guild-list',
-  commands: ['guild list', 'clan list'],
+  name: 'idleTimeSpeeder',
+  commands: ['use time speeder'],
   preCheck: {
-    userAccOff: USER_ACC_OFF_ACTIONS.skip,
-    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
+    userAccOff: USER_ACC_OFF_ACTIONS.abort,
+    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.abort,
   },
   type: PREFIX_COMMAND_TYPE.idleFarm,
-  execute: async (client, message) => {
-    idleGuildList({
+  execute: (client, message) => {
+    idleUseTimeSpeeder({
       author: message.author,
       client,
       isSlashCommand: false,

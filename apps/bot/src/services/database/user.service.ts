@@ -81,6 +81,8 @@ const claimFarm = async ({userId}: IClaimFarm): Promise<IUser | null> => {
     {
       $set: {
         'farms.lastClaimedAt': new Date(),
+        'farms.itemsUsed.timeCompressor': 0,
+        'farms.itemsUsed.timeSpeeder': 0,
       },
     },
     {
@@ -280,6 +282,46 @@ const calcTotalUsers = async () => {
   return dbUser.estimatedDocumentCount({});
 };
 
+interface IAddTimeCompressorUsage {
+  userId: string;
+  amount: number;
+}
+
+const addTimeCompressorUsage = async ({userId, amount}: IAddTimeCompressorUsage) => {
+  const user = await dbUser.findOneAndUpdate(
+    {userId},
+    {
+      $inc: {
+        'farms.itemsUsed.timeCompressor': amount,
+      },
+    },
+    {
+      new: true,
+    },
+  );
+  return user ?? null;
+};
+
+interface IAddTimeSpeederUsage {
+  userId: string;
+  amount: number;
+}
+
+const addTimeSpeederUsage = async ({userId, amount}: IAddTimeSpeederUsage) => {
+  const user = await dbUser.findOneAndUpdate(
+    {userId},
+    {
+      $inc: {
+        'farms.itemsUsed.timeSpeeder': amount,
+      },
+    },
+    {
+      new: true,
+    },
+  );
+  return user ?? null;
+};
+
 export const userService = {
   registerUser,
   findUser,
@@ -298,4 +340,6 @@ export const userService = {
   updateIdleFarmDonorTier,
   getTopWorkers,
   calcTotalUsers,
+  addTimeCompressorUsage,
+  addTimeSpeederUsage,
 };
