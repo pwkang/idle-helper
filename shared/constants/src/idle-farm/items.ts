@@ -78,4 +78,23 @@ export const IDLE_FARM_ITEMS = {
   leatherBox: 'leather box',
   hornBox: 'horn box',
   sawdustBox: 'sawdust box',
+
+  // consumables
+  energyGlass: 'energy glass',
+  energyDrink: 'energy drink',
+  energyGalloon: 'energy galloon',
+  timeSpeeder: 'time speeder',
+  timeCompressor: 'time compressor',
+  uselessDice: 'useless dice',
+  commonDice: 'common dice',
+  uncommonDice: 'uncommon dice',
+  rareDice: 'rare dice',
+  epicDice: 'epic dice',
+  mythicDice: 'mythic dice',
+  uselessLootbox: 'useless lootbox',
+  commonLootbox: 'common lootbox',
+  uncommonLootbox: 'uncommon lootbox',
+  rareLootbox: 'rare lootbox',
+  epicLootbox: 'epic lootbox',
+  mythicLootbox: 'mythic lootbox',
 } as const;
