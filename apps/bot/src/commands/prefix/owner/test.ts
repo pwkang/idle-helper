@@ -1,5 +1,5 @@
 import {PREFIX_COMMAND_TYPE} from '@idle-helper/constants';
-import {idleUseTimeSpeederSuccess} from '../../../lib/idle-farm/use/time-speeder';
+import claimReminder from '../../../lib/idle-helper/reminder/claim-reminder';
 
 export default <PrefixCommand>{
   name: 'test',
@@ -7,11 +7,9 @@ export default <PrefixCommand>{
   type: PREFIX_COMMAND_TYPE.dev,
   preCheck: {},
   execute: async (client, message, args) => {
-    const msg = await message.channel.messages.fetch(args[1]);
-    if (!msg) return;
-    idleUseTimeSpeederSuccess({
-      author: message.author,
-      message: msg,
+    claimReminder.send({
+      client,
+      userId: message.author.id,
     });
   },
 };
