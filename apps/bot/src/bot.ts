@@ -48,5 +48,5 @@ Promise.all([loadCommands(client), loadBotEvents(client), loadRedis(), loadCronJ
         logLevel: 'error',
       });
     });
-  }
+  },
 );
