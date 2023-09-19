@@ -74,9 +74,8 @@ const idleRaidSuccess = async ({author, client, channelId, raidMessage}: IIdleWo
   if (!sentMessage) return;
   const event = await createMessageEditedListener({
     messageId: raidMessage.id,
-    timer: '5m',
   });
-  event.on('edited', async (message) => {
+  event.on(raidMessage.id, async (message) => {
     const guideEmbed = generateEmbed({
       userWorkers: userWorker,
       raidMessage: message,

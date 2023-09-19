@@ -38,7 +38,7 @@ const idleMarketSuccess = async ({message}: IIdleMarketSuccess) => {
     messageId: message.id,
   });
   if (!event) return;
-  event.on('edited', (collected) => {
+  event.on(message.id, (collected) => {
     marketPageChanged({embed: collected.embeds[0]});
   });
 };

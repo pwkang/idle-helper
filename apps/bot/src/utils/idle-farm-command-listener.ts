@@ -111,7 +111,7 @@ export const createIdleFarmCommandListener = ({
     const event = await createMessageEditedListener({
       messageId,
     });
-    event.on('edited', (message) => {
+    event.on(messageId, (message) => {
       messageCollected(message);
     });
   };
