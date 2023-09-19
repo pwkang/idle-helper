@@ -12,7 +12,7 @@ interface IIdleMarket {
 }
 
 export const idleMarket = ({author, client, isSlashCommand, message}: IIdleMarket) => {
-  const event = createIdleFarmCommandListener({
+  let event = createIdleFarmCommandListener({
     author,
     client,
     channelId: message.channel.id,
@@ -23,8 +23,11 @@ export const idleMarket = ({author, client, isSlashCommand, message}: IIdleMarke
       idleMarketSuccess({
         message: collected,
       });
-      event.stop();
+      event?.stop();
     }
+  });
+  event.on('end', () => {
+    event = undefined;
   });
   if (isSlashCommand) event.triggerCollect(message);
 };

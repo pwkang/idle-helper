@@ -17,7 +17,7 @@ interface IIdleClaim {
 }
 
 export const idleClaim = async ({author, client, isSlashCommand, message}: IIdleClaim) => {
-  const event = createIdleFarmCommandListener({
+  let event = createIdleFarmCommandListener({
     author,
     client,
     channelId: message.channel.id,
@@ -36,8 +36,11 @@ export const idleClaim = async ({author, client, isSlashCommand, message}: IIdle
         channelId: message.channel.id,
         userId: author.id,
       });
-      event.stop();
+      event?.stop();
     }
+  });
+  event.on('end', () => {
+    event = undefined;
   });
   if (isSlashCommand) event.triggerCollect(message);
 };
