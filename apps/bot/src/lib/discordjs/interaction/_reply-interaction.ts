@@ -20,7 +20,7 @@ export interface IReplyInteraction {
 
 type TEventCB = (
   collected: BaseInteraction | StringSelectMenuInteraction,
-  customId: string
+  customId: string,
 ) => Promise<InteractionUpdateOptions | null> | InteractionUpdateOptions | null;
 
 export default async function _replyInteraction<T>({
@@ -48,7 +48,7 @@ export default async function _replyInteraction<T>({
   const registeredEvents = new Collection<string | T, TEventCB>();
   let allEventsFn: TEventCB | null = null;
   if (!channel) return;
-  const collector = interactionResponse.createMessageComponentCollector({
+  let collector = interactionResponse.createMessageComponentCollector({
     idle: ms('1m'),
   });
 
@@ -80,6 +80,7 @@ export default async function _replyInteraction<T>({
   function stop() {
     collector?.stop();
     collector?.removeAllListeners();
+    collector = null as any;
   }
 
   collector?.on('end', async (collected, reason) => {

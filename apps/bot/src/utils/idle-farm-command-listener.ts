@@ -52,6 +52,7 @@ export const createIdleFarmCommandListener = ({
     event.stop = () => {
       collector?.stop();
       collector?.removeAllListeners();
+      collector = undefined;
       event && event.removeAllListeners();
       event = undefined;
     };
