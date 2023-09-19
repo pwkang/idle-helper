@@ -13,7 +13,7 @@ import djsInteractionHelper from '../interaction';
 
 type TEventCB = (
   collected: BaseInteraction | StringSelectMenuInteraction,
-  customId: string
+  customId: string,
 ) => Promise<InteractionUpdateOptions | null> | InteractionUpdateOptions | null;
 
 export interface SendInteractiveMessageProps {
@@ -39,7 +39,7 @@ export default async function _sendInteractiveMessage<EventType extends string>(
 
   let allEventsFn: TEventCB | null = null;
   const registeredEvents = new Collection<string | EventType, TEventCB>();
-  const collector = sentMessage.createMessageComponentCollector({
+  let collector = sentMessage.createMessageComponentCollector({
     idle: ms('1m'),
   });
 
@@ -72,6 +72,7 @@ export default async function _sendInteractiveMessage<EventType extends string>(
   function stop() {
     collector.stop();
     collector.removeAllListeners();
+    collector = undefined as any;
   }
 
   function isEnded() {
