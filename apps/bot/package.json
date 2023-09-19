@@ -13,7 +13,8 @@
     "@idle-helper/models": "workspace:*",
     "@idle-helper/services": "workspace:*",
     "@idle-helper/utils": "workspace:*",
-    "@sentry/node": "^7.52.1"
+    "@sentry/node": "^7.57.0",
+    "@sentry/profiling-node": "^1.2.1"
   },
   "devDependencies": {
     "@idle-helper/tsconfig": "workspace:*"

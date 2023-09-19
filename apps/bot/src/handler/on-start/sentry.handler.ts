@@ -1,7 +1,5 @@
 import * as Sentry from '@sentry/node';
-import * as dotenv from 'dotenv';
-
-dotenv.config();
+import {ProfilingIntegration} from '@sentry/profiling-node';
 
 export const initSentry = () => {
   Sentry.init({
@@ -10,6 +8,11 @@ export const initSentry = () => {
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.
     // We recommend adjusting this value in production
-    tracesSampleRate: 0.5,
+    tracesSampleRate: 1.0,
+    profilesSampleRate: 1.0, // Profiling sample rate is relative to tracesSampleRate
+    integrations: [
+      // Add profiling integration to list of integrations
+      new ProfilingIntegration(),
+    ],
   });
 };
