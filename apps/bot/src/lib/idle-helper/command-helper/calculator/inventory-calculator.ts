@@ -42,7 +42,7 @@ export const _inventoryCalculator = async ({message, client, author}: IIdlonsCal
     messageId: message.id,
   });
   if (!event || !sentMessage) return;
-  event.on('edited', (collected) => {
+  event.on(message.id, (collected) => {
     const embed = collected.embeds[0];
     const updatedInventory = messageReaders.inventory({
       embed,

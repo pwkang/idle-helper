@@ -40,10 +40,9 @@ export const _teamRaidHelper = async ({client, channelId, users, collected}: ITe
   if (!sentMessage) return;
   const event = await createMessageEditedListener({
     messageId: collected.id,
-    timer: '5m',
   });
   if (!event) return;
-  event.on('edited', (newMessage) => {
+  event.on(collected.id, (newMessage) => {
     const messageOptions = generateMessageOptions({
       message: newMessage,
       usersAccount,

@@ -42,32 +42,35 @@ export const createIdleFarmCommandListener = ({
     collector = channel.createMessageCollector({time: ms('1m'), filter});
   }
   if (!collector) return;
-  const event = new TypedEventEmitter<TEventTypes>() as TypedEventEmitter<TEventTypes> &
-    TExtraProps;
+  let event = new TypedEventEmitter<TEventTypes>() as (TypedEventEmitter<TEventTypes> &
+    TExtraProps) | undefined;
   let waitingAnswer = false;
 
-  event.stop = () => {
-    collector?.stop();
-    collector?.removeAllListeners();
-    event.removeAllListeners();
-  };
 
-  event.pendingAnswer = () => {
-    waitingAnswer = true;
-  };
-  event.answered = () => {
-    waitingAnswer = false;
-  };
+  if (event) {
 
-  event.resetTimer = (ms: number) => {
-    collector?.resetTimer({time: ms});
-  };
+    event.stop = () => {
+      collector?.stop();
+      collector?.removeAllListeners();
+      event && event.removeAllListeners();
+      event = undefined;
+    };
 
-  event.triggerCollect = (message: Message) => {
-    messageCollected(message);
-  };
+    event.pendingAnswer = () => {
+      waitingAnswer = true;
+    };
+    event.answered = () => {
+      waitingAnswer = false;
+    };
 
-  collector.on('collect', messageCollected);
+    event.resetTimer = (ms: number) => {
+      collector?.resetTimer({time: ms});
+    };
+
+    event.triggerCollect = (message: Message) => {
+      messageCollected(message);
+    };
+  }
 
   async function messageCollected(collected: Message) {
     if (!collected.inGuild()) return;
@@ -78,15 +81,15 @@ export const createIdleFarmCommandListener = ({
       const embed = collected.embeds[0];
 
       if (isUserSpamming({collected, author})) {
-        event.stop();
+        event && event.stop();
         return;
       }
 
-      event.emit('embed', embed, collected);
+      event && event.emit('embed', embed, collected);
     } else if (!collected.embeds.length) {
       // Message Content
       if (isBotMaintenance({collected, author})) {
-        event.stop();
+        event && event.stop();
         return;
       }
 
@@ -94,24 +97,26 @@ export const createIdleFarmCommandListener = ({
         if (waitingAnswer) {
           return;
         } else {
-          event.stop();
+          event && event.stop();
           return;
         }
       }
 
-      event.emit('content', collected.content, collected);
+      event && event.emit('content', collected.content, collected);
     }
 
     if (collected.attachments.size) {
-      event.emit('attachments', collected.attachments, collected);
+      event && event.emit('attachments', collected.attachments, collected);
     }
   }
+
+  collector.on('collect', messageCollected);
 
   const awaitEdit = async (messageId: string) => {
     const event = await createMessageEditedListener({
       messageId,
     });
-    event.on('edited', (message) => {
+    event.on(messageId, (message) => {
       messageCollected(message);
     });
   };
