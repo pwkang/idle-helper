@@ -11,7 +11,7 @@ interface IUseTimeSpeeder {
 }
 
 export const idleUseTimeSpeeder = ({author, client, isSlashCommand, message}: IUseTimeSpeeder) => {
-  const event = createIdleFarmCommandListener({
+  let event = createIdleFarmCommandListener({
     author,
     client,
     channelId: message.channel.id,
@@ -19,9 +19,12 @@ export const idleUseTimeSpeeder = ({author, client, isSlashCommand, message}: IU
   if (!event) return;
   event.on('content', async (content, collected) => {
     if (isTimeSpeederUsed({author, message: collected})) {
-      event.stop();
+      event?.stop();
       await idleUseTimeSpeederSuccess({author, message: collected});
     }
+  });
+  event.on('end', () => {
+    event = undefined;
   });
   if (isSlashCommand) event.triggerCollect(message);
 };

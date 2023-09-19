@@ -10,7 +10,7 @@ interface IIdleDaily {
 }
 
 export const idleDaily = async ({author, client, isSlashCommand, message}: IIdleDaily) => {
-  const event = createIdleFarmCommandListener({
+  let event = createIdleFarmCommandListener({
     author,
     client,
     channelId: message.channel.id,
@@ -19,8 +19,11 @@ export const idleDaily = async ({author, client, isSlashCommand, message}: IIdle
   event.on('embed', async (embed) => {
     if (isIdleDaily({author, embed})) {
       idleDailySuccess({author});
-      event.stop();
+      event?.stop();
     }
+  });
+  event.on('end', () => {
+    event = undefined;
   });
   if (isSlashCommand) event.triggerCollect(message);
 };

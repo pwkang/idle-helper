@@ -14,7 +14,7 @@ interface IIdleGuild {
 
 export const idleGuildList = async ({author, client, isSlashCommand, message}: IIdleGuild) => {
   if (message.mentions.users.size) return;
-  const event = createIdleFarmCommandListener({
+  let event = createIdleFarmCommandListener({
     author,
     client,
     channelId: message.channel.id,
@@ -22,7 +22,7 @@ export const idleGuildList = async ({author, client, isSlashCommand, message}: I
   if (!event) return;
   event.on('embed', async (embed) => {
     if (isIdleGuildList({embed})) {
-      event.stop();
+      event?.stop();
       const result = await commandHelper.guild.verifyGuild({
         client,
         server: message.guild,
@@ -47,6 +47,9 @@ export const idleGuildList = async ({author, client, isSlashCommand, message}: I
         author,
       });
     }
+  });
+  event.on('end', () => {
+    event = undefined;
   });
   if (isSlashCommand) event.triggerCollect(message);
 };

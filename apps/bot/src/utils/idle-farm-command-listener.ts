@@ -15,7 +15,11 @@ type TEventTypes = {
   content: [Message['content'], Message<true>];
   cooldown: [number];
   attachments: [Message['attachments'], Message<true>];
+  end: [];
 };
+
+type CustomEventType = (TypedEventEmitter<TEventTypes> &
+  TExtraProps) | undefined;
 
 type TExtraProps = {
   stop: () => void;
@@ -42,10 +46,8 @@ export const createIdleFarmCommandListener = ({
     collector = channel.createMessageCollector({time: ms('1m'), filter});
   }
   if (!collector) return;
-  let event = new TypedEventEmitter<TEventTypes>() as (TypedEventEmitter<TEventTypes> &
-    TExtraProps) | undefined;
+  let event = new TypedEventEmitter<TEventTypes>() as CustomEventType;
   let waitingAnswer = false;
-
 
   if (event) {
 
@@ -53,6 +55,7 @@ export const createIdleFarmCommandListener = ({
       collector?.stop();
       collector?.removeAllListeners();
       collector = undefined;
+      event?.emit('end');
       event && event.removeAllListeners();
       event = undefined;
     };
@@ -71,6 +74,7 @@ export const createIdleFarmCommandListener = ({
     event.triggerCollect = (message: Message) => {
       messageCollected(message);
     };
+
   }
 
   async function messageCollected(collected: Message) {
@@ -82,7 +86,7 @@ export const createIdleFarmCommandListener = ({
       const embed = collected.embeds[0];
 
       if (isUserSpamming({collected, author})) {
-        event && event.stop();
+        event?.stop();
         return;
       }
 
@@ -90,7 +94,7 @@ export const createIdleFarmCommandListener = ({
     } else if (!collected.embeds.length) {
       // Message Content
       if (isBotMaintenance({collected, author})) {
-        event && event.stop();
+        event?.stop();
         return;
       }
 
@@ -98,7 +102,7 @@ export const createIdleFarmCommandListener = ({
         if (waitingAnswer) {
           return;
         } else {
-          event && event.stop();
+          event?.stop();
           return;
         }
       }
@@ -121,6 +125,7 @@ export const createIdleFarmCommandListener = ({
       messageCollected(message);
     });
   };
+
 
   return event;
 };

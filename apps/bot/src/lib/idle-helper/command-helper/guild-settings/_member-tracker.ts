@@ -1,13 +1,4 @@
-import {
-  BaseMessageOptions,
-  Client,
-  Embed,
-  EmbedBuilder,
-  Guild,
-  GuildMember,
-  Role,
-  User,
-} from 'discord.js';
+import {BaseMessageOptions, Client, Embed, EmbedBuilder, Guild, GuildMember, Role, User} from 'discord.js';
 import {guildService} from '../../../../services/database/guild.service';
 import messageFormatter from '../../../discordjs/message-formatter';
 import {IGuild} from '@idle-helper/models';
@@ -49,7 +40,7 @@ export const _memberTracker = async ({
   //   userIds: databaseMembers,
   // });
   const cachedServerMembers = guildRole.members.map((member) => member);
-  const event = createIdleFarmCommandListener({
+  let event = createIdleFarmCommandListener({
     author,
     client,
     channelId,
@@ -60,7 +51,7 @@ export const _memberTracker = async ({
     if (!guild)
       return {
         content: `There is no guild with role ${messageFormatter.role(
-          guildRole.id
+          guildRole.id,
         )} setup in this server`,
       };
     return {
@@ -81,7 +72,11 @@ export const _memberTracker = async ({
         embedUsernames: info.usernames,
       }),
     });
-    event.stop();
+    event?.stop();
+  });
+
+  event.on('end', () => {
+    event = undefined;
   });
 
   return {
@@ -108,19 +103,19 @@ const getMemberRoleStatusMessageOptions = ({
 
   const membersWithRole = cachedServerMembers.filter(
     (member) =>
-      embedUsernames.includes(member.user.username) || embedUsersId.includes(member.user.id)
+      embedUsernames.includes(member.user.username) || embedUsersId.includes(member.user.id),
   );
 
   const nonCachedMembersUsername = embedUsernames.filter(
-    (username) => !cachedServerMembers.some((member) => member.user.username === username)
+    (username) => !cachedServerMembers.some((member) => member.user.username === username),
   );
   const nonCachedMembersId = embedUsersId.filter(
-    (id) => !cachedServerMembers.some((member) => member.user.id === id)
+    (id) => !cachedServerMembers.some((member) => member.user.id === id),
   );
 
   const nonMembersWithRole = cachedServerMembers.filter(
     (member) =>
-      !embedUsernames.includes(member.user.username) && !embedUsersId.includes(member.user.id)
+      !embedUsernames.includes(member.user.username) && !embedUsersId.includes(member.user.id),
   );
 
   for (let i = 0; i < membersWithRole.length; i += 30) {
@@ -155,7 +150,7 @@ const getMemberRoleStatusMessageOptions = ({
       'These users are not cached yet, they either left the server or not active in this server',
       'Mentions these users in any private channel bot has access to and use this command again',
       `\`\`\`${nonCachedMembersId.map(messageFormatter.user)} ${nonCachedMembersUsername.map(
-        (username) => `@${username}`
+        (username) => `@${username}`,
       )}\`\`\``,
     ].join('\n');
   }

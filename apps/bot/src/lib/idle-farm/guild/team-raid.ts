@@ -17,7 +17,7 @@ interface IIdleGuild {
 }
 
 export const idleTeamRaid = async ({author, client, isSlashCommand, message}: IIdleGuild) => {
-  const event = createIdleFarmCommandListener({
+  let event = createIdleFarmCommandListener({
     author,
     client,
     channelId: message.channel.id,
@@ -39,12 +39,12 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
             embeds: [result.errorEmbed],
           },
         });
-        event.stop();
+        event?.stop();
         return;
       }
       const userGuild = result.guild;
       if (!userGuild) {
-        event.stop();
+        event?.stop();
         return;
       }
       const guildRoleId = userGuild?.roleId;
@@ -53,7 +53,7 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
         serverId: message.guild.id,
       });
       if (!toggleGuild?.teamRaid.helper) {
-        event.stop();
+        event?.stop();
         return;
       }
 
@@ -70,7 +70,7 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
         users: involvedUsers,
         client,
       });
-      event.stop();
+      event?.stop();
     }
   });
   event.on('content', async (_, collected) => {
@@ -80,8 +80,11 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
       hasNotEnoughPower(collected) ||
       hasNotReachDirt2(collected)
     ) {
-      event.stop();
+      event?.stop();
     }
+  });
+  event.on('end', () => {
+    event = undefined;
   });
   if (isSlashCommand) event.triggerCollect(message);
 };

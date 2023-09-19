@@ -12,7 +12,7 @@ interface IIdleWorker {
 }
 
 export const idleWorker = async ({author, client, isSlashCommand, message}: IIdleWorker) => {
-  const event = createIdleFarmCommandListener({
+  let event = createIdleFarmCommandListener({
     author,
     client,
     channelId: message.channel.id,
@@ -26,8 +26,11 @@ export const idleWorker = async ({author, client, isSlashCommand, message}: IIdl
         channelId: message.channel.id,
         userId: author.id,
       });
-      event.stop();
+      event?.stop();
     }
+  });
+  event.on('end', () => {
+    event = undefined;
   });
   if (isSlashCommand) event.triggerCollect(message);
 };

@@ -11,7 +11,7 @@ interface IIdleVote {
 }
 
 export const idleVote = ({author, client, isSlashCommand, message}: IIdleVote) => {
-  const event = createIdleFarmCommandListener({
+  let event = createIdleFarmCommandListener({
     author,
     client,
     channelId: message.channel.id,
@@ -23,8 +23,11 @@ export const idleVote = ({author, client, isSlashCommand, message}: IIdleVote) =
         message: collected,
         author,
       });
-      event.stop();
+      event?.stop();
     }
+  });
+  event.on('end', () => {
+    event = undefined;
   });
   if (isSlashCommand) event.triggerCollect(message);
 };

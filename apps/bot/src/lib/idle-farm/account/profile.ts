@@ -13,7 +13,7 @@ interface IIdleProfile {
 }
 
 export const idleProfile = ({author, client, isSlashCommand, message}: IIdleProfile) => {
-  const event = createIdleFarmCommandListener({
+  let event = createIdleFarmCommandListener({
     author,
     client,
     channelId: message.channel.id,
@@ -21,9 +21,13 @@ export const idleProfile = ({author, client, isSlashCommand, message}: IIdleProf
   if (!event) return;
   event.on('embed', async (embed, collected) => {
     if (isIdleProfile({embed, author})) {
-      event.stop();
+      event?.stop();
       await idleProfileSuccess({embed, author, message: collected, client});
     }
+  });
+
+  event.on('end', () => {
+    event = undefined;
   });
   if (isSlashCommand) event.triggerCollect(message);
 

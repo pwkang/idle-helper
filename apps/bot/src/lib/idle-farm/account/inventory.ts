@@ -21,7 +21,7 @@ export const idleInventory = ({
   message,
   isCalc,
 }: IIdleInventory) => {
-  const event = createIdleFarmCommandListener({
+  let event = createIdleFarmCommandListener({
     author,
     client,
     channelId: message.channel.id,
@@ -29,7 +29,7 @@ export const idleInventory = ({
   if (!event) return;
   event.on('embed', async (embed, collected) => {
     if (isIdleInventory({embed, author})) {
-      event.stop();
+      event?.stop();
       if (isCalc) {
         const userToggle = await toggleUserChecker({
           userId: author.id,
@@ -44,6 +44,9 @@ export const idleInventory = ({
         });
       }
     }
+  });
+  event.on('end', () => {
+    event = undefined;
   });
   if (isSlashCommand) event.triggerCollect(message);
 };

@@ -11,7 +11,7 @@ interface IUseTimeCompressor {
 }
 
 export const idleUseTimeCompressor = ({author, client, isSlashCommand, message}: IUseTimeCompressor) => {
-  const event = createIdleFarmCommandListener({
+  let event = createIdleFarmCommandListener({
     author,
     client,
     channelId: message.channel.id,
@@ -19,9 +19,12 @@ export const idleUseTimeCompressor = ({author, client, isSlashCommand, message}:
   if (!event) return;
   event.on('content', async (content, collected) => {
     if (isTimeCompressorUsed({author, message: collected})) {
-      event.stop();
+      event?.stop();
       await idleUseTimeCompressorSuccess({author, message: collected});
     }
+  });
+  event.on('end', () => {
+    event = undefined;
   });
   if (isSlashCommand) event.triggerCollect(message);
 };
