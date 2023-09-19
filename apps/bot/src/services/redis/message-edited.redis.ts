@@ -9,7 +9,7 @@ interface IRedisSetMessageEdited {
 
 const register = async ({messageId}: IRedisSetMessageEdited) => {
   await redisService.set(`${prefix}${messageId}`, messageId, {
-    PX: ms('5m'),
+    PX: ms('10m'),
   });
 };
 
