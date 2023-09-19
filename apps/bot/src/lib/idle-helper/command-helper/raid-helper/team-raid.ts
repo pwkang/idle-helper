@@ -11,7 +11,7 @@ import {createMessageEditedListener} from '../../../../utils/message-edited-list
 import timestampHelper from '../../../discordjs/timestamp';
 import ms from 'ms';
 
-const TEAM_RAID_DURATION = ms('5m');
+const TEAM_RAID_DURATION = ms('10m');
 
 interface ITeamRaidHelper {
   users: User[];
