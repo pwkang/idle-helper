@@ -20,6 +20,7 @@ export default <PrefixCommand>{
       client,
       options: topPowerListing.render(),
       channelId: message.channel.id,
+      onEnd: topPowerListing.stop,
     });
     if (!event) return;
     event.every(topPowerListing.replyInteraction);

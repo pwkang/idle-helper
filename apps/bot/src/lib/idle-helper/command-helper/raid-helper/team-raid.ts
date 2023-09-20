@@ -86,7 +86,7 @@ const generateMessageOptions = ({
         decimalPlace: 3,
         raidType: 'team',
       })}`;
-      mappedEnemies.push(worker.hp === 0 ? `~~${stats}~~` : stats);
+      mappedEnemies.push(worker.hp === 0 ? `||${stats}||` : stats);
     }
   }
   if (mappedEnemies.length)
@@ -126,7 +126,7 @@ const generateMessageOptions = ({
         } else {
           stats = `${BOT_EMOJI.worker[workerInfo.type]} ??`;
         }
-        workersInfo.push(workerInfo.used ? `~~${stats}~~` : stats);
+        workersInfo.push(workerInfo.used ? `||${stats}||` : stats);
       }
     }
 
