@@ -5,7 +5,6 @@ import * as dotenv from 'dotenv';
 import loadCommands from './handler/on-start/commands.handler';
 import loadBotEvents from './handler/on-start/bot-events.handler';
 import loadCronJob from './handler/on-start/cron.handler';
-import {initSentry} from './handler/on-start/sentry.handler';
 import {logger} from '@idle-helper/utils';
 import {loadRedis} from './handler/on-start/redis.handler';
 
@@ -32,7 +31,7 @@ client.botMessages = new Collection();
 
 if (environment === 'production') {
   client.cluster = new ClusterClient(client); // initialize the Client, so we access the .broadcastEval()
-  initSentry();
+  // initSentry();
 }
 
 Promise.all([loadCommands(client), loadBotEvents(client), loadRedis(), loadCronJob(client)]).then(
