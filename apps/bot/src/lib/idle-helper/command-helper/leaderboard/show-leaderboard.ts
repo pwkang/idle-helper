@@ -1,27 +1,21 @@
 import {infoService} from '../../../../services/database/info.service';
-import {
-  ActionRowBuilder,
-  BaseInteraction,
-  BaseMessageOptions,
-  EmbedBuilder,
-  StringSelectMenuBuilder,
-} from 'discord.js';
+import {ActionRowBuilder, BaseInteraction, EmbedBuilder, StringSelectMenuBuilder} from 'discord.js';
 import {BOT_COLOR, BOT_EMOJI, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 import {IInfo} from '@idle-helper/models/dist/info/info.type';
 import {generateNavigationRow} from '../../../../utils/pagination-row';
 import {typedObjectEntries} from '@idle-helper/utils';
 
 export const _showLeaderboard = async () => {
-  const leaderboard = await infoService.getLeaderboard();
+  let leaderboard = await infoService.getLeaderboard() as IInfo['leaderboard'] | undefined;
   let selectedType: keyof typeof SELECTOR_LABEL = IDLE_FARM_WORKER_TYPE.useless;
   let page = 0;
 
-  const render = (): BaseMessageOptions => {
+  const render = () => {
     return {
       components: generateSelector({
         page,
         currentSelectItem: selectedType,
-        total: leaderboard[selectedType].length,
+        total: leaderboard?.[selectedType]?.length ?? 0,
       }),
       embeds: [
         generateEmbed({
@@ -44,9 +38,14 @@ export const _showLeaderboard = async () => {
     return render();
   };
 
+  const stop = () => {
+    leaderboard = undefined;
+  };
+
   return {
     render,
     replyInteraction,
+    stop,
   };
 };
 
@@ -93,7 +92,7 @@ const PAGES_TITLE = {
 
 interface IGenerateEmbed {
   type: keyof typeof SELECTOR_LABEL;
-  leaderboard: IInfo['leaderboard'];
+  leaderboard?: IInfo['leaderboard'];
   page: number;
 }
 
@@ -107,20 +106,20 @@ const generateEmbed = ({type, leaderboard, page}: IGenerateEmbed) => {
       text: 'Leaderboard is updated every hour',
     });
 
-  const leaderboardPage = leaderboard[type].slice(
+  const leaderboardPage = leaderboard?.[type].slice(
     page * ITEMS_PER_PAGE,
-    (page + 1) * ITEMS_PER_PAGE
-  );
+    (page + 1) * ITEMS_PER_PAGE,
+  ) ?? [];
 
   const description = [PAGES_TITLE[type]];
   description.push(
     leaderboardPage.length
       ? leaderboardPage
         .map(
-          (lb, index) => `${page * ITEMS_PER_PAGE + index + 1}. **${lb.name}** ~-~ ${lb.value}`
+          (lb, index) => `${page * ITEMS_PER_PAGE + index + 1}. **${lb.name}** ~-~ ${lb.value}`,
         )
         .join('\n')
-      : 'No data found'
+      : 'No data found',
   );
   embed.setDescription(description.join('\n'));
 
@@ -152,8 +151,8 @@ const generateSelector = ({page, total, currentSelectItem}: IGenerateSelector) =
           label: value.label,
           default: type === currentSelectItem,
           emoji: value.emoji,
-        }))
-      )
+        })),
+      ),
   );
   rows.push(selectorRow);
   return rows;

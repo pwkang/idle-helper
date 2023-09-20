@@ -20,13 +20,16 @@ export interface SendInteractiveMessageProps {
   client: Client;
   channelId: string;
   options: string | MessagePayload | MessageCreateOptions;
+  onEnd?: () => void;
 }
 
-export default async function _sendInteractiveMessage<EventType extends string>({
-  channelId,
-  options,
-  client,
-}: SendInteractiveMessageProps) {
+export default async function _sendInteractiveMessage<EventType extends string>(
+  {
+    channelId,
+    options,
+    client,
+    onEnd,
+  }: SendInteractiveMessageProps) {
   const channel = client.channels.cache.get(channelId);
   if (!channel) return;
 
@@ -82,7 +85,9 @@ export default async function _sendInteractiveMessage<EventType extends string>(
   collector.on('end', (collected, reason) => {
     if (!sentMessage) return;
 
-    if (reason === 'idle')
+    if (reason === 'idle') {
+      onEnd?.();
+      stop();
       djsMessageHelper.edit({
         client,
         message: sentMessage,
@@ -90,7 +95,9 @@ export default async function _sendInteractiveMessage<EventType extends string>(
           components: [], // todo: make all components disabled instead of remove it
         },
       });
+    }
   });
+
 
   return {
     on,
