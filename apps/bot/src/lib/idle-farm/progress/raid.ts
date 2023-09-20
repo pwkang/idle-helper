@@ -136,7 +136,7 @@ const generateEmbed = ({userWorkers, raidMessage}: IGenerateEmbed) => {
       : '-';
     const value = `${BOT_EMOJI.worker[type]} Lv ${workerInfo.level} | AT: ${power} | DMG: ${damage}`;
     const isWorkerUsed = workers.find((w) => w.type === type)?.used;
-    workersInfo.push(isWorkerUsed ? `||${value}||` : value);
+    workersInfo.push(isWorkerUsed ? `~~${value}~~` : value);
   }
   embed.addFields({
     name: `${BOT_EMOJI.other.farm} Your farms`,
@@ -154,7 +154,7 @@ const generateEmbed = ({userWorkers, raidMessage}: IGenerateEmbed) => {
       decimalPlace: 2,
     });
     const value = `${BOT_EMOJI.worker[worker]}Lv ${level} | AT: ${power}`;
-    enemyFarmsInfo.push(health ? (isCurrentEnemy ? `**${value}**` : value) : `||${value}||`);
+    enemyFarmsInfo.push(health ? (isCurrentEnemy ? `**${value}**` : value) : `~~${value}~~`);
   }
   embed.addFields({
     name: `${BOT_EMOJI.other.farm} Enemy farms`,
