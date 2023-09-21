@@ -1,9 +1,5 @@
 import {djsMessageHelper} from '../../../../lib/discordjs/message';
-import {
-  PREFIX_COMMAND_TYPE,
-  USER_ACC_OFF_ACTIONS,
-  USER_NOT_REGISTERED_ACTIONS,
-} from '@idle-helper/constants';
+import {PREFIX_COMMAND_TYPE, USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
 import commandHelper from '../../../../lib/idle-helper/command-helper';
 
 export default <PrefixCommand>{
@@ -15,13 +11,16 @@ export default <PrefixCommand>{
     userAccOff: USER_ACC_OFF_ACTIONS.askToTurnOn,
   },
   execute: async (client, message) => {
-    const setDonor = commandHelper.userAccount.setDonor({
+    let setDonor = commandHelper.userAccount.setDonor({
       author: message.author,
     });
     const event = await djsMessageHelper.interactiveSend({
       client,
       channelId: message.channel.id,
       options: setDonor.render(),
+      onEnd: () => {
+        setDonor = null as any;
+      },
     });
     if (!event) return;
     event.every(async (interaction, customId) => {

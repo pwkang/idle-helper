@@ -13,7 +13,7 @@ export default <SlashCommand>{
   type: 'command',
   execute: async (client, interaction) => {
     if (!interaction.inGuild()) return;
-    const botInfo = commandHelper.botInfo.help({
+    let botInfo = commandHelper.botInfo.help({
       client,
       channelId: interaction.channelId,
       serverId: interaction.guildId,
@@ -23,6 +23,9 @@ export default <SlashCommand>{
       options: botInfo.render(),
       interaction,
       interactive: true,
+      onStop: () => {
+        botInfo = null as any;
+      },
     });
     if (!event) return;
     event.every((newInteraction) => {

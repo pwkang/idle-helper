@@ -17,7 +17,7 @@ export default <SlashCommand>{
   execute: async (client, interaction) => {
     if (!interaction.inGuild()) return;
 
-    const guildSettings = await commandHelper.guildSettings.showSettings({
+    let guildSettings = await commandHelper.guildSettings.showSettings({
       server: interaction.guild!,
       type: GUILD_SETTINGS_PAGE_TYPE.toggle,
     });
@@ -26,6 +26,9 @@ export default <SlashCommand>{
       interaction,
       options: guildSettings.getMessagePayload(),
       interactive: true,
+      onStop: () => {
+        guildSettings = null as any;
+      },
     });
     if (!event) return;
     event.every((interaction, customId) => {

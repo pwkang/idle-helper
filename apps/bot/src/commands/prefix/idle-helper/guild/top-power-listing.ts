@@ -11,7 +11,7 @@ export default <PrefixCommand>{
     userNotRegistered: USER_NOT_REGISTERED_ACTIONS.askToRegister,
   },
   execute: async (client, message) => {
-    const topPowerListing = await commandHelper.guild.topPowerListing({
+    let topPowerListing = await commandHelper.guild.topPowerListing({
       client,
       authorId: message.author.id,
       server: message.guild,
@@ -20,7 +20,9 @@ export default <PrefixCommand>{
       client,
       options: topPowerListing.render(),
       channelId: message.channel.id,
-      onEnd: topPowerListing.stop,
+      onEnd: () => {
+        topPowerListing = null as any;
+      },
     });
     if (!event) return;
     event.every(topPowerListing.replyInteraction);

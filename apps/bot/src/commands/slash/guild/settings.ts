@@ -14,7 +14,7 @@ export default <SlashCommand>{
     userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
   },
   execute: async (client, interaction) => {
-    const guildSettings = await commandHelper.guildSettings.showSettings({
+    let guildSettings = await commandHelper.guildSettings.showSettings({
       server: interaction.guild!,
       type: GUILD_SETTINGS_PAGE_TYPE.settings,
     });
@@ -23,6 +23,9 @@ export default <SlashCommand>{
       interaction,
       options: guildSettings.getMessagePayload(),
       interactive: true,
+      onStop: () => {
+        guildSettings = null as any;
+      },
     });
     if (!event) return;
     event.every((interaction, customId) => {
