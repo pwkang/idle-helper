@@ -1,5 +1,5 @@
 import {ClusterClient, getInfo} from 'discord-hybrid-sharding';
-import {Client, Collection, IntentsBitField} from 'discord.js';
+import {Client, Collection, IntentsBitField, Options} from 'discord.js';
 
 import * as dotenv from 'dotenv';
 import loadCommands from './handler/on-start/commands.handler';
@@ -23,6 +23,20 @@ const client = new Client({
   ]),
   shardCount,
   shards,
+  makeCache: Options.cacheWithLimits({
+    BaseGuildEmojiManager: 0,
+    GuildBanManager: 0,
+    GuildEmojiManager: 0,
+    GuildStickerManager: 0,
+    GuildInviteManager: 0,
+    MessageManager: 50,
+    PresenceManager: 0,
+    ReactionUserManager: 0,
+    StageInstanceManager: 0,
+    ThreadManager: 0,
+    ThreadMemberManager: 0,
+    VoiceStateManager: 0,
+  }),
 });
 
 client.prefixCommands = new Collection();
