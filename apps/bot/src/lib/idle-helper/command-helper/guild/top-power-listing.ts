@@ -19,10 +19,10 @@ interface ITopPowerListing {
 }
 
 export const _topPowerListing = async ({authorId}: ITopPowerListing) => {
-  let userGuild = await guildService.findUserGuild({
+  const userGuild = await guildService.findUserGuild({
     userId: authorId,
   });
-  let users = await userService.getUsersById({
+  const users = await userService.getUsersById({
     userIds: userGuild?.membersId ?? [],
   });
   let paginatePage = 0;
@@ -59,16 +59,9 @@ export const _topPowerListing = async ({authorId}: ITopPowerListing) => {
     return render();
   };
 
-  async function stop() {
-    paginatePage = 0;
-    users = [];
-    userGuild = null;
-  }
-
   return {
     render,
     replyInteraction,
-    stop,
   };
 };
 

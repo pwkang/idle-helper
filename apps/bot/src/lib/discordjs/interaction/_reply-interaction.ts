@@ -16,6 +16,7 @@ export interface IReplyInteraction {
   interaction: BaseInteraction;
   options: InteractionReplyOptions;
   interactive?: boolean;
+  onStop?: () => void;
 }
 
 type TEventCB = (
@@ -28,6 +29,7 @@ export default async function _replyInteraction<T>({
   interactive,
   options,
   client,
+  onStop,
 }: IReplyInteraction) {
   if (!interaction.isRepliable() || interaction.replied) return;
   let interactionResponse: InteractionResponse | undefined;
@@ -80,6 +82,7 @@ export default async function _replyInteraction<T>({
   function stop() {
     collector?.stop();
     collector?.removeAllListeners();
+    onStop?.();
     collector = null as any;
   }
 

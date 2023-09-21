@@ -13,7 +13,7 @@ export default <SlashCommand>{
   commandName: SLASH_COMMAND.account.name,
   type: 'subcommand',
   execute: async (client, interaction) => {
-    const deleteAccount = commandHelper.userAccount.deleteAccount({
+    let deleteAccount = commandHelper.userAccount.deleteAccount({
       author: interaction.user,
     });
     const event = await djsInteractionHelper.replyInteraction({
@@ -21,9 +21,12 @@ export default <SlashCommand>{
       interaction,
       options: deleteAccount.render(),
       interactive: true,
+      onStop: () => {
+        deleteAccount = null as any;
+      },
     });
     if (!event) return;
-    event.every(async (interaction, customId) => {
+    event.every(async (_, customId) => {
       return await deleteAccount.responseInteraction(customId);
     });
   },

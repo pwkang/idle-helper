@@ -13,7 +13,7 @@ export default <SlashCommand>{
   commandName: SLASH_COMMAND.account.name,
   type: 'subcommand',
   execute: async (client, interaction) => {
-    const userSettings = await commandHelper.userAccount.settings({
+    let userSettings = await commandHelper.userAccount.settings({
       author: interaction.user,
     });
     if (!userSettings) return;
@@ -24,10 +24,13 @@ export default <SlashCommand>{
         type: 'settings',
       }),
       interactive: true,
+      onStop: () => {
+        userSettings = null as any;
+      },
     });
     if (!event) return;
     event.every(async (interaction) => {
-      if (!interaction.isStringSelectMenu()) return null;
+      if (!interaction.isStringSelectMenu() || !userSettings) return null;
       return userSettings.responseInteraction(interaction);
     });
   },

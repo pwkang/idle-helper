@@ -19,19 +19,19 @@ export default <SlashCommand>{
         option
           .setName('role')
           .setDescription('Select the role of the guild to update')
-          .setRequired(true)
+          .setRequired(true),
       )
       .addUserOption((option) =>
         option
           .setName('leader')
           .setDescription('User that can modify the guild settings without admin permission')
-          .setRequired(true)
+          .setRequired(true),
       ),
   execute: async (client, interaction) => {
     const role = interaction.options.getRole('role', true);
     const leader = interaction.options.getUser('leader', true);
 
-    const configureGuild = await commandHelper.guildSettings.configure({
+    let configureGuild = await commandHelper.guildSettings.configure({
       client,
       roleId: role.id,
       server: interaction.guild!,
@@ -43,6 +43,9 @@ export default <SlashCommand>{
       options: await configureGuild.setLeader({
         leader: leader,
       }),
+      onStop: () => {
+        configureGuild = null as any;
+      },
     });
   },
 };

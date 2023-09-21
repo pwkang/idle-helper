@@ -14,7 +14,7 @@ export default <SlashCommand>{
   commandName: SLASH_COMMAND.account.name,
   builder: (subcommand) => subcommand,
   execute: async (client, interaction) => {
-    const setDonor = commandHelper.userAccount.setDonor({
+    let setDonor = commandHelper.userAccount.setDonor({
       author: interaction.user,
     });
     const event = await djsInteractionHelper.replyInteraction({
@@ -22,6 +22,9 @@ export default <SlashCommand>{
       interaction,
       options: setDonor.render(),
       interactive: true,
+      onStop: () => {
+        setDonor = null as any;
+      },
     });
     if (!event) return;
     event.every(async (interaction, customId) => {

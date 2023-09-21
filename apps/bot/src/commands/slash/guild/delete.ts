@@ -18,12 +18,12 @@ export default <SlashCommand>{
       option
         .setName('role')
         .setDescription('Select the role of the guild to delete')
-        .setRequired(true)
+        .setRequired(true),
     ),
   execute: async (client, interaction) => {
     const role = interaction.options.getRole('role', true);
 
-    const configureGuild = await commandHelper.guildSettings.configure({
+    let configureGuild = await commandHelper.guildSettings.configure({
       server: interaction.guild!,
       roleId: role.id,
       author: interaction.user,
@@ -35,6 +35,9 @@ export default <SlashCommand>{
       interaction,
       options: messageOptions,
       interactive: true,
+      onStop: () => {
+        configureGuild = null as any;
+      },
     });
     if (!event) return;
     event.every(async (interaction) => {

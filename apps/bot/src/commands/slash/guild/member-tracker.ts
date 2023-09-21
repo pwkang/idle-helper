@@ -14,12 +14,12 @@ export default <SlashCommand>{
   },
   builder: (subcommand) =>
     subcommand.addRoleOption((option) =>
-      option.setName('role').setDescription('Guild role of the guild').setRequired(true)
+      option.setName('role').setDescription('Guild role of the guild').setRequired(true),
     ),
   execute: async (client, interaction) => {
     const role = interaction.options.getRole('role', true);
     if (!('guild' in role)) return;
-    const memberTracker = await commandHelper.guildSettings.memberTracker({
+    let memberTracker = await commandHelper.guildSettings.memberTracker({
       server: interaction.guild!,
       guildRole: role,
       client,
@@ -31,6 +31,9 @@ export default <SlashCommand>{
       client,
       options: memberTracker.getMessagePayload(),
       interaction,
+      onStop: () => {
+        memberTracker = null as any;
+      },
     });
   },
 };

@@ -18,7 +18,7 @@ export default <SlashCommand>{
   permissions: [PermissionsBitField.Flags.ManageGuild],
   execute: async (client, interaction) => {
     if (!interaction.inGuild() || !interaction.guild) return;
-    const serverSettings = await commandHelper.serverSettings.settings({
+    let serverSettings = await commandHelper.serverSettings.settings({
       server: interaction.guild,
     });
     if (!serverSettings) return;
@@ -30,10 +30,13 @@ export default <SlashCommand>{
       interaction,
       options: messageOptions,
       interactive: true,
+      onStop: () => {
+        serverSettings = null as any;
+      },
     });
     if (!event) return;
     event.every((interaction) => {
-      if (!interaction.isStringSelectMenu()) return null;
+      if (!interaction.isStringSelectMenu() || !serverSettings) return null;
       return serverSettings.responseInteraction(interaction);
     });
   },
