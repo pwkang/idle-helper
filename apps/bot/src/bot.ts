@@ -25,8 +25,8 @@ const client = new Client({
   shards,
   sweepers: {
     messages: {
-      lifetime: 1800,
-      interval: 900,
+      lifetime: 900,
+      interval: 450,
     },
   },
   makeCache: Options.cacheWithLimits({
@@ -47,6 +47,7 @@ const client = new Client({
     ThreadManager: 0,
     ThreadMemberManager: 0,
     VoiceStateManager: 0,
+    MessageManager: 50,
   }),
 });
 
