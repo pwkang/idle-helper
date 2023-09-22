@@ -1,5 +1,5 @@
 import {ClusterClient, getInfo} from 'discord-hybrid-sharding';
-import {Client, Collection, IntentsBitField, Options} from 'discord.js';
+import {Client, Collection} from 'discord.js';
 
 import * as dotenv from 'dotenv';
 import loadCommands from './handler/on-start/commands.handler';
@@ -8,6 +8,7 @@ import loadCronJob from './handler/on-start/cron.handler';
 import {logger} from '@idle-helper/utils';
 import {loadRedis} from './handler/on-start/redis.handler';
 import {initSentry} from './handler/on-start/sentry.handler';
+import {DiscordClientConfig} from './client-config';
 
 dotenv.config();
 const environment = process.env.NODE_ENV || 'development';
@@ -16,39 +17,9 @@ const shards = environment === 'development' ? 'auto' : getInfo().SHARD_LIST;
 const shardCount = environment === 'development' ? 1 : getInfo().TOTAL_SHARDS;
 
 const client = new Client({
-  intents: new IntentsBitField().add([
-    IntentsBitField.Flags.Guilds,
-    IntentsBitField.Flags.GuildMessages,
-    IntentsBitField.Flags.MessageContent,
-  ]),
+  ...DiscordClientConfig,
   shardCount,
   shards,
-  sweepers: {
-    messages: {
-      lifetime: 900,
-      interval: 450,
-    },
-  },
-  makeCache: Options.cacheWithLimits({
-    BaseGuildEmojiManager: 0,
-    GuildBanManager: 0,
-    GuildEmojiManager: 0,
-    GuildStickerManager: 0,
-    GuildInviteManager: 0,
-    GuildTextThreadManager: 0,
-    ReactionManager: 0,
-    ApplicationCommandManager: 0,
-    AutoModerationRuleManager: 0,
-    GuildForumThreadManager: 0,
-    GuildScheduledEventManager: 0,
-    PresenceManager: 0,
-    ReactionUserManager: 0,
-    StageInstanceManager: 0,
-    ThreadManager: 0,
-    ThreadMemberManager: 0,
-    VoiceStateManager: 0,
-    MessageManager: 50,
-  }),
 });
 
 client.prefixCommands = new Collection();
