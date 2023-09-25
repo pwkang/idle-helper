@@ -30,6 +30,11 @@ export const idleRaid = async ({author, client, isSlashCommand, message}: IIdleR
       event?.stop();
     }
   });
+  event.on('content', (_, collected) => {
+    if (hasNotEnoughEnergy({message: collected, author})) {
+      event?.stop();
+    }
+  });
   event.on('end', () => {
     event = undefined;
   });
@@ -62,3 +67,11 @@ interface IChecker {
 
 const isIdleRaid = ({author, embed}: IChecker) =>
   embed.author?.name === `${author.username} — raid`;
+
+interface Checker {
+  message: Message;
+  author: User;
+}
+
+const hasNotEnoughEnergy = ({message, author}: Checker) =>
+  message.content?.includes('you need at least 40') && message.mentions.users.has(author.id);
