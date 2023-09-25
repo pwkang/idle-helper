@@ -222,6 +222,7 @@ function startRaid({workers, enemies}: IStartRaid) {
   const _enemies = enemies.map(enemy => ({...enemy}));
   const log = [];
   for (const worker of workers) {
+    if (!_enemies.length) break;
     const enemy = {..._enemies[0]};
     const enemyPower = enemy.type ? calcWorkerPower({
       type: enemy.type,
