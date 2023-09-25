@@ -28,6 +28,7 @@ export const _playerRaidHelper = async ({message, userAccount, client}: IRaidHel
   }
 
   let raidInfo = messageReaders.raid({message});
+  const totalEnemy = raidInfo.enemyFarms.length;
   let prevWorkers = [...raidInfo.workers];
 
   let solution = generateBruteForceSolution({
@@ -46,6 +47,7 @@ export const _playerRaidHelper = async ({message, userAccount, client}: IRaidHel
   )[0];
   const guideEmbed = generateEmbed({
     solution,
+    totalEnemyFarms: totalEnemy,
   });
   const components = generateComponents({
     raidInfo,
@@ -88,6 +90,7 @@ export const _playerRaidHelper = async ({message, userAccount, client}: IRaidHel
 
     const guideEmbed = generateEmbed({
       solution,
+      totalEnemyFarms: totalEnemy,
     });
     const components = generateComponents({
       raidInfo,
@@ -107,9 +110,10 @@ export const _playerRaidHelper = async ({message, userAccount, client}: IRaidHel
 
 interface IGenerateEmbed {
   solution: ReturnType<typeof generateBruteForceSolution>;
+  totalEnemyFarms: number;
 }
 
-export const generateEmbed = ({solution}: IGenerateEmbed) => {
+export const generateEmbed = ({solution, totalEnemyFarms}: IGenerateEmbed) => {
   const embed = new EmbedBuilder().setColor(BOT_COLOR.embed);
 
   embed.addFields({
@@ -119,7 +123,7 @@ export const generateEmbed = ({solution}: IGenerateEmbed) => {
   });
 
   embed.setFooter({
-    text: `Enemy left: ${solution.workerLeft} | Total Solution: ${solution.solutionCount} `,
+    text: `Farms destroyed: ${totalEnemyFarms - solution.workerLeft} / ${totalEnemyFarms}`,
   });
 
   return embed;
