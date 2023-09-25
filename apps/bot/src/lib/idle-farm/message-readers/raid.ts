@@ -58,7 +58,7 @@ export const _raidReader = ({message}: IRaidReader) => {
   return {enemyFarms, workers};
 };
 
-const isNoWorker = (row: string) => row.includes('NONE');
+// const isNoWorker = (row: string) => row.includes('NONE');
 
 interface IButtonComponentData {
   custom_id: string;
