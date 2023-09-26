@@ -117,7 +117,7 @@ export const BOT_EMOJI = {
     leatherBox: '<:box:1140206786134167562>',
     hornBox: '<:box:1140206786134167562>',
     sawdustBox: '<:box:1140206786134167562>',
-    
+
     energyGalloon: '<:energygalloon:1153222727675691069>',
     timeCompressor: '<:timecompressor:1153222725607890944>',
     uselessDice: '<:uselessdice:1153219148462162002>',
@@ -177,3 +177,15 @@ export const BOT_EMOJI = {
     masterful7: '<:masterful7:1147731033496760360>',
   },
 } as const;
+
+export const BOT_IMAGE_URL = {
+  worker: {
+    useless: 'https://cdn.discordapp.com/emojis/1134134007219630170.webp?size=96&quality=lossless',
+    deficient: 'https://cdn.discordapp.com/emojis/1134134030749667368.webp?size=96&quality=lossless',
+    common: 'https://cdn.discordapp.com/emojis/1134134037724794950.webp?size=96&quality=lossless',
+    talented: 'https://cdn.discordapp.com/emojis/1134134011996930050.webp?size=96&quality=lossless',
+    wise: 'https://cdn.discordapp.com/emojis/1134134001813176391.webp?size=96&quality=lossless',
+    expert: 'https://cdn.discordapp.com/emojis/1134134025053810709.webp?size=96&quality=lossless',
+    masterful: 'https://cdn.discordapp.com/emojis/1134134019429249034.webp?size=96&quality=lossless',
+  },
+};
