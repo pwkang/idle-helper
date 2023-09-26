@@ -8,6 +8,10 @@ export interface IUserToggle extends Record<string, boolean | Record<string, boo
     daily: boolean;
   };
   raidHelper: boolean;
+  raid: {
+    helper: boolean;
+    solution: boolean;
+  };
   calculator: {
     all: boolean;
     claim: boolean;

@@ -14,7 +14,9 @@ interface IToggleRaidHelper {
   toggle: IUserToggle;
 }
 
-export const _toggleRaidHelper = ({toggle}: IToggleRaidHelper) => toggle.raidHelper;
+export const _toggleRaidHelper = ({toggle}: IToggleRaidHelper) => toggle.raid.helper;
+
+export const _toggleRaidSolution = ({toggle}: IToggleRaidHelper) => toggle.raid.solution;
 
 interface IToggleCalculator {
   toggle: IUserToggle;

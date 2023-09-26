@@ -29,6 +29,10 @@ export const userSchema = new Schema<IUser>({
       daily: {type: Boolean, default: true},
     },
     raidHelper: {type: Boolean, default: true},
+    raid: {
+      helper: {type: Boolean, default: true},
+      solution: {type: Boolean, default: true},
+    },
     calculator: {
       all: {type: Boolean, default: true},
       claim: {type: Boolean, default: false},

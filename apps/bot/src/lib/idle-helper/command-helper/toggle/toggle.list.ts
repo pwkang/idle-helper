@@ -9,9 +9,16 @@ const user = (userToggle: IUserToggle): IToggleEmbedsInfo[] => {
       inline: true,
       children: [
         {
-          value: userToggle.raidHelper,
-          path: 'toggle.raidHelper',
+          value: userToggle.raid.helper,
+          path: 'toggle.raid.helper',
           label: 'Raid Helper',
+          children: [
+            {
+              value: userToggle.raid.solution,
+              path: 'toggle.raid.solution',
+              label: 'Gives best solution',
+            },
+          ],
         },
         {
           value: userToggle.reminder.claim,
@@ -53,12 +60,12 @@ const guild = (guildToggle: IGuildToggle): IToggleEmbedsInfo[] => {
       inline: true,
       children: [
         {
-          value: guildToggle.teamRaid?.helper,
+          value: guildToggle?.teamRaid?.helper,
           label: 'Team Raid Helper',
           path: 'toggle.teamRaid.helper',
         },
         {
-          value: guildToggle.teamRaid?.reminder,
+          value: guildToggle?.teamRaid?.reminder,
           path: 'toggle.teamRaid.reminder',
           label: 'Team Raid Reminder',
         },
