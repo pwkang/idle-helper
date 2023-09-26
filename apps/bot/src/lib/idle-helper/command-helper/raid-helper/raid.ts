@@ -3,7 +3,7 @@ import {IUser, IUserWorker} from '@idle-helper/models';
 import {djsMessageHelper} from '../../../discordjs/message';
 import {createMessageEditedListener} from '../../../../utils/message-edited-listener';
 import messageReaders from '../../../idle-farm/message-readers';
-import {BOT_COLOR, BOT_EMOJI, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import {BOT_COLOR, BOT_EMOJI, BOT_IMAGE_URL, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 import {calcWorkerPower} from '../../../idle-farm/calculator/worker-power';
 import {calcWorkerDmg} from '../../../idle-farm/calculator/calcWorkerDmg';
 
@@ -45,13 +45,22 @@ export const _playerRaidHelper = async ({message, userAccount, client}: IRaidHel
   let shouldSelect = solution.solution.filter(type =>
     raidInfo.workers.find(worker => worker.type === type && !worker.used),
   )[0];
+
+  let nextMove = solution.solution.filter(type =>
+    raidInfo.workers.find(worker => worker.type === type && !worker.used),
+  )[0];
+
   const guideEmbed = generateEmbed({
     solution,
     totalEnemyFarms: totalEnemy,
+    userWorkers,
+    raidInfo,
+    nextMove,
   });
   const components = generateComponents({
     raidInfo,
     solution,
+    nextMove,
   });
   const sentMessage = await djsMessageHelper.send({
     client,
@@ -72,8 +81,10 @@ export const _playerRaidHelper = async ({message, userAccount, client}: IRaidHel
       && !prevWorkers.find(prevWorker => prevWorker.type === worker.type)?.used);
 
     if (shouldSelect !== selectedWorker?.type) {
+      const indexOfCurrentEnemy = raidInfo.enemyFarms.findIndex((farm) => farm.health);
+      const currentEnemies = raidInfo.enemyFarms.slice(indexOfCurrentEnemy);
       solution = generateBruteForceSolution({
-        enemies: raidInfo.enemyFarms.map((enemy) => ({
+        enemies: currentEnemies.map((enemy) => ({
           level: enemy.level,
           type: enemy.worker,
           hp: enemy.health,
@@ -83,6 +94,11 @@ export const _playerRaidHelper = async ({message, userAccount, client}: IRaidHel
           .map((worker) => userWorkers[worker.type]),
       });
     }
+
+    nextMove = solution.solution.filter(type =>
+      raidInfo.workers.find(worker => worker.type === type && !worker.used),
+    )[0];
+
     prevWorkers = [...raidInfo.workers];
     shouldSelect = solution.solution.filter(type =>
       raidInfo.workers.find(worker => worker.type === type && !worker.used),
@@ -91,10 +107,15 @@ export const _playerRaidHelper = async ({message, userAccount, client}: IRaidHel
     const guideEmbed = generateEmbed({
       solution,
       totalEnemyFarms: totalEnemy,
+      raidInfo,
+      userWorkers,
+      nextMove,
     });
+
     const components = generateComponents({
       raidInfo,
       solution,
+      nextMove,
     });
     await djsMessageHelper.edit({
       client,
@@ -111,10 +132,86 @@ export const _playerRaidHelper = async ({message, userAccount, client}: IRaidHel
 interface IGenerateEmbed {
   solution: ReturnType<typeof generateBruteForceSolution>;
   totalEnemyFarms: number;
+  raidInfo: ReturnType<typeof messageReaders.raid>;
+  userWorkers: IUser['workers'];
+  nextMove: ValuesOf<typeof IDLE_FARM_WORKER_TYPE>;
 }
 
-export const generateEmbed = ({solution, totalEnemyFarms}: IGenerateEmbed) => {
+export const generateEmbed = ({solution, totalEnemyFarms, raidInfo, userWorkers, nextMove}: IGenerateEmbed) => {
   const embed = new EmbedBuilder().setColor(BOT_COLOR.embed);
+  embed.setThumbnail(BOT_IMAGE_URL.worker[nextMove]);
+
+  const {enemyFarms, workers} = raidInfo;
+  const currentEnemy = enemyFarms.find((farm) => farm.health);
+
+  if (!currentEnemy?.worker) {
+    embed.setDescription('🚫 No enemy found');
+  } else {
+    embed.setDescription([
+      '**Current Enemy**',
+      `${BOT_EMOJI.worker[currentEnemy.worker]}`,
+      `${BOT_EMOJI.other.level} ${currentEnemy.level}`,
+      `❤️ ${currentEnemy.health} / ${currentEnemy.maxHealth}`,
+    ].join('\n'),
+    );
+  }
+
+  const workersInfo: string[] = [];
+  for (const {type} of workers) {
+    const workerInfo = userWorkers[type];
+    if (!workerInfo) continue;
+    const power = calcWorkerPower({
+      type,
+      level: workerInfo.level,
+      decimalPlace: 2,
+    });
+    const enemyPower = currentEnemy?.worker
+      ? calcWorkerPower({
+        type: currentEnemy.worker,
+        decimalPlace: 2,
+        level: currentEnemy.level,
+      })
+      : null;
+    const damage = enemyPower
+      ? calcWorkerDmg({
+        type: 'player',
+        atk: power,
+        def: enemyPower,
+      })
+      : '∞';
+    const isWorkerUsed = !!workers.find((w) => w.type === type)?.used;
+    let text = `${BOT_EMOJI.worker[type]} DMG: ${damage}`;
+    if (isWorkerUsed)
+      text = `~~${text}~~`;
+    workersInfo.push(text);
+  }
+  embed.addFields({
+    name: `${BOT_EMOJI.other.farm} Your farms`,
+    value: workersInfo.join('\n'),
+    inline: true,
+  });
+
+  /*const enemyFarmsInfo: string[] = [];
+  for (const farm of enemyFarms) {
+    const isCurrentEnemy = farm.worker === currentEnemy?.worker;
+    const {worker, level, health} = farm;
+    const power = worker ? calcWorkerPower({
+      type: worker,
+      level,
+      decimalPlace: 2,
+    }) : 0;
+    let text = `${worker ? BOT_EMOJI.worker[worker] : '🚫'} DEF: ${power}`;
+    if (isCurrentEnemy)
+      text = `**${text}**`;
+    if (health <= 0)
+      text = `~~${text}~~`;
+    enemyFarmsInfo.push(text);
+  }
+  embed.addFields({
+    name: `${BOT_EMOJI.other.farm} Enemy farms`,
+    value: enemyFarmsInfo?.length ? enemyFarmsInfo.join('\n') : 'No workers found',
+    inline: true,
+  });*/
 
   embed.addFields({
     name: 'Attack Logs',
@@ -132,14 +229,12 @@ export const generateEmbed = ({solution, totalEnemyFarms}: IGenerateEmbed) => {
 interface IGenerateComponents {
   raidInfo: ReturnType<typeof messageReaders.raid>;
   solution: ReturnType<typeof generateBruteForceSolution>;
+  nextMove: ValuesOf<typeof IDLE_FARM_WORKER_TYPE>;
 }
 
-export const generateComponents = ({raidInfo, solution}: IGenerateComponents) => {
+export const generateComponents = ({raidInfo, solution, nextMove}: IGenerateComponents) => {
   const {workers} = raidInfo;
 
-  const nextMove = solution.solution.filter(type =>
-    workers.find(worker => worker.type === type && !worker.used),
-  )[0];
   const actionRows = [];
   for (let i = 0; i < workers.length; i += 4) {
     const row = new ActionRowBuilder<ButtonBuilder>();
