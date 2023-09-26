@@ -49,15 +49,21 @@ interface IIdleWorkerSuccess {
 
 const idleRaidSuccess = async ({author, client, raidMessage}: IIdleWorkerSuccess) => {
   const userToggle = await toggleUserChecker({userId: author.id});
-  if (!userToggle?.raidHelper) return;
+  if (!userToggle?.raid.helper) return;
   const user = await userService.findUser({userId: author.id});
   if (!user) return;
 
-  await commandHelper.raid.player({
-    message: raidMessage,
-    client,
-    userAccount: user,
-  });
+  userToggle.raid.solution ?
+    await commandHelper.raid.player({
+      message: raidMessage,
+      client,
+      userAccount: user,
+    }) :
+    await commandHelper.raid.playerGuide({
+      message: raidMessage,
+      client,
+      userAccount: user,
+    });
 };
 
 interface IChecker {
