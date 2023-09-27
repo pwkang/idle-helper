@@ -1,5 +1,7 @@
-import {Schema} from 'mongoose';
+import {Schema, SchemaDefinition} from 'mongoose';
 import {IUser, IUserWorker} from './user.type';
+import {IDLE_FARM_ITEMS} from '@idle-helper/constants';
+import {typedObjectEntries} from '@idle-helper/utils';
 
 const workerSchema = new Schema<IUserWorker>({
   level: Number,
@@ -21,6 +23,19 @@ export const userSchema = new Schema<IUser>({
   },
   profile: {
     energy: {type: Number, default: 0},
+    energyMax: {type: Number, default: 0},
+    idlons: {type: Number, default: 0},
+  },
+  items: typedObjectEntries(IDLE_FARM_ITEMS).reduce((acc, [key]) => {
+    acc[key] = {
+      type: Number,
+      default: 0,
+    };
+    return acc;
+  }, {} as SchemaDefinition<IUser['items']>),
+  packing: {
+    level: {type: Number, default: 0},
+    multiplier: {type: Number, default: 0},
   },
   toggle: {
     reminder: {
@@ -28,7 +43,6 @@ export const userSchema = new Schema<IUser>({
       vote: {type: Boolean, default: true},
       daily: {type: Boolean, default: true},
     },
-    raidHelper: {type: Boolean, default: true},
     raid: {
       helper: {type: Boolean, default: true},
       solution: {type: Boolean, default: true},

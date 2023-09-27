@@ -1,4 +1,6 @@
 export const IDLE_FARM_ITEMS = {
+  workerTokens: 'worker tokens',
+
   // material
   wood: 'wood',
   stick: 'stick',
