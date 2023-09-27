@@ -40,7 +40,7 @@ const getEmbed = ({userAccount, author}: IGetEmbed) => {
     const top3Workers = getTop3Workers(userAccount);
     const totalPower = getTop3Power(userAccount);
 
-    workers.push(`Total power: **${totalPower}** :boom:`);
+    workers.push(`Total power: **${totalPower.toFixed(2)}** :boom:`);
     workers.push('');
 
     for (const worker of top3Workers) {

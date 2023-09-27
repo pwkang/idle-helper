@@ -4,6 +4,7 @@ import {IUser} from '@idle-helper/models';
 import {BOT_COLOR, BOT_EMOJI, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 import {calcWorkerPower} from '../../../idle-farm/calculator/worker-power';
 import {typedObjectEntries} from '@idle-helper/utils';
+import {getTop3Power} from '../../../../utils/getTop3Power';
 
 interface IListWorkers {
   author: User;
@@ -36,6 +37,7 @@ const getEmbed = ({userAccount, author}: IGetEmbed) => {
 
   const workers: string[] = [];
   if (userAccount.lastUpdated.workers) {
+
     for (const [workerType] of typedObjectEntries(IDLE_FARM_WORKER_TYPE)) {
       const worker = userAccount.workers[workerType];
       const emoji = BOT_EMOJI.worker[workerType];
@@ -51,9 +53,16 @@ const getEmbed = ({userAccount, author}: IGetEmbed) => {
         workers.push(`${BOT_EMOJI.worker[workerType]} -`);
       }
     }
+
+    const totalPower = getTop3Power(userAccount);
+
+    workers.push('');
+    workers.push(`Total power: **${totalPower.toFixed(2)}** :boom:`);
+
   } else {
     workers.push('No workers registered');
   }
+
   embed.setDescription(workers.reverse().join('\n'));
   return embed;
 };
