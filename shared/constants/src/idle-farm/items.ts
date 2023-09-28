@@ -1,7 +1,4 @@
-export const IDLE_FARM_ITEMS = {
-  workerTokens: 'worker tokens',
-
-  // material
+export const IDLE_FARM_ITEMS_MATERIAL = {
   wood: 'wood',
   stick: 'stick',
   apple: 'apple',
@@ -29,7 +26,9 @@ export const IDLE_FARM_ITEMS = {
   leather: 'leather',
   horn: 'horn',
   sawdust: 'sawdust',
-  // refined
+} as const;
+
+export const IDLE_FARM_ITEMS_REFINED = {
   plank: 'plank',
   thread: 'thread',
   ironIngot: 'iron ingot',
@@ -48,11 +47,35 @@ export const IDLE_FARM_ITEMS = {
   lava: 'lava',
   glass: 'glass',
   brokenGlass: 'broken glass',
-  // product
+} as const;
+
+export const IDLE_FARM_ITEMS_PRODUCT = {
   fabric: 'fabric',
   chair: 'chair',
   wire: 'wire',
-  // box
+} as const;
+
+export const IDLE_FARM_ITEMS_CONSUMABLE = {
+  energyGlass: 'energy glass',
+  energyDrink: 'energy drink',
+  energyGalloon: 'energy galloon',
+  timeSpeeder: 'time speeder',
+  timeCompressor: 'time compressor',
+  uselessDice: 'useless dice',
+  commonDice: 'common dice',
+  uncommonDice: 'uncommon dice',
+  rareDice: 'rare dice',
+  epicDice: 'epic dice',
+  mythicDice: 'mythic dice',
+  uselessLootbox: 'useless lootbox',
+  commonLootbox: 'common lootbox',
+  uncommonLootbox: 'uncommon lootbox',
+  rareLootbox: 'rare lootbox',
+  epicLootbox: 'epic lootbox',
+  mythicLootbox: 'mythic lootbox',
+} as const;
+
+export const IDLE_FARM_ITEMS_BOX = {
   woodBox: 'wood box',
   stickBox: 'stick box',
   appleBox: 'apple box',
@@ -80,23 +103,43 @@ export const IDLE_FARM_ITEMS = {
   leatherBox: 'leather box',
   hornBox: 'horn box',
   sawdustBox: 'sawdust box',
+} as const;
 
-  // consumables
-  energyGlass: 'energy glass',
-  energyDrink: 'energy drink',
-  energyGalloon: 'energy galloon',
-  timeSpeeder: 'time speeder',
-  timeCompressor: 'time compressor',
-  uselessDice: 'useless dice',
-  commonDice: 'common dice',
-  uncommonDice: 'uncommon dice',
-  rareDice: 'rare dice',
-  epicDice: 'epic dice',
-  mythicDice: 'mythic dice',
-  uselessLootbox: 'useless lootbox',
-  commonLootbox: 'common lootbox',
-  uncommonLootbox: 'uncommon lootbox',
-  rareLootbox: 'rare lootbox',
-  epicLootbox: 'epic lootbox',
-  mythicLootbox: 'mythic lootbox',
+export const IDLE_FARM_ITEMS = {
+  workerTokens: 'worker tokens',
+  ...IDLE_FARM_ITEMS_MATERIAL,
+  ...IDLE_FARM_ITEMS_REFINED,
+  ...IDLE_FARM_ITEMS_PRODUCT,
+  ...IDLE_FARM_ITEMS_CONSUMABLE,
+  ...IDLE_FARM_ITEMS_BOX,
+} as const;
+
+export const IDLE_FARM_ITEMS_BOX_TYPE = {
+  wood: 'woodBox',
+  stick: 'stickBox',
+  apple: 'appleBox',
+  leaf: 'leafBox',
+  water: 'waterBox',
+  rock: 'rockBox',
+  sand: 'sandBox',
+  algae: 'algaeBox',
+  potato: 'potatoBox',
+  dirt: 'dirtBox',
+  root: 'rootBox',
+  wheat: 'wheatBox',
+  seed: 'seedBox',
+  bug: 'bugBox',
+  brokenBottle: 'brokenBottleBox',
+  goldNugget: 'goldNuggetBox',
+  cotton: 'cottonBox',
+  coal: 'coalBox',
+  ironOre: 'ironOreBox',
+  copperOre: 'copperOreBox',
+  dust: 'dustBox',
+  aluminiumOre: 'aluminiumOreBox',
+  milk: 'milkBox',
+  meat: 'meatBox',
+  leather: 'leatherBox',
+  horn: 'hornBox',
+  sawdust: 'sawdustBox',
 } as const;
