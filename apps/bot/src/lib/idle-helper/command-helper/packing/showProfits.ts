@@ -77,10 +77,10 @@ const generateEmbed = ({items, packingMultiplier, taxValue, idlons, lastUpdatedA
     });
 
   embed.setDescription([
-    `**Multiplier**: ${packingMultiplier}%`,
-    `**Tax**: ${TAX_RATE_LABEL[taxValue]}`,
-    `**Idlons**: ${idlons.toLocaleString()} ${BOT_EMOJI.other.idlon}`,
-    `**Worker tokens**: ${workerTokens.toLocaleString()} ${BOT_EMOJI.items.workerTokens}`,
+    `Multiplier: **x${packingMultiplier}**`,
+    `Tax: **${TAX_RATE_LABEL[taxValue]}**`,
+    `Idlons: **${idlons.toLocaleString()} ${BOT_EMOJI.other.idlon}**`,
+    `Worker tokens: **${workerTokens.toLocaleString()} ${BOT_EMOJI.items.workerTokens}**`,
   ].join('\n'));
 
   embed.addFields({

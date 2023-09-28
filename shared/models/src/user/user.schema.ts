@@ -37,7 +37,7 @@ export const userSchema = new Schema<IUser>({
   }, {} as SchemaDefinition<IUser['items']>),
   packing: {
     level: {type: Number, default: 0},
-    multiplier: {type: Number, default: 0},
+    multiplier: {type: Number, default: 1},
   },
   toggle: {
     reminder: {

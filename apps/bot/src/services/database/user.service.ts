@@ -413,6 +413,25 @@ const saveGameProfile = async ({userId, idlons, idlucks, idleCoins, energy}: ISa
   return user ?? null;
 };
 
+interface IUpdatePackingMultiplier {
+  userId: string;
+  multiplier: number;
+}
+
+const updatePackingMultiplier = async ({userId, multiplier}: IUpdatePackingMultiplier) => {
+  const user = await dbUser.findOneAndUpdate(
+    {userId},
+    {
+      $set: {
+        'packing.multiplier': multiplier,
+      },
+    }, {
+      new: true,
+    });
+
+  return user ?? null;
+};
+
 export const userService = {
   registerUser,
   findUser,
@@ -437,4 +456,5 @@ export const userService = {
   removeReminder,
   saveInventory,
   saveGameProfile,
+  updatePackingMultiplier,
 };
