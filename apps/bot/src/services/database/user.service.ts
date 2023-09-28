@@ -1,6 +1,6 @@
 import {mongoClient} from '@idle-helper/services';
 import {IUser, IUserToggle, IUserWorker, userSchema} from '@idle-helper/models';
-import {IDLE_FARM_DONOR_TIER, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import {IDLE_FARM_DONOR_TIER, IDLE_FARM_ITEMS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 import {UpdateQuery} from 'mongoose';
 
 const dbUser = mongoClient.model<IUser>('users', userSchema);
@@ -363,6 +363,31 @@ const removeReminder = async ({userId, reminder}: IRemoveReminder) => {
   return user ?? null;
 };
 
+interface ISaveInventory {
+  userId: string;
+  items: {
+    name: keyof typeof IDLE_FARM_ITEMS;
+    amount: number;
+  }[];
+}
+
+const saveInventory = async ({userId, items}: ISaveInventory) => {
+  const user = await dbUser.findOneAndUpdate(
+    {userId},
+    {
+      $set: {
+        ...items.reduce((acc, item) => {
+          acc[`items.${item.name}`] = item.amount;
+          return acc;
+        }, {} as Record<string, number>),
+      },
+    }, {
+      new: true,
+    });
+
+  return user ?? null;
+};
+
 export const userService = {
   registerUser,
   findUser,
@@ -385,4 +410,5 @@ export const userService = {
   addTimeSpeederUsage,
   registerReminder,
   removeReminder,
+  saveInventory,
 };

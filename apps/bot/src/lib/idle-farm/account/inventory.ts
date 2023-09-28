@@ -5,6 +5,7 @@ import {userService} from '../../../services/database/user.service';
 import {djsMessageHelper} from '../../discordjs/message';
 import embedProvider from '../../idle-helper/embeds';
 import toggleUserChecker from '../../idle-helper/toggle-checker/user';
+import messageReaders from '../message-readers';
 
 interface IIdleInventory {
   client: Client;
@@ -43,6 +44,7 @@ export const idleInventory = ({
           client,
         });
       }
+      saveInventory({message: collected, author});
     }
   });
   event.on('end', () => {
@@ -73,6 +75,31 @@ const checkUser = async ({author, channelId, client}: IUserChecker) => {
     });
   }
   return !embed;
+};
+
+interface ISaveInventory {
+  message: Message;
+  author: User;
+}
+
+const saveInventory = async ({message, author}: ISaveInventory) => {
+  const user = await userService.findUser({
+    userId: author.id,
+  });
+  if (!user) return;
+
+  const inventory = messageReaders.inventory({
+    embed: message.embeds[0],
+  });
+  await userService.saveInventory({
+    userId: author.id,
+    items: [
+      {
+        name: 'workerTokens',
+        amount: inventory.workerTokens ?? 0,
+      },
+    ],
+  });
 };
 
 interface IChecker {
