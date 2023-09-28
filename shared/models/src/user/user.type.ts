@@ -44,6 +44,8 @@ export interface IUser {
     energy: number;
     energyMax: number;
     idlons: number;
+    idlucks: number;
+    idleCoins: number;
   };
   packing: {
     level: number;

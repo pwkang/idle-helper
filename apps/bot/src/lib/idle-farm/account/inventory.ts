@@ -6,6 +6,7 @@ import {djsMessageHelper} from '../../discordjs/message';
 import embedProvider from '../../idle-helper/embeds';
 import toggleUserChecker from '../../idle-helper/toggle-checker/user';
 import messageReaders from '../message-readers';
+import {createMessageEditedListener} from '../../../utils/message-edited-listener';
 
 interface IIdleInventory {
   client: Client;
@@ -44,7 +45,10 @@ export const idleInventory = ({
           client,
         });
       }
-      saveInventory({message: collected, author});
+      idleInventorySuccess({
+        author,
+        message: collected,
+      });
     }
   });
   event.on('end', () => {
@@ -77,20 +81,42 @@ const checkUser = async ({author, channelId, client}: IUserChecker) => {
   return !embed;
 };
 
+interface IIdleInventorySuccess {
+  message: Message;
+  author: User;
+}
+
+const idleInventorySuccess = async ({message, author}: IIdleInventorySuccess) => {
+  const userAccount = await userService.findUser({
+    userId: author.id,
+  });
+  if (!userAccount) return;
+  saveWorkerTokens({
+    author,
+    message,
+  });
+  const event = await createMessageEditedListener({
+    messageId: message.id,
+  });
+  if (!event) return;
+  event.on(message.id, (collected) => {
+    saveWorkerTokens({
+      message: collected,
+      author,
+    });
+  });
+};
+
 interface ISaveInventory {
   message: Message;
   author: User;
 }
 
-const saveInventory = async ({message, author}: ISaveInventory) => {
-  const user = await userService.findUser({
-    userId: author.id,
-  });
-  if (!user) return;
-
+const saveWorkerTokens = async ({message, author}: ISaveInventory) => {
   const inventory = messageReaders.inventory({
     embed: message.embeds[0],
   });
+  if (inventory.workerTokens === undefined) return;
   await userService.saveInventory({
     userId: author.id,
     items: [

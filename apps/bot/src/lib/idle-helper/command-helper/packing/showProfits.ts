@@ -106,7 +106,6 @@ interface ICalculatePackingProfits {
   multiplier: number;
 }
 
-// ((box_data.price*multiplier)*(tax_value/100)) - (_.market_price*100)
 const calculatePackingProfits = ({
   boxPrice, multiplier, itemPrice, taxValue,
 }: ICalculatePackingProfits) => {

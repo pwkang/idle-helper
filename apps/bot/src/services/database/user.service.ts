@@ -388,6 +388,31 @@ const saveInventory = async ({userId, items}: ISaveInventory) => {
   return user ?? null;
 };
 
+interface ISaveGameProfile {
+  userId: string;
+  idlons: number;
+  idlucks: number;
+  idleCoins: number;
+  energy: number;
+}
+
+const saveGameProfile = async ({userId, idlons, idlucks, idleCoins, energy}: ISaveGameProfile) => {
+  const user = await dbUser.findOneAndUpdate(
+    {userId},
+    {
+      $set: {
+        'profile.idlons': idlons,
+        'profile.idlucks': idlucks,
+        'profile.idleCoins': idleCoins,
+        'profile.energy': energy,
+      },
+    }, {
+      new: true,
+    });
+
+  return user ?? null;
+};
+
 export const userService = {
   registerUser,
   findUser,
@@ -411,4 +436,5 @@ export const userService = {
   registerReminder,
   removeReminder,
   saveInventory,
+  saveGameProfile,
 };
