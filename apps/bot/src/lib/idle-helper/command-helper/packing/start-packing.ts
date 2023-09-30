@@ -285,7 +285,6 @@ async function sendNextCommand({
     const maxBuyAbleMaterial = Math.floor(currentIdlons / materialPrice);
     const tokensNeedToPackAllMaterial = Math.floor(maxBuyAbleMaterial / 100);
 
-    console.log({tokensNeeded, tokensNeedToPackAllMaterial, currentWorkerTokens});
     const finalTokenToUse = Math.min(tokensNeeded, tokensNeedToPackAllMaterial, currentWorkerTokens);
 
     const materialsToBuy = finalTokenToUse * 100;
