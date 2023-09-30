@@ -58,6 +58,7 @@ const idleRaidSuccess = async ({author, client, raidMessage}: IIdleWorkerSuccess
       message: raidMessage,
       client,
       userAccount: user,
+      compact: userToggle.raid.compact,
     }) :
     await commandHelper.raid.playerGuide({
       message: raidMessage,

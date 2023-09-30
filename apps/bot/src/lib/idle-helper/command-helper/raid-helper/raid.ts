@@ -11,9 +11,10 @@ interface IRaidHelper {
   message: Message;
   userAccount: IUser;
   client: Client;
+  compact: boolean;
 }
 
-export const _playerRaidHelper = async ({message, userAccount, client}: IRaidHelper) => {
+export const _playerRaidHelper = async ({message, userAccount, client, compact}: IRaidHelper) => {
   const channelId = message.channelId;
   const userWorkers = userAccount.workers;
   const registeredWorkersAmount = Object.values(userWorkers).filter(Boolean).length;
@@ -56,6 +57,7 @@ export const _playerRaidHelper = async ({message, userAccount, client}: IRaidHel
     userWorkers,
     raidInfo,
     nextMove,
+    compact,
   });
   const components = generateComponents({
     raidInfo,
@@ -110,6 +112,7 @@ export const _playerRaidHelper = async ({message, userAccount, client}: IRaidHel
       raidInfo,
       userWorkers,
       nextMove,
+      compact,
     });
 
     const components = generateComponents({
@@ -135,93 +138,84 @@ interface IGenerateEmbed {
   raidInfo: ReturnType<typeof messageReaders.raid>;
   userWorkers: IUser['workers'];
   nextMove: ValuesOf<typeof IDLE_FARM_WORKER_TYPE>;
+  compact: boolean;
 }
 
-export const generateEmbed = ({solution, totalEnemyFarms, raidInfo, userWorkers, nextMove}: IGenerateEmbed) => {
+export const generateEmbed = ({
+  solution,
+  totalEnemyFarms,
+  raidInfo,
+  userWorkers,
+  nextMove,
+  compact,
+}: IGenerateEmbed) => {
   const embed = new EmbedBuilder().setColor(BOT_COLOR.embed);
-  embed.setThumbnail(BOT_IMAGE_URL.worker[nextMove]);
 
-  const {enemyFarms, workers} = raidInfo;
-  const currentEnemy = enemyFarms.find((farm) => farm.health);
 
-  if (!currentEnemy?.worker) {
-    embed.setDescription('🚫 No enemy found');
+  if (compact) {
+    embed.setDescription(`Farms destroyed: ${totalEnemyFarms - solution.workerLeft} / ${totalEnemyFarms}`);
   } else {
-    embed.setDescription([
-      '**Current Enemy**',
-      `${BOT_EMOJI.worker[currentEnemy.worker]}`,
-      `${BOT_EMOJI.other.level} ${currentEnemy.level}`,
-      `❤️ ${currentEnemy.health} / ${currentEnemy.maxHealth}`,
-    ].join('\n'),
-    );
-  }
+    const {enemyFarms, workers} = raidInfo;
+    const currentEnemy = enemyFarms.find((farm) => farm.health);
+    embed.setThumbnail(BOT_IMAGE_URL.worker[nextMove]);
+    if (!currentEnemy?.worker) {
+      embed.setDescription('🚫 No enemy found');
+    } else {
+      embed.setDescription([
+        '**Current Enemy**',
+        `${BOT_EMOJI.worker[currentEnemy.worker]}`,
+        `${BOT_EMOJI.other.level} ${currentEnemy.level}`,
+        `❤️ ${currentEnemy.health} / ${currentEnemy.maxHealth}`,
+      ].join('\n'),
+      );
+    }
 
-  const workersInfo: string[] = [];
-  for (const {type} of workers) {
-    const workerInfo = userWorkers[type];
-    if (!workerInfo) continue;
-    const power = calcWorkerPower({
-      type,
-      level: workerInfo.level,
-      decimalPlace: 2,
-    });
-    const enemyPower = currentEnemy?.worker
-      ? calcWorkerPower({
-        type: currentEnemy.worker,
+    const workersInfo: string[] = [];
+    for (const {type} of workers) {
+      const workerInfo = userWorkers[type];
+      if (!workerInfo) continue;
+      const power = calcWorkerPower({
+        type,
+        level: workerInfo.level,
         decimalPlace: 2,
-        level: currentEnemy.level,
-      })
-      : null;
-    const damage = enemyPower
-      ? calcWorkerDmg({
-        type: 'player',
-        atk: power,
-        def: enemyPower,
-      })
-      : '∞';
-    const isWorkerUsed = !!workers.find((w) => w.type === type)?.used;
-    let text = `${BOT_EMOJI.worker[type]} DMG: ${damage}`;
-    if (isWorkerUsed)
-      text = `~~${text}~~`;
-    workersInfo.push(text);
+      });
+      const enemyPower = currentEnemy?.worker
+        ? calcWorkerPower({
+          type: currentEnemy.worker,
+          decimalPlace: 2,
+          level: currentEnemy.level,
+        })
+        : null;
+      const damage = enemyPower
+        ? calcWorkerDmg({
+          type: 'player',
+          atk: power,
+          def: enemyPower,
+        })
+        : '∞';
+      const isWorkerUsed = !!workers.find((w) => w.type === type)?.used;
+      let text = `${BOT_EMOJI.worker[type]} DMG: ${damage}`;
+      if (isWorkerUsed)
+        text = `~~${text}~~`;
+      workersInfo.push(text);
+    }
+    embed.addFields({
+      name: `${BOT_EMOJI.other.farm} Your farms`,
+      value: workersInfo.join('\n'),
+      inline: true,
+    });
+
+    embed.addFields({
+      name: 'Attack Logs',
+      value: solution.log.join('\n'),
+      inline: true,
+    });
+
+    embed.setFooter({
+      text: `Farms destroyed: ${totalEnemyFarms - solution.workerLeft} / ${totalEnemyFarms}`,
+    });
   }
-  embed.addFields({
-    name: `${BOT_EMOJI.other.farm} Your farms`,
-    value: workersInfo.join('\n'),
-    inline: true,
-  });
 
-  /*const enemyFarmsInfo: string[] = [];
-  for (const farm of enemyFarms) {
-    const isCurrentEnemy = farm.worker === currentEnemy?.worker;
-    const {worker, level, health} = farm;
-    const power = worker ? calcWorkerPower({
-      type: worker,
-      level,
-      decimalPlace: 2,
-    }) : 0;
-    let text = `${worker ? BOT_EMOJI.worker[worker] : '🚫'} DEF: ${power}`;
-    if (isCurrentEnemy)
-      text = `**${text}**`;
-    if (health <= 0)
-      text = `~~${text}~~`;
-    enemyFarmsInfo.push(text);
-  }
-  embed.addFields({
-    name: `${BOT_EMOJI.other.farm} Enemy farms`,
-    value: enemyFarmsInfo?.length ? enemyFarmsInfo.join('\n') : 'No workers found',
-    inline: true,
-  });*/
-
-  embed.addFields({
-    name: 'Attack Logs',
-    value: solution.log.join('\n'),
-    inline: true,
-  });
-
-  embed.setFooter({
-    text: `Farms destroyed: ${totalEnemyFarms - solution.workerLeft} / ${totalEnemyFarms}`,
-  });
 
   return embed;
 };
@@ -273,12 +267,14 @@ interface IGenerateBruteForceSolution {
 interface IBestSolution {
   solution: (keyof typeof IDLE_FARM_WORKER_TYPE)[];
   enemyLeft: number;
+  hpLeft: number;
 }
 
 const generateBruteForceSolution = ({workers, enemies}: IGenerateBruteForceSolution) => {
   const possibilities = permute(workers.map((worker) => worker.type), workers.length);
   const bestSolution: IBestSolution = {
     enemyLeft: 6,
+    hpLeft: 100,
     solution: [],
   };
   let solutionCount = 0;
@@ -292,9 +288,11 @@ const generateBruteForceSolution = ({workers, enemies}: IGenerateBruteForceSolut
       workers: possibility.map((type) => workersMap[type]),
       enemies,
     });
-    if (result.enemyLeft < bestSolution.enemyLeft) {
+    if (result.enemyLeft < bestSolution.enemyLeft ||
+      (result.enemyLeft === bestSolution.enemyLeft && result.hpLeft < bestSolution.hpLeft)) {
       bestSolution.enemyLeft = result.enemyLeft;
       bestSolution.solution = possibility;
+      bestSolution.hpLeft = result.hpLeft;
       solutionCount = 1;
       log = result.log;
     }
@@ -346,6 +344,7 @@ function startRaid({workers, enemies}: IStartRaid) {
   }
   return {
     enemyLeft: _enemies.length,
+    hpLeft: _enemies[0]?.hp ?? 0,
     log,
   };
 }

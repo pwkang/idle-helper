@@ -48,6 +48,7 @@ export const userSchema = new Schema<IUser>({
     raid: {
       helper: {type: Boolean, default: true},
       solution: {type: Boolean, default: true},
+      compact: {type: Boolean, default: false},
     },
     calculator: {
       all: {type: Boolean, default: true},

@@ -15,6 +15,7 @@ export interface IUserToggle extends Record<string, boolean | Record<string, boo
   raid: {
     helper: boolean;
     solution: boolean;
+    compact: boolean;
   };
   calculator: {
     all: boolean;
