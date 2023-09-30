@@ -18,6 +18,11 @@ const user = (userToggle: IUserToggle): IToggleEmbedsInfo[] => {
               path: 'toggle.raid.solution',
               label: 'Gives best solution',
             },
+            {
+              value: userToggle.raid.compact,
+              path: 'toggle.raid.compact',
+              label: 'Compact Mode (best solution only)',
+            },
           ],
         },
         {

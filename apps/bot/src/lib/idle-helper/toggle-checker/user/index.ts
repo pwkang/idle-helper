@@ -5,6 +5,7 @@ import {
   _toggleCalculatorInventory,
   _toggleClaimReminder,
   _toggleDailyReminder,
+  _toggleRaidCompact,
   _toggleRaidHelper,
   _toggleRaidSolution,
   _toggleVoteReminder,
@@ -30,6 +31,7 @@ const toggleUserChecker = async ({userId}: IToggleUserChecker) => {
     raid: {
       helper: _toggleRaidHelper({toggle: userToggle}),
       solution: _toggleRaidSolution({toggle: userToggle}),
+      compact: _toggleRaidCompact({toggle: userToggle}),
     },
     calculator: {
       claim: _toggleCalculatorClaim({toggle: userToggle}),
