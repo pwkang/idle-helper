@@ -4,13 +4,15 @@ import {infoService} from '../../../../services/database/info.service';
 import {
   BOT_COLOR,
   BOT_EMOJI,
-  IDLE_FARM_DONOR_TIER,
   IDLE_FARM_ITEMS,
   IDLE_FARM_ITEMS_BOX_TYPE,
   IDLE_FARM_ITEMS_MATERIAL,
   PREFIX,
+  TAX_RATE_BOX,
+  TAX_RATE_LABEL,
 } from '@idle-helper/constants';
 import {typedObjectEntries} from '@idle-helper/utils';
+import {calculatePackingProfits} from '../../../../utils/calc-packing-profits';
 
 interface IShowPackingProfits {
   author: User;
@@ -25,7 +27,7 @@ export const _showPackingProfits = async ({author}: IShowPackingProfits) => {
   const marketItems = await infoService.getMarketItems();
   const profits = typedObjectEntries(IDLE_FARM_ITEMS_MATERIAL).map(([key]) => {
     const itemPrice = marketItems[key]?.price ?? 0;
-    const taxValue = TAX_RATE[user.config.donorTier];
+    const taxValue = TAX_RATE_BOX[user.config.donorTier];
     const itemBoxName = IDLE_FARM_ITEMS_BOX_TYPE[key];
     const boxPrice = marketItems[itemBoxName]?.price ?? 0;
     return {
@@ -44,10 +46,8 @@ export const _showPackingProfits = async ({author}: IShowPackingProfits) => {
   const embed = generateEmbed({
     items: top10Profits,
     packingMultiplier,
-    taxValue: TAX_RATE[user.config.donorTier],
-    idlons: user.profile.idlons,
+    taxValue: TAX_RATE_BOX[user.config.donorTier],
     lastUpdatedAt,
-    workerTokens: user.items.workerTokens ?? 0,
   });
 
   return {
@@ -61,13 +61,11 @@ interface IGenerateEmbed {
     profits: number;
   }[];
   packingMultiplier: number;
-  taxValue: ValuesOf<typeof TAX_RATE>;
-  idlons: number;
+  taxValue: ValuesOf<typeof TAX_RATE_BOX>;
   lastUpdatedAt?: Date;
-  workerTokens: number;
 }
 
-const generateEmbed = ({items, packingMultiplier, taxValue, idlons, lastUpdatedAt, workerTokens}: IGenerateEmbed) => {
+const generateEmbed = ({items, packingMultiplier, taxValue, lastUpdatedAt}: IGenerateEmbed) => {
   const embed = new EmbedBuilder()
     .setColor(BOT_COLOR.embed)
     .setTitle('Packing Profits')
@@ -76,18 +74,23 @@ const generateEmbed = ({items, packingMultiplier, taxValue, idlons, lastUpdatedA
       value: items.map((item, index) => `\`[${index + 1}]\` ${BOT_EMOJI.items[item.name]} **${IDLE_FARM_ITEMS[item.name]}**: ${Math.round(item.profits).toLocaleString()} ${BOT_EMOJI.other.idlon}`).join('\n'),
     });
 
-  embed.setDescription([
-    `Multiplier: **x${packingMultiplier}**`,
+  const description = [
+    `Multiplier: **x${packingMultiplier.toLocaleString()}**`,
     `Tax: **${TAX_RATE_LABEL[taxValue]}**`,
-    `Idlons: **${idlons.toLocaleString()} ${BOT_EMOJI.other.idlon}**`,
-    `Worker tokens: **${workerTokens.toLocaleString()} ${BOT_EMOJI.items.workerTokens}**`,
-  ].join('\n'));
+  ];
+
+  if (packingMultiplier === 1) {
+    description.push('');
+    description.push(`⚠️ Multiplier is not registered. The materials below might not be the best items to pack. Please pack any items \`${PREFIX.idleFarm}packing [any item] 100\` and run this command again`);
+  }
+
+  embed.setDescription(description.join('\n'));
 
   embed.addFields({
     name: 'Commands',
     value: [
       `\`${PREFIX.bot}packing\` -> show packing profits`,
-      `\`${PREFIX.bot}packing start [item name] [target idlons]\` -> Show guide to pack selected items until reach target idlons`,
+      `\`${PREFIX.bot}packing start [target idlons] [item name]\` -> Show guide to pack selected item until target idlons reached`,
     ].join('\n'),
   });
 
@@ -99,27 +102,4 @@ const generateEmbed = ({items, packingMultiplier, taxValue, idlons, lastUpdatedA
   return embed;
 };
 
-interface ICalculatePackingProfits {
-  boxPrice: number;
-  itemPrice: number;
-  taxValue: ValuesOf<typeof TAX_RATE>;
-  multiplier: number;
-}
 
-const calculatePackingProfits = ({
-  boxPrice, multiplier, itemPrice, taxValue,
-}: ICalculatePackingProfits) => {
-  return ((boxPrice * (1 + multiplier / 100)) * taxValue) - (itemPrice * 100);
-};
-
-const TAX_RATE = {
-  [IDLE_FARM_DONOR_TIER.nonDonor]: 0.9,
-  [IDLE_FARM_DONOR_TIER.common]: 0.9,
-  [IDLE_FARM_DONOR_TIER.talented]: 0.9,
-  [IDLE_FARM_DONOR_TIER.wise]: 0.95,
-} as const;
-
-const TAX_RATE_LABEL = {
-  [TAX_RATE.common]: '10%',
-  [TAX_RATE.wise]: '5%',
-} as const;
