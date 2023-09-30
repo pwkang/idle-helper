@@ -8,6 +8,9 @@ import {_claimReader} from './claim';
 import {_teamRaidReader} from './team-raid';
 import {_profileReader} from './profile';
 import {_voteReader} from './vote';
+import {_packingReader} from './packing';
+import {_sellReader} from './sell';
+import {_buyReader} from './buy';
 
 const messageReaders = {
   worker: _workerReader,
@@ -20,6 +23,9 @@ const messageReaders = {
   teamRaid: _teamRaidReader,
   profile: _profileReader,
   vote: _voteReader,
+  packing: _packingReader,
+  sell: _sellReader,
+  buy: _buyReader,
 };
 
 export default messageReaders;

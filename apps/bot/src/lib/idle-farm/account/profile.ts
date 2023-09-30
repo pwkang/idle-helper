@@ -4,6 +4,7 @@ import {userService} from '../../../services/database/user.service';
 import {getLastClaimEmbed} from '../../idle-helper/command-helper/farms/status';
 import {djsMessageHelper} from '../../discordjs/message';
 import toggleUserChecker from '../../idle-helper/toggle-checker/user';
+import messageReaders from '../message-readers';
 
 interface IIdleProfile {
   client: Client;
@@ -48,19 +49,32 @@ const idleProfileSuccess = async ({author, message, client}: IIdleProfileSuccess
   const toggleUser = await toggleUserChecker({
     userId: author.id,
   });
-  if (!toggleUser?.autoSend?.profile) return;
+  const profile = messageReaders.profile({
+    embed: message.embeds[0],
+  });
 
-  const lastClaimEmbed = getLastClaimEmbed({
-    author,
-    userAccount,
+  await userService.saveGameProfile({
+    energy: profile.energy,
+    idleCoins: profile.idleCoins,
+    userId: author.id,
+    idlons: profile.idlons,
+    idlucks: profile.idlucks,
   });
-  await djsMessageHelper.send({
-    client,
-    channelId: message.channelId,
-    options: {
-      embeds: [lastClaimEmbed],
-    },
-  });
+
+  if (toggleUser?.autoSend?.profile) {
+    const lastClaimEmbed = getLastClaimEmbed({
+      author,
+      userAccount,
+    });
+    await djsMessageHelper.send({
+      client,
+      channelId: message.channelId,
+      options: {
+        embeds: [lastClaimEmbed],
+      },
+    });
+  }
+
 
 };
 

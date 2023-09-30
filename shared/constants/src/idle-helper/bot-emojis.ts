@@ -36,6 +36,7 @@ export const BOT_EMOJI = {
     level: '<:level:1147110866748194846>',
   },
   items: {
+    workerTokens: '<:workerTokens:1156520862464364604>',
     algae: '<:algae:1140204930918002748>',
     aluminiumIngot: '<:aluminiumingot:1140204927210242080>',
     aluminiumOre: '<:aluminiumore:1140204923590561825>',

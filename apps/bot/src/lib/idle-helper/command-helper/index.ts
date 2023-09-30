@@ -10,6 +10,7 @@ import {_raidHelper} from './raid-helper';
 import {_workersHelper} from './workers';
 import {_leaderboardHelper} from './leaderboard';
 import {_generatorHelper} from './generator';
+import {_packingHelper} from './packing';
 
 const commandHelper = {
   toggle: _toggleHelper,
@@ -24,6 +25,7 @@ const commandHelper = {
   workers: _workersHelper,
   leaderboard: _leaderboardHelper,
   generator: _generatorHelper,
+  packing: _packingHelper,
 };
 
 export default commandHelper;

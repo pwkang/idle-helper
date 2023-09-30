@@ -1,5 +1,10 @@
 import {ValuesOf} from '../type';
-import {IDLE_FARM_DONOR_TIER, IDLE_FARM_FARM_TYPE, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import {
+  IDLE_FARM_DONOR_TIER,
+  IDLE_FARM_FARM_TYPE,
+  IDLE_FARM_ITEMS,
+  IDLE_FARM_WORKER_TYPE,
+} from '@idle-helper/constants';
 
 export interface IUserToggle extends Record<string, boolean | Record<string, boolean>> {
   reminder: {
@@ -7,7 +12,6 @@ export interface IUserToggle extends Record<string, boolean | Record<string, boo
     vote: boolean;
     daily: boolean;
   };
-  raidHelper: boolean;
   raid: {
     helper: boolean;
     solution: boolean;
@@ -39,7 +43,15 @@ export interface IUser {
   profile: {
     energy: number;
     energyMax: number;
+    idlons: number;
+    idlucks: number;
+    idleCoins: number;
   };
+  packing: {
+    level: number;
+    multiplier: number;
+  };
+  items: Partial<Record<keyof typeof IDLE_FARM_ITEMS, number>>;
   workers: Record<ValuesOf<typeof IDLE_FARM_WORKER_TYPE>, IUserWorker>;
   config: {
     onOff: boolean;

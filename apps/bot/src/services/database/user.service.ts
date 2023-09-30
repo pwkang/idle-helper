@@ -1,6 +1,6 @@
 import {mongoClient} from '@idle-helper/services';
 import {IUser, IUserToggle, IUserWorker, userSchema} from '@idle-helper/models';
-import {IDLE_FARM_DONOR_TIER, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import {IDLE_FARM_DONOR_TIER, IDLE_FARM_ITEMS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 import {UpdateQuery} from 'mongoose';
 
 const dbUser = mongoClient.model<IUser>('users', userSchema);
@@ -363,6 +363,75 @@ const removeReminder = async ({userId, reminder}: IRemoveReminder) => {
   return user ?? null;
 };
 
+interface ISaveInventory {
+  userId: string;
+  items: {
+    name: keyof typeof IDLE_FARM_ITEMS;
+    amount: number;
+  }[];
+}
+
+const saveInventory = async ({userId, items}: ISaveInventory) => {
+  const user = await dbUser.findOneAndUpdate(
+    {userId},
+    {
+      $set: {
+        ...items.reduce((acc, item) => {
+          acc[`items.${item.name}`] = item.amount;
+          return acc;
+        }, {} as Record<string, number>),
+      },
+    }, {
+      new: true,
+    });
+
+  return user ?? null;
+};
+
+interface ISaveGameProfile {
+  userId: string;
+  idlons: number;
+  idlucks: number;
+  idleCoins: number;
+  energy: number;
+}
+
+const saveGameProfile = async ({userId, idlons, idlucks, idleCoins, energy}: ISaveGameProfile) => {
+  const user = await dbUser.findOneAndUpdate(
+    {userId},
+    {
+      $set: {
+        'profile.idlons': idlons,
+        'profile.idlucks': idlucks,
+        'profile.idleCoins': idleCoins,
+        'profile.energy': energy,
+      },
+    }, {
+      new: true,
+    });
+
+  return user ?? null;
+};
+
+interface IUpdatePackingMultiplier {
+  userId: string;
+  multiplier: number;
+}
+
+const updatePackingMultiplier = async ({userId, multiplier}: IUpdatePackingMultiplier) => {
+  const user = await dbUser.findOneAndUpdate(
+    {userId},
+    {
+      $set: {
+        'packing.multiplier': multiplier,
+      },
+    }, {
+      new: true,
+    });
+
+  return user ?? null;
+};
+
 export const userService = {
   registerUser,
   findUser,
@@ -385,4 +454,7 @@ export const userService = {
   addTimeSpeederUsage,
   registerReminder,
   removeReminder,
+  saveInventory,
+  saveGameProfile,
+  updatePackingMultiplier,
 };
