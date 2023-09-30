@@ -94,7 +94,7 @@ const getEmbed = ({client, categoryId, page, selectMenuId, channelId, serverId}:
           channelId,
           serverId,
         })).join(' | '),
-        command.description.map(d => `- ${d}`).join('\n'),
+        command.description.map(d => `${d}`).join('\n'),
         '',
         '',
         ].join('\n');
