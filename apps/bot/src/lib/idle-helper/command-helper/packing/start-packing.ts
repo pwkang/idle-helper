@@ -279,11 +279,13 @@ async function sendNextCommand({
   } else {
     // buy materials
     const idlonsLeftToTarget = targetIdlons - currentIdlons;
-    const tokensNeeded = Math.floor(idlonsLeftToTarget / profitsPerToken);
+
+    const tokensNeeded = Math.ceil(idlonsLeftToTarget / profitsPerToken) + 10; // add 10 more tokens for safety
 
     const maxBuyAbleMaterial = Math.floor(currentIdlons / materialPrice);
     const tokensNeedToPackAllMaterial = Math.floor(maxBuyAbleMaterial / 100);
 
+    console.log({tokensNeeded, tokensNeedToPackAllMaterial, currentWorkerTokens});
     const finalTokenToUse = Math.min(tokensNeeded, tokensNeedToPackAllMaterial, currentWorkerTokens);
 
     const materialsToBuy = finalTokenToUse * 100;
