@@ -71,45 +71,6 @@ export const _startPacking = async ({author, message, client, args}: IStartPacki
   });
   if (!event) return;
 
-  const nextAction = async () => {
-    if (idlons === undefined) {
-      return sendMessage(`Type \`${PREFIX.idleFarm}profile\``);
-    }
-    if (workerTokens === undefined) {
-      return sendMessage(`Type \`${PREFIX.idleFarm}inv\` to show worker tokens`);
-    }
-    if (idlons >= targetIdlons) {
-      event?.stop();
-      event = undefined;
-      return sendMessage(`You have got ${idlons.toLocaleString()} idlons`);
-    }
-    if (workerTokens <= 0) {
-      event?.stop();
-      event = undefined;
-      return sendMessage('You have no more worker tokens');
-    }
-    event?.resetTimer(ms('1m'));
-    await sendNextCommand({
-      materialPrice,
-      currentIdlons: idlons,
-      targetIdlons,
-      currentWorkerTokens: workerTokens,
-      materialName,
-      client,
-      channelId: message.channel.id,
-      materialAmount,
-      boxAmount,
-      multiplier,
-      boxPrice,
-      donorTier: userAccount.config.donorTier,
-      profitsPerToken: calculatePackingProfits({
-        boxPrice,
-        multiplier,
-        itemPrice: materialPrice,
-        taxValue: TAX_RATE_BOX[userAccount.config.donorTier],
-      }),
-    });
-  };
 
   event.on('content', async (content, collected) => {
     if (idlons === undefined || workerTokens === undefined) return;
@@ -167,6 +128,47 @@ export const _startPacking = async ({author, message, client, args}: IStartPacki
   nextAction();
 
 
+  async function nextAction() {
+    if (!targetIdlons || !materialName || !userAccount) return;
+    if (idlons === undefined) {
+      return sendMessage(`Type \`${PREFIX.idleFarm}profile\``);
+    }
+    if (workerTokens === undefined) {
+      return sendMessage(`Type \`${PREFIX.idleFarm}inv\` to show worker tokens`);
+    }
+    if (idlons >= targetIdlons) {
+      event?.stop();
+      event = undefined;
+      return sendMessage(`You have got **${idlons.toLocaleString()}** idlons`);
+    }
+    if (workerTokens <= 0) {
+      event?.stop();
+      event = undefined;
+      return sendMessage('You have no more worker tokens');
+    }
+    event?.resetTimer(ms('1m'));
+    await sendNextCommand({
+      materialPrice,
+      currentIdlons: idlons,
+      targetIdlons,
+      currentWorkerTokens: workerTokens,
+      materialName,
+      client,
+      channelId: message.channel.id,
+      materialAmount,
+      boxAmount,
+      multiplier,
+      boxPrice,
+      donorTier: userAccount.config.donorTier,
+      profitsPerToken: calculatePackingProfits({
+        boxPrice,
+        multiplier,
+        itemPrice: materialPrice,
+        taxValue: TAX_RATE_BOX[userAccount.config.donorTier],
+      }),
+    });
+  }
+
   async function trackWorkerToken(inventoryMsg: Message) {
     const event = await createMessageEditedListener({
       messageId: inventoryMsg.id,
@@ -184,9 +186,10 @@ export const _startPacking = async ({author, message, client, args}: IStartPacki
       materialAmount = inventoryInfo[materialName] ?? 0;
     }
 
-    if (inventoryInfo.workerTokens === undefined) return;
-    workerTokens = inventoryInfo.workerTokens;
-    nextAction();
+    if (inventoryInfo.workerTokens !== undefined && workerTokens === undefined) {
+      workerTokens = inventoryInfo.workerTokens;
+      nextAction();
+    }
   }
 };
 
@@ -269,6 +272,7 @@ async function sendNextCommand({
     nextCommand = `${PREFIX.idleFarm}packing ${IDLE_FARM_ITEMS_MATERIAL[materialName]} ${availablePackingAmount}`;
 
     newBoxAmount += availablePackingAmount * multiplier;
+    newBoxAmount = Math.floor(newBoxAmount);
     newMaterialAmount -= availablePackingAmount * 100;
     newWorkerTokens -= availablePackingAmount;
 
