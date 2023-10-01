@@ -153,7 +153,7 @@ export const _startPacking = async ({author, message, client, args}: IStartPacki
       event = undefined;
       return sendMessage(`You have got **${idlons.toLocaleString()}** idlons`);
     }
-    if (workerTokens <= 0) {
+    if (workerTokens <= 0 && boxAmount <= 0 && materialAmount < 100) {
       event?.stop();
       event = undefined;
       return sendMessage('You have no more worker tokens');
