@@ -20,6 +20,7 @@ import {createMessageEditedListener} from '../../../../utils/message-edited-list
 import {infoService} from '../../../../services/database/info.service';
 import {calculatePackingProfits} from '../../../../utils/calc-packing-profits';
 import ms from 'ms';
+import embedProvider from '../../embeds';
 
 interface IStartPacking {
   client: Client;
@@ -47,6 +48,17 @@ export const _startPacking = async ({author, message, client, args}: IStartPacki
   const selectedItem = args.slice(3).join(' ');
   const marketItems = await infoService.getMarketItems();
   const materialName = typedObjectEntries(IDLE_FARM_ITEMS_MATERIAL).find(([, label]) => label.toLowerCase() === selectedItem.toLowerCase())?.[0];
+
+  if (!userAccount.config.donorTier) {
+    await djsMessageHelper.send({
+      options: {
+        embeds: [embedProvider.setDonor()],
+      },
+      client,
+      channelId: message.channel.id,
+    });
+    return;
+  }
 
   if (targetIdlons === null) {
     return sendMessage('Invalid amount, please enter a valid number');
@@ -141,7 +153,7 @@ export const _startPacking = async ({author, message, client, args}: IStartPacki
       event = undefined;
       return sendMessage(`You have got **${idlons.toLocaleString()}** idlons`);
     }
-    if (workerTokens <= 0) {
+    if (workerTokens <= 0 && boxAmount <= 0 && materialAmount < 100) {
       event?.stop();
       event = undefined;
       return sendMessage('You have no more worker tokens');
