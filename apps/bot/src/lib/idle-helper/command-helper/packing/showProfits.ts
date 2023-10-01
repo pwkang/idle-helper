@@ -13,6 +13,7 @@ import {
 } from '@idle-helper/constants';
 import {typedObjectEntries} from '@idle-helper/utils';
 import {calculatePackingProfits} from '../../../../utils/calc-packing-profits';
+import embedProvider from '../../embeds';
 
 interface IShowPackingProfits {
   author: User;
@@ -23,6 +24,14 @@ export const _showPackingProfits = async ({author}: IShowPackingProfits) => {
     userId: author.id,
   });
   if (!user) return;
+
+  if (!user.config.donorTier) {
+    return {
+      embeds: [embedProvider.setDonor()],
+    };
+  }
+
+
   const packingMultiplier = user.packing.multiplier;
   const marketItems = await infoService.getMarketItems();
   const profits = typedObjectEntries(IDLE_FARM_ITEMS_MATERIAL).map(([key]) => {
