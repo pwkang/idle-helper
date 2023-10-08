@@ -1,6 +1,6 @@
-import {Client, Message, User} from 'discord.js';
+import type {Client, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
-import {IMessageEmbedChecker} from '../../../types/utils';
+import type {IMessageEmbedChecker} from '../../../types/utils';
 import {userService} from '../../../services/database/user.service';
 import {dailyReminder} from '../../idle-helper/reminder/daily-reminder';
 import claimReminder from '../../idle-helper/reminder/claim-reminder';
@@ -16,11 +16,16 @@ interface IIdleClaim {
   isSlashCommand?: boolean;
 }
 
-export const idleClaim = async ({author, client, isSlashCommand, message}: IIdleClaim) => {
+export const idleClaim = async ({
+  author,
+  client,
+  isSlashCommand,
+  message
+}: IIdleClaim) => {
   let event = createIdleFarmCommandListener({
     author,
     client,
-    channelId: message.channel.id,
+    channelId: message.channel.id
   });
   if (!event) return;
   event.on('embed', async (embed, collected) => {
@@ -29,12 +34,12 @@ export const idleClaim = async ({author, client, isSlashCommand, message}: IIdle
         client,
         channelId: message.channel.id,
         author,
-        message: collected,
+        message: collected
       });
       dailyReminder({
         client,
         channelId: message.channel.id,
-        userId: author.id,
+        userId: author.id
       });
       event?.stop();
     }
@@ -52,27 +57,31 @@ interface IIdleClaimSuccess {
   message: Message;
 }
 
-const idleClaimSuccess = async ({author, message, client}: IIdleClaimSuccess) => {
+const idleClaimSuccess = async ({
+  author,
+  message,
+  client
+}: IIdleClaimSuccess) => {
   await userService.claimFarm({
-    userId: author.id,
+    userId: author.id
   });
   await claimReminder.update({
-    userId: author.id,
+    userId: author.id
   });
   const userToggle = await toggleUserChecker({
-    userId: author.id,
+    userId: author.id
   });
   if (!userToggle?.calculator.claim) return;
   const isAllow = await checkUser({
     author,
     client,
-    channelId: message.channel.id,
+    channelId: message.channel.id
   });
   if (!isAllow) return;
   await commandHelper.calculator.claim({
     client,
     message,
-    author,
+    author
   });
 };
 
@@ -91,10 +100,10 @@ const checkUser = async ({author, channelId, client}: IUserChecker) => {
   if (embed) {
     await djsMessageHelper.send({
       options: {
-        embeds: [embed],
+        embeds: [embed]
       },
       client,
-      channelId,
+      channelId
     });
   }
   return !embed;

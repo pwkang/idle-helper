@@ -1,4 +1,4 @@
-import {Client} from 'discord.js';
+import type {Client} from 'discord.js';
 import {logger} from '@idle-helper/utils';
 
 interface IGetServer {
@@ -16,7 +16,7 @@ export const _getServer = async ({serverId, client}: IGetServer) => {
         logLevel: 'error',
         message: `Failed to fetch server ${serverId}`,
         clusterId: client.cluster?.id,
-        variant: 'fetch-server',
+        variant: 'fetch-server'
       });
     }
   }

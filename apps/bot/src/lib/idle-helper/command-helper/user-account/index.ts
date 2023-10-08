@@ -15,5 +15,5 @@ export const _userAccountHelper = {
   settings: _accountSettings,
   claimReminder: _claimReminder,
   reminderChannel: _reminderChannel,
-  setDonor: _setDonor,
+  setDonor: _setDonor
 };

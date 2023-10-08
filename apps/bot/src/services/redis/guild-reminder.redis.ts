@@ -14,16 +14,25 @@ interface ISetReminderTime {
   readyAt: Date;
 }
 
-const setReminderTime = async ({serverId, guildRoleId, readyAt}: ISetReminderTime) => {
+const setReminderTime = async ({
+  serverId,
+  guildRoleId,
+  readyAt
+}: ISetReminderTime) => {
   const data: IRedisGuildReminder = {
     readyAt,
     guildRoleId,
-    serverId,
+    serverId
   };
-  await redisService.set(`${prefix}${serverId}:${guildRoleId}`, JSON.stringify(data));
+  await redisService.set(
+    `${prefix}${serverId}:${guildRoleId}`,
+    JSON.stringify(data)
+  );
 };
 
-const getReadyGuild = async (): Promise<Pick<ISetReminderTime, 'serverId' | 'guildRoleId'>[]> => {
+const getReadyGuild = async (): Promise<
+  Pick<ISetReminderTime, 'serverId' | 'guildRoleId'>[]
+> => {
   const keys = await redisService.keys(`${prefix}*`);
   const reminderList = await Promise.all(
     keys.map(async (key) => {
@@ -36,7 +45,7 @@ const getReadyGuild = async (): Promise<Pick<ISetReminderTime, 'serverId' | 'gui
       if (new Date(readyAt) > new Date()) return null;
       return {
         guildRoleId,
-        serverId,
+        serverId
       };
     })
   );
@@ -51,7 +60,10 @@ interface IDeleteReminderTime {
   guildRoleId: string;
 }
 
-const deleteReminderTime = async ({guildRoleId, serverId}: IDeleteReminderTime) => {
+const deleteReminderTime = async ({
+  guildRoleId,
+  serverId
+}: IDeleteReminderTime) => {
   await redisService.del(`${prefix}${serverId}:${guildRoleId}`);
 };
 
@@ -68,7 +80,7 @@ const getAllGuildReminder = async () => {
       return {
         guildRoleId,
         serverId,
-        readyAt: new Date(readyAt),
+        readyAt: new Date(readyAt)
       };
     })
   );
@@ -79,5 +91,5 @@ export const redisGuildReminder = {
   setReminderTime,
   getReadyGuild,
   deleteReminderTime,
-  getAllGuildReminder,
+  getAllGuildReminder
 };

@@ -3,7 +3,7 @@ import {
   Collection,
   SlashCommandBuilder,
   SlashCommandSubcommandBuilder,
-  SlashCommandSubcommandGroupBuilder,
+  SlashCommandSubcommandGroupBuilder
 } from 'discord.js';
 import {importFiles} from '@idle-helper/utils';
 
@@ -15,9 +15,9 @@ interface ISlashCommand {
 export const listSlashCommands = async (): Promise<ISlashCommand[]> => {
   const commands = await importFiles<SlashCommand>({
     options: {
-      fileFilter: [handlerFileFilter],
+      fileFilter: [handlerFileFilter]
     },
-    path: `./${handlerRoot}/commands/slash`,
+    path: `./${handlerRoot}/commands/slash`
   });
   const generated = generateSlashCommands(commands.map(({data}) => data));
   return generated.map((value, key) => ({name: key, builder: value}));
@@ -32,11 +32,16 @@ export const generateSlashCommands = (slashCommands: SlashCommand[]) => {
       .setDescription(command.description);
     generatedSlashCommands.set(command.name, _command);
   }
-  const subcommandGroups = slashCommands.filter((sc) => sc?.type === 'subcommandGroup');
+  const subcommandGroups = slashCommands.filter(
+    (sc) => sc?.type === 'subcommandGroup'
+  );
   for (const subcommandGroup of subcommandGroups) {
     const {commandName, name} = subcommandGroup as SlashCommandSubcommandGroup;
     const subcommands = slashCommands.filter(
-      (sc) => sc?.type === 'subcommand' && sc.groupName === name && sc.commandName === commandName
+      (sc) =>
+        sc?.type === 'subcommand' &&
+        sc.groupName === name &&
+        sc.commandName === commandName
     );
     const command = generatedSlashCommands.get(commandName);
     if (!command) continue;
@@ -53,9 +58,12 @@ export const generateSlashCommands = (slashCommands: SlashCommand[]) => {
     }
     command.addSubcommandGroup(_subcommandGroup);
   }
-  const subcommands = slashCommands.filter((sc) => sc?.type === 'subcommand' && !sc.groupName);
+  const subcommands = slashCommands.filter(
+    (sc) => sc?.type === 'subcommand' && !sc.groupName
+  );
   for (const subcommand of subcommands) {
-    const {commandName, name, description, builder} = subcommand as SlashCommandSubcommand;
+    const {commandName, name, description, builder} =
+      subcommand as SlashCommandSubcommand;
     const command = generatedSlashCommands.get(commandName);
     if (!command) continue;
     const _subcommand = new SlashCommandSubcommandBuilder()

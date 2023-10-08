@@ -1,4 +1,4 @@
-import {Client, Embed, Message, User} from 'discord.js';
+import type {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import messageReaders from '../message-readers';
 import commandHelper from '../../idle-helper/command-helper';
@@ -12,12 +12,17 @@ interface IIdleGuild {
   isSlashCommand?: boolean;
 }
 
-export const idleGuild = async ({author, client, isSlashCommand, message}: IIdleGuild) => {
+export const idleGuild = async ({
+  author,
+  client,
+  isSlashCommand,
+  message
+}: IIdleGuild) => {
   if (message.mentions.users.size) return;
   let event = createIdleFarmCommandListener({
     author,
     client,
-    channelId: message.channel.id,
+    channelId: message.channel.id
   });
   if (!event) return;
   event.on('embed', async (embed) => {
@@ -25,15 +30,15 @@ export const idleGuild = async ({author, client, isSlashCommand, message}: IIdle
       const result = await commandHelper.guild.verifyGuild({
         client,
         server: message.guild,
-        userId: author.id,
+        userId: author.id
       });
       if (result.errorEmbed) {
         await djsMessageHelper.send({
           client,
           channelId: message.channel.id,
           options: {
-            embeds: [result.errorEmbed],
-          },
+            embeds: [result.errorEmbed]
+          }
         });
         return;
       }
@@ -44,12 +49,12 @@ export const idleGuild = async ({author, client, isSlashCommand, message}: IIdle
         embed,
         guildRoleId,
         guildServerId: userGuild.serverId,
-        isSlashCommand,
+        isSlashCommand
       });
       await guildService.registerUsersToGuild({
         serverId: message.guild.id,
         roleId: guildRoleId,
-        usersId: [author.id],
+        usersId: [author.id]
       });
       event?.stop();
     }
@@ -71,33 +76,34 @@ const idleGuildSuccess = async ({
   embed,
   guildRoleId,
   isSlashCommand,
-  guildServerId,
+  guildServerId
 }: IIdleGuildSuccess) => {
   const guildInfo = messageReaders.guild({embed});
   if (isSlashCommand) {
+
     // return if guild name is not matched in slash command
     const currentGuild = await guildService.findGuild({
       serverId: guildServerId,
-      roleId: guildRoleId,
+      roleId: guildRoleId
     });
     if (currentGuild && currentGuild.info.name !== guildInfo.name) return;
   }
   const guild = await guildService.registerReminder({
     readyIn: guildInfo.readyIn,
     roleId: guildRoleId,
-    serverId: guildServerId,
+    serverId: guildServerId
   });
   if (!guild) return;
   await guildService.updateGuildInfo({
     serverId: guildServerId,
     roleId: guildRoleId,
-    name: guildInfo.name === guild.info.name ? undefined : guildInfo.name,
+    name: guildInfo.name === guild.info.name ? undefined : guildInfo.name
   });
 };
-
 
 interface IChecker {
   embed: Embed;
 }
 
-const isIdleGuild = ({embed}: IChecker) => embed.footer?.text.includes('Your guild was raided');
+const isIdleGuild = ({embed}: IChecker) =>
+  embed.footer?.text.includes('Your guild was raided');

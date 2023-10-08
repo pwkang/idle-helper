@@ -1,14 +1,17 @@
 import djsInteractionHelper from '../../../../lib/discordjs/interaction';
 import commandHelper from '../../../../lib/idle-helper/command-helper';
 import {SLASH_COMMAND} from '../../constant';
-import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
+import {
+  USER_ACC_OFF_ACTIONS,
+  USER_NOT_REGISTERED_ACTIONS
+} from '@idle-helper/constants';
 
 export default <SlashCommand>{
   name: SLASH_COMMAND.account.claimReminder.name,
   description: SLASH_COMMAND.account.claimReminder.description,
   preCheck: {
     userAccOff: USER_ACC_OFF_ACTIONS.askToTurnOn,
-    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.askToRegister,
+    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.askToRegister
   },
   commandName: SLASH_COMMAND.account.name,
   type: 'subcommand',
@@ -29,13 +32,13 @@ export default <SlashCommand>{
 
     const messageOptions = await commandHelper.userAccount.claimReminder({
       userId: interaction.user.id,
-      hours: reminderHours,
+      hours: reminderHours
     });
 
     await djsInteractionHelper.replyInteraction({
       client,
       interaction,
-      options: messageOptions,
+      options: messageOptions
     });
-  },
+  }
 };

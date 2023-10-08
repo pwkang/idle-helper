@@ -5,5 +5,5 @@ import {_isGuildMember} from './is-guild-member';
 export const userChecker = {
   isServerAdmin: _isServerAdmin,
   isGuildLeader: _isGuildLeader,
-  isGuildMember: _isGuildMember,
+  isGuildMember: _isGuildMember
 };

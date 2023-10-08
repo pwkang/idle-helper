@@ -1,14 +1,16 @@
-import {Client, EmbedBuilder, Message, User} from 'discord.js';
+import type {Client, Message, User} from 'discord.js';
+import { EmbedBuilder} from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
+import type {
+  IDLE_FARM_DONOR_TIER} from '@idle-helper/constants';
 import {
   BOT_COLOR,
   BOT_EMOJI,
-  IDLE_FARM_DONOR_TIER,
   IDLE_FARM_ITEMS_BOX,
   IDLE_FARM_ITEMS_BOX_TYPE,
   IDLE_FARM_ITEMS_MATERIAL,
   PREFIX,
-  TAX_RATE_BOX,
+  TAX_RATE_BOX
 } from '@idle-helper/constants';
 import {djsMessageHelper} from '../../../discordjs/message';
 import {createIdleFarmCommandListener} from '../../../../utils/idle-farm-command-listener';
@@ -29,16 +31,22 @@ interface IStartPacking {
   args: string[];
 }
 
-export const _startPacking = async ({author, message, client, args}: IStartPacking) => {
+export const _startPacking = async ({
+  author,
+  message,
+  client,
+  args
+}: IStartPacking) => {
   const userAccount = await userService.findUser({
-    userId: author.id,
+    userId: author.id
   });
   if (!userAccount) return;
-  const sendMessage = async (content: string) => sendCommandEmbed({
-    message: content,
-    client,
-    channelId: message.channel.id,
-  });
+  const sendMessage = async (content: string) =>
+    sendCommandEmbed({
+      message: content,
+      client,
+      channelId: message.channel.id
+    });
   let idlons: number;
   let workerTokens: number;
   let boxAmount: number = 0;
@@ -47,15 +55,17 @@ export const _startPacking = async ({author, message, client, args}: IStartPacki
   const targetIdlons = parseNumber(args[2]);
   const selectedItem = args.slice(3).join(' ');
   const marketItems = await infoService.getMarketItems();
-  const materialName = typedObjectEntries(IDLE_FARM_ITEMS_MATERIAL).find(([, label]) => label.toLowerCase() === selectedItem.toLowerCase())?.[0];
+  const materialName = typedObjectEntries(IDLE_FARM_ITEMS_MATERIAL).find(
+    ([, label]) => label.toLowerCase() === selectedItem.toLowerCase()
+  )?.[0];
 
   if (!userAccount.config.donorTier) {
     await djsMessageHelper.send({
       options: {
-        embeds: [embedProvider.setDonor()],
+        embeds: [embedProvider.setDonor()]
       },
       client,
-      channelId: message.channel.id,
+      channelId: message.channel.id
     });
     return;
   }
@@ -79,10 +89,9 @@ export const _startPacking = async ({author, message, client, args}: IStartPacki
   let event = createIdleFarmCommandListener({
     author,
     channelId: message.channel.id,
-    client,
+    client
   });
   if (!event) return;
-
 
   event.on('content', async (content, collected) => {
     if (idlons === undefined || workerTokens === undefined) return;
@@ -139,14 +148,15 @@ export const _startPacking = async ({author, message, client, args}: IStartPacki
 
   nextAction();
 
-
   async function nextAction() {
     if (!targetIdlons || !materialName || !userAccount) return;
     if (idlons === undefined) {
       return sendMessage(`Type \`${PREFIX.idleFarm}profile\``);
     }
     if (workerTokens === undefined) {
-      return sendMessage(`Type \`${PREFIX.idleFarm}inv\` to show worker tokens`);
+      return sendMessage(
+        `Type \`${PREFIX.idleFarm}inv\` to show worker tokens`
+      );
     }
     if (idlons >= targetIdlons) {
       event?.stop();
@@ -176,14 +186,14 @@ export const _startPacking = async ({author, message, client, args}: IStartPacki
         boxPrice,
         multiplier,
         itemPrice: materialPrice,
-        taxValue: TAX_RATE_BOX[userAccount.config.donorTier],
-      }),
+        taxValue: TAX_RATE_BOX[userAccount.config.donorTier]
+      })
     });
   }
 
   async function trackWorkerToken(inventoryMsg: Message) {
     const event = await createMessageEditedListener({
-      messageId: inventoryMsg.id,
+      messageId: inventoryMsg.id
     });
     if (!event) return;
     event.on(inventoryMsg.id, (collected) => {
@@ -192,13 +202,18 @@ export const _startPacking = async ({author, message, client, args}: IStartPacki
   }
 
   function readInventory(inventoryMsg: Message) {
-    const inventoryInfo = messageReaders.inventory({embed: inventoryMsg.embeds[0]});
+    const inventoryInfo = messageReaders.inventory({
+      embed: inventoryMsg.embeds[0]
+    });
 
     if (materialName && inventoryInfo[materialName] !== undefined) {
       materialAmount = inventoryInfo[materialName] ?? 0;
     }
 
-    if (inventoryInfo.workerTokens !== undefined && workerTokens === undefined) {
+    if (
+      inventoryInfo.workerTokens !== undefined &&
+      workerTokens === undefined
+    ) {
       workerTokens = inventoryInfo.workerTokens;
       nextAction();
     }
@@ -211,17 +226,21 @@ interface ISendCommandEmbed {
   client: Client;
 }
 
-const sendCommandEmbed = async ({message, client, channelId}: ISendCommandEmbed) => {
+const sendCommandEmbed = async ({
+  message,
+  client,
+  channelId
+}: ISendCommandEmbed) => {
   const embed = new EmbedBuilder()
     .setColor(BOT_COLOR.embed)
     .setDescription(message);
 
   await djsMessageHelper.send({
     options: {
-      embeds: [embed],
+      embeds: [embed]
     },
     channelId,
-    client,
+    client
   });
 };
 
@@ -254,9 +273,8 @@ async function sendNextCommand({
   boxPrice,
   profitsPerToken,
   multiplier,
-  donorTier,
+  donorTier
 }: ISendNextCommand) {
-
   let title: string;
   let nextCommand: string;
   let newIdlons = currentIdlons;
@@ -264,31 +282,40 @@ async function sendNextCommand({
   let newMaterialAmount = materialAmount;
   let newBoxAmount = boxAmount;
 
-
   if (boxAmount) {
+
     // sell boxes
 
-    title = `Sell ${boxAmount.toLocaleString()} ${IDLE_FARM_ITEMS_BOX[IDLE_FARM_ITEMS_BOX_TYPE[materialName]]}`;
-    nextCommand = `${PREFIX.idleFarm}sell ${IDLE_FARM_ITEMS_BOX[IDLE_FARM_ITEMS_BOX_TYPE[materialName]]} ${boxAmount}`;
+    title = `Sell ${boxAmount.toLocaleString()} ${
+      IDLE_FARM_ITEMS_BOX[IDLE_FARM_ITEMS_BOX_TYPE[materialName]]
+    }`;
+    nextCommand = `${PREFIX.idleFarm}sell ${
+      IDLE_FARM_ITEMS_BOX[IDLE_FARM_ITEMS_BOX_TYPE[materialName]]
+    } ${boxAmount}`;
 
     newIdlons += boxAmount * boxPrice * TAX_RATE_BOX[donorTier];
     newBoxAmount = 0;
-
   } else if (materialAmount >= 100) {
+
     // pack materials
     const materialsToPax = Math.floor(materialAmount / 100);
 
-    const availablePackingAmount = Math.min(materialsToPax, currentWorkerTokens);
+    const availablePackingAmount = Math.min(
+      materialsToPax,
+      currentWorkerTokens
+    );
 
-    title = `Pack ${availablePackingAmount.toLocaleString()} ${IDLE_FARM_ITEMS_MATERIAL[materialName]}`;
+    title = `Pack ${availablePackingAmount.toLocaleString()} ${
+      IDLE_FARM_ITEMS_MATERIAL[materialName]
+    }`;
     nextCommand = `${PREFIX.idleFarm}packing ${IDLE_FARM_ITEMS_MATERIAL[materialName]} ${availablePackingAmount}`;
 
     newBoxAmount += availablePackingAmount * multiplier;
     newBoxAmount = Math.floor(newBoxAmount);
     newMaterialAmount -= availablePackingAmount * 100;
     newWorkerTokens -= availablePackingAmount;
-
   } else {
+
     // buy materials
     const idlonsLeftToTarget = targetIdlons - currentIdlons;
 
@@ -297,66 +324,81 @@ async function sendNextCommand({
     const maxBuyAbleMaterial = Math.floor(currentIdlons / materialPrice);
     const tokensNeedToPackAllMaterial = Math.floor(maxBuyAbleMaterial / 100);
 
-    const finalTokenToUse = Math.min(tokensNeeded, tokensNeedToPackAllMaterial, currentWorkerTokens);
+    const finalTokenToUse = Math.min(
+      tokensNeeded,
+      tokensNeedToPackAllMaterial,
+      currentWorkerTokens
+    );
 
     const materialsToBuy = finalTokenToUse * 100;
 
     newIdlons -= materialsToBuy * materialPrice;
     newMaterialAmount += materialsToBuy;
 
-    title = `Buy ${materialsToBuy.toLocaleString()} ${IDLE_FARM_ITEMS_MATERIAL[materialName]}`;
+    title = `Buy ${materialsToBuy.toLocaleString()} ${
+      IDLE_FARM_ITEMS_MATERIAL[materialName]
+    }`;
     nextCommand = `${PREFIX.idleFarm}buy ${IDLE_FARM_ITEMS_MATERIAL[materialName]} ${materialsToBuy}`;
-
   }
 
+  const embed = new EmbedBuilder().setColor(BOT_COLOR.embed);
 
-  const embed = new EmbedBuilder()
-    .setColor(BOT_COLOR.embed);
-
-  embed.setTitle(title)
-    .setDescription(`\`${nextCommand}\``);
+  embed.setTitle(title).setDescription(`\`${nextCommand}\``);
 
   const isIdlonChanged = currentIdlons !== newIdlons;
   const isWorkerTokenChanged = currentWorkerTokens !== newWorkerTokens;
   const isMaterialAmountChanged = materialAmount !== newMaterialAmount;
   const isBoxAmountChanged = boxAmount !== newBoxAmount;
 
-  let idlonsText = `${BOT_EMOJI.other.idlon} **Idlons:** ${currentIdlons.toLocaleString()}`;
+  let idlonsText = `${
+    BOT_EMOJI.other.idlon
+  } **Idlons:** ${currentIdlons.toLocaleString()}`;
   if (isIdlonChanged) idlonsText += ` -> ${newIdlons.toLocaleString()}`;
 
-  let workerTokensText = `${BOT_EMOJI.items.workerTokens} **Worker tokens:** ${currentWorkerTokens.toLocaleString()}`;
-  if (isWorkerTokenChanged) workerTokensText += ` -> ${newWorkerTokens.toLocaleString()}`;
+  let workerTokensText = `${
+    BOT_EMOJI.items.workerTokens
+  } **Worker tokens:** ${currentWorkerTokens.toLocaleString()}`;
+  if (isWorkerTokenChanged)
+    workerTokensText += ` -> ${newWorkerTokens.toLocaleString()}`;
 
-  let materialAmountText = `${BOT_EMOJI.items[materialName]} **${IDLE_FARM_ITEMS_MATERIAL[materialName]}:** ${materialAmount.toLocaleString()}`;
-  if (isMaterialAmountChanged) materialAmountText += ` -> ${newMaterialAmount.toLocaleString()}`;
+  let materialAmountText = `${BOT_EMOJI.items[materialName]} **${
+    IDLE_FARM_ITEMS_MATERIAL[materialName]
+  }:** ${materialAmount.toLocaleString()}`;
+  if (isMaterialAmountChanged)
+    materialAmountText += ` -> ${newMaterialAmount.toLocaleString()}`;
 
-  let boxAmountText = `${BOT_EMOJI.items[IDLE_FARM_ITEMS_BOX_TYPE[materialName]]} **${IDLE_FARM_ITEMS_BOX[IDLE_FARM_ITEMS_BOX_TYPE[materialName]]}:** ${boxAmount.toLocaleString()}`;
-  if (isBoxAmountChanged) boxAmountText += ` -> ${newBoxAmount.toLocaleString()}`;
+  let boxAmountText = `${
+    BOT_EMOJI.items[IDLE_FARM_ITEMS_BOX_TYPE[materialName]]
+  } **${
+    IDLE_FARM_ITEMS_BOX[IDLE_FARM_ITEMS_BOX_TYPE[materialName]]
+  }:** ${boxAmount.toLocaleString()}`;
+  if (isBoxAmountChanged)
+    boxAmountText += ` -> ${newBoxAmount.toLocaleString()}`;
 
   const summaries = [
     `🎲 **Multiplier:** x${multiplier.toLocaleString()}`,
     idlonsText,
     workerTokensText,
     materialAmountText,
-    boxAmountText,
+    boxAmountText
   ];
 
   embed.addFields([
     {
       name: 'Summary',
-      value: summaries.join('\n'),
-    },
+      value: summaries.join('\n')
+    }
   ]);
 
   embed.setFooter({
-    text: `Target Idlons: ${currentIdlons.toLocaleString()} / ${targetIdlons.toLocaleString()}`,
+    text: `Target Idlons: ${currentIdlons.toLocaleString()} / ${targetIdlons.toLocaleString()}`
   });
 
   await djsMessageHelper.send({
     client,
     channelId,
     options: {
-      embeds: [embed],
-    },
+      embeds: [embed]
+    }
   });
 }

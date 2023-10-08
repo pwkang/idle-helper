@@ -1,5 +1,11 @@
-import {Client, Events, Message} from 'discord.js';
-import {DEVS_ID, IDLE_FARM_ID, PREFIX, PREFIX_COMMAND_TYPE} from '@idle-helper/constants';
+import type {Client, Message} from 'discord.js';
+import { Events} from 'discord.js';
+import {
+  DEVS_ID,
+  IDLE_FARM_ID,
+  PREFIX,
+  PREFIX_COMMAND_TYPE
+} from '@idle-helper/constants';
 import {preCheckCommand} from '../../utils/command-precheck';
 import isServerWhitelisted from '../../utils/whitelisted-servers-checker';
 
@@ -25,7 +31,7 @@ export default <BotEvent>{
           message,
           preCheck: cmd.preCheck,
           server: message.guild!,
-          channelId: message.channelId,
+          channelId: message.channelId
         });
         if (!toExecute) return;
         await cmd.execute(client, message, interactionUser);
@@ -42,7 +48,7 @@ export default <BotEvent>{
         message,
         preCheck: result.command.preCheck,
         server: message.guild!,
-        channelId: message.channelId,
+        channelId: message.channelId
       });
       if (!toExecute) return;
 
@@ -55,36 +61,46 @@ export default <BotEvent>{
 
       commands.forEach((cmd) => cmd.execute(client, message));
     }
-  },
+  }
 };
 
 const searchSlashMessages = (client: Client, message: Message) =>
   client.slashMessages.filter((cmd) =>
     cmd.commandName.some(
-      (name) => name.toLowerCase() === message.interaction?.commandName?.toLowerCase()
+      (name) =>
+        name.toLowerCase() === message.interaction?.commandName?.toLowerCase()
     )
   );
 
-const trimWhitespace = (str: string) => str.split('\n').join('').replace(/\s+/g, ' ').trim();
+const trimWhitespace = (str: string) =>
+  str.split('\n').join('').replace(/\s+/g, ' ').trim();
 
 const isRpgCommand = (message: Message) =>
-  trimWhitespace(message.content).toLowerCase().startsWith(PREFIX.idleFarm.toLowerCase()) ||
+  trimWhitespace(message.content)
+    .toLowerCase()
+    .startsWith(PREFIX.idleFarm.toLowerCase()) ||
   message.mentions.has(IDLE_FARM_ID);
 
 const isBotCommand = (client: Client, message: Message) =>
   (PREFIX.bot &&
-    trimWhitespace(message.content).toLowerCase().startsWith(PREFIX.bot.toLowerCase())) ||
+    trimWhitespace(message.content)
+      .toLowerCase()
+      .startsWith(PREFIX.bot.toLowerCase())) ||
   message.mentions.has(client.user!.id);
 
 const validateCommand = (commands: string[], args: string[]) => {
   return commands.some((cmd) =>
-    cmd.split(' ').every((name, i) => name?.toLowerCase() === args[i]?.toLowerCase())
+    cmd
+      .split(' ')
+      .every((name, i) => name?.toLowerCase() === args[i]?.toLowerCase())
   );
 };
 
 const getMatchedCommandLength = (commands: string[], args: string[]) => {
   const matched = commands.find((cmd) =>
-    cmd.split(' ').every((name, i) => name?.toLowerCase() === args[i]?.toLowerCase())
+    cmd
+      .split(' ')
+      .every((name, i) => name?.toLowerCase() === args[i]?.toLowerCase())
   );
   return matched?.split(' ').length ?? 0;
 };
@@ -103,7 +119,7 @@ function searchCommand(
     args = generateArgs({
       botId: IDLE_FARM_ID,
       prefix: PREFIX.idleFarm,
-      message,
+      message
     });
 
     commandType = PREFIX_COMMAND_TYPE.idleFarm;
@@ -113,15 +129,19 @@ function searchCommand(
     args = generateArgs({
       botId: client.user!.id,
       prefix: PREFIX.bot,
-      message,
+      message
     });
     commandType = PREFIX_COMMAND_TYPE.bot;
   }
 
-  if (DEVS_ID.includes(message.author.id) && PREFIX.dev && messageContent.startsWith(PREFIX.dev)) {
+  if (
+    DEVS_ID.includes(message.author.id) &&
+    PREFIX.dev &&
+    messageContent.startsWith(PREFIX.dev)
+  ) {
     args = generateArgs({
       prefix: PREFIX.dev,
-      message,
+      message
     });
     commandType = PREFIX_COMMAND_TYPE.dev;
   }
@@ -135,7 +155,8 @@ function searchCommand(
     command = matchedCommands
       .sort(
         (a, b) =>
-          getMatchedCommandLength(b.commands, args) - getMatchedCommandLength(a.commands, args)
+          getMatchedCommandLength(b.commands, args) -
+          getMatchedCommandLength(a.commands, args)
       )
       .first();
   }
@@ -143,15 +164,19 @@ function searchCommand(
   return command ? {command, args} : null;
 }
 
-const isBotSlashCommand = (message: Message) => message.interaction && message.author.bot;
+const isBotSlashCommand = (message: Message) =>
+  message.interaction && message.author.bot;
 const isSentByUser = (message: Message) => !message.author.bot;
 
 const isSentByBot = (message: Message) => message.author.bot;
 
-const isNotDeferred = (message: Message) => !(message.content === '' && !message.embeds.length);
+const isNotDeferred = (message: Message) =>
+  !(message.content === '' && !message.embeds.length);
 
 const searchBotMatchedCommands = (client: Client, message: Message<true>) =>
-  client.botMessages.filter((cmd) => message.author.id === cmd.bot && cmd.match(message));
+  client.botMessages.filter(
+    (cmd) => message.author.id === cmd.bot && cmd.match(message)
+  );
 
 interface IGenerateArgs {
   prefix: string;

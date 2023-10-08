@@ -1,4 +1,4 @@
-import {Client} from 'discord.js';
+import type {Client} from 'discord.js';
 import {handlerFileFilter, handlerRoot} from './constant';
 import {importFiles, logger} from '@idle-helper/utils';
 
@@ -6,12 +6,12 @@ async function loadPrefixCommands(client: Client) {
   const commands = await importFiles<PrefixCommand>({
     path: `./${handlerRoot}/commands/prefix`,
     options: {
-      fileFilter: [handlerFileFilter],
-    },
+      fileFilter: [handlerFileFilter]
+    }
   });
   logger({
     message: `Loaded (${commands.length}) prefix commands`,
-    clusterId: client.cluster?.id,
+    clusterId: client.cluster?.id
   });
   commands.forEach(({data}) => {
     if (!data?.name) return;
@@ -23,12 +23,12 @@ async function loadSlashCommands(client: Client) {
   const commands = await importFiles<SlashCommand>({
     path: `./${handlerRoot}/commands/slash`,
     options: {
-      fileFilter: [handlerFileFilter, '!*.type.ts', '!constant.ts'],
-    },
+      fileFilter: [handlerFileFilter, '!*.type.ts', '!constant.ts']
+    }
   });
   logger({
     message: `Loaded (${commands.length}) slash commands`,
-    clusterId: client.cluster?.id,
+    clusterId: client.cluster?.id
   });
   commands.forEach(({data}) => {
     if (!data?.name) return;
@@ -48,12 +48,12 @@ async function loadSlashMessages(client: Client) {
   const commands = await importFiles<SlashMessage>({
     path: `./${handlerRoot}/commands/slash-message`,
     options: {
-      fileFilter: [handlerFileFilter],
-    },
+      fileFilter: [handlerFileFilter]
+    }
   });
   logger({
     message: `Loaded (${commands.length}) slash messages`,
-    clusterId: client.cluster?.id,
+    clusterId: client.cluster?.id
   });
   commands.forEach(({data}) => {
     if (!data?.name) return;
@@ -65,12 +65,12 @@ async function loadBotMessages(client: Client) {
   const commands = await importFiles<BotMessage>({
     path: `./${handlerRoot}/commands/bot-message`,
     options: {
-      fileFilter: [handlerFileFilter],
-    },
+      fileFilter: [handlerFileFilter]
+    }
   });
   logger({
     message: `Loaded (${commands.length}) bot messages`,
-    clusterId: client.cluster?.id,
+    clusterId: client.cluster?.id
   });
   commands.forEach(({data}) => {
     if (!data?.name) return;
@@ -83,6 +83,6 @@ export default function loadCommands(client: Client) {
     loadPrefixCommands(client),
     loadSlashCommands(client),
     loadSlashMessages(client),
-    loadBotMessages(client),
+    loadBotMessages(client)
   ]);
 }

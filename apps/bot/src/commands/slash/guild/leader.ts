@@ -1,5 +1,8 @@
 import {SLASH_COMMAND} from '../constant';
-import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
+import {
+  USER_ACC_OFF_ACTIONS,
+  USER_NOT_REGISTERED_ACTIONS
+} from '@idle-helper/constants';
 import djsInteractionHelper from '../../../lib/discordjs/interaction';
 import commandHelper from '../../../lib/idle-helper/command-helper';
 
@@ -11,7 +14,7 @@ export default <SlashCommand>{
   preCheck: {
     userAccOff: USER_ACC_OFF_ACTIONS.skip,
     userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
-    isServerAdmin: true,
+    isServerAdmin: true
   },
   builder: (subcommand) =>
     subcommand
@@ -19,13 +22,15 @@ export default <SlashCommand>{
         option
           .setName('role')
           .setDescription('Select the role of the guild to update')
-          .setRequired(true),
+          .setRequired(true)
       )
       .addUserOption((option) =>
         option
           .setName('leader')
-          .setDescription('User that can modify the guild settings without admin permission')
-          .setRequired(true),
+          .setDescription(
+            'User that can modify the guild settings without admin permission'
+          )
+          .setRequired(true)
       ),
   execute: async (client, interaction) => {
     const role = interaction.options.getRole('role', true);
@@ -35,17 +40,17 @@ export default <SlashCommand>{
       client,
       roleId: role.id,
       server: interaction.guild!,
-      author: interaction.user,
+      author: interaction.user
     });
     await djsInteractionHelper.replyInteraction({
       client,
       interaction,
       options: await configureGuild.setLeader({
-        leader: leader,
+        leader: leader
       }),
       onStop: () => {
         configureGuild = null as any;
-      },
+      }
     });
-  },
+  }
 };

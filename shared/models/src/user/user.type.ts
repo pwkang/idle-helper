@@ -1,12 +1,13 @@
-import {ValuesOf} from '../type';
-import {
+import type {ValuesOf} from '../type';
+import type {
   IDLE_FARM_DONOR_TIER,
   IDLE_FARM_FARM_TYPE,
   IDLE_FARM_ITEMS,
-  IDLE_FARM_WORKER_TYPE,
+  IDLE_FARM_WORKER_TYPE
 } from '@idle-helper/constants';
 
-export interface IUserToggle extends Record<string, boolean | Record<string, boolean>> {
+export interface IUserToggle
+  extends Record<string, boolean | Record<string, boolean>> {
   reminder: {
     claim: boolean;
     vote: boolean;
@@ -65,7 +66,7 @@ export interface IUser {
     itemsUsed: {
       timeCompressor: number;
       timeSpeeder: number;
-    }
+    };
   };
   commandsLastUsed: {
     daily: Date;
@@ -74,8 +75,8 @@ export interface IUser {
   reminder: {
     vote: {
       readyAt: Date;
-    }
-  },
+    };
+  };
   lastUpdated: {
     toggle: Date;
     username: Date;

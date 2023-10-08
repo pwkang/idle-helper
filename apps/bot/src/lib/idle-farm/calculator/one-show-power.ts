@@ -7,17 +7,19 @@ interface ICalcOneShotPower {
 
 const DAMAGE = {
   player: 100,
-  team: 100,
+  team: 100
 } as const;
 
 export const calcOneShotPower = ({
   enemyPower,
   enemyHp,
   decimalPlace,
-  raidType,
+  raidType
 }: ICalcOneShotPower) => {
   const result = (enemyPower * enemyHp) / DAMAGE[raidType];
-  return decimalPlace !== undefined ? Number(result.toFixed(decimalPlace)) : result;
+  return decimalPlace !== undefined
+    ? Number(result.toFixed(decimalPlace))
+    : result;
 };
 
 // enemyHP = 100 * atk / def

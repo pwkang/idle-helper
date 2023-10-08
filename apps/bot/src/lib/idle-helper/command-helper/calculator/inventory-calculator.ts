@@ -1,9 +1,10 @@
-import {Client, Message, User} from 'discord.js';
+import type {Client, Message, User} from 'discord.js';
 import {createMessageEditedListener} from '../../../../utils/message-edited-listener';
 import {djsMessageHelper} from '../../../discordjs/message';
 import {infoService} from '../../../../services/database/info.service';
 import {userService} from '../../../../services/database/user.service';
-import {generateEmbed, IAllItems} from './generate-idlons-embed';
+import type { IAllItems} from './generate-idlons-embed';
+import {generateEmbed} from './generate-idlons-embed';
 import messageReaders from '../../../idle-farm/message-readers';
 
 interface IIdlonsCalculator {
@@ -12,16 +13,20 @@ interface IIdlonsCalculator {
   client: Client;
 }
 
-export const _inventoryCalculator = async ({message, client, author}: IIdlonsCalculator) => {
+export const _inventoryCalculator = async ({
+  message,
+  client,
+  author
+}: IIdlonsCalculator) => {
   let allItems: IAllItems = {};
   const inventory = messageReaders.inventory({
-    embed: message.embeds[0],
+    embed: message.embeds[0]
   });
   const userAccount = await userService.findUser({userId: author.id});
   if (!userAccount) return;
   const marketItems = await infoService.getMarketItems();
   allItems = {
-    ...inventory,
+    ...inventory
   };
   const sentMessage = await djsMessageHelper.send({
     options: {
@@ -31,39 +36,39 @@ export const _inventoryCalculator = async ({message, client, author}: IIdlonsCal
           marketItems,
           author,
           user: userAccount,
-          title: 'Idlons Calculator',
-        }),
-      ],
+          title: 'Idlons Calculator'
+        })
+      ]
     },
     client,
-    channelId: message.channel.id,
+    channelId: message.channel.id
   });
   const event = await createMessageEditedListener({
-    messageId: message.id,
+    messageId: message.id
   });
   if (!event || !sentMessage) return;
   event.on(message.id, (collected) => {
     const embed = collected.embeds[0];
     const updatedInventory = messageReaders.inventory({
-      embed,
+      embed
     });
     allItems = {
       ...allItems,
-      ...updatedInventory,
+      ...updatedInventory
     };
     const updatedEmbed = generateEmbed({
       items: allItems,
       marketItems,
       author,
       user: userAccount,
-      title: 'Idlons Calculator',
+      title: 'Idlons Calculator'
     });
     djsMessageHelper.edit({
       options: {
-        embeds: [updatedEmbed],
+        embeds: [updatedEmbed]
       },
       client,
-      message: sentMessage,
+      message: sentMessage
     });
   });
 };

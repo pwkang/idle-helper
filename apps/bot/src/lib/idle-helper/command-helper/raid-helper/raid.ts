@@ -1,9 +1,23 @@
-import {ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, EmbedBuilder, Message} from 'discord.js';
-import {IUser, IUserWorker} from '@idle-helper/models';
+import type {
+  Client,
+  Message} from 'discord.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder
+} from 'discord.js';
+import type {IUser, IUserWorker} from '@idle-helper/models';
 import {djsMessageHelper} from '../../../discordjs/message';
 import {createMessageEditedListener} from '../../../../utils/message-edited-listener';
 import messageReaders from '../../../idle-farm/message-readers';
-import {BOT_COLOR, BOT_EMOJI, BOT_IMAGE_URL, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import type {
+  IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import {
+  BOT_COLOR,
+  BOT_EMOJI,
+  BOT_IMAGE_URL
+} from '@idle-helper/constants';
 import {calcWorkerPower} from '../../../idle-farm/calculator/worker-power';
 import {calcWorkerDmg} from '../../../idle-farm/calculator/calcWorkerDmg';
 
@@ -14,17 +28,23 @@ interface IRaidHelper {
   compact: boolean;
 }
 
-export const _playerRaidHelper = async ({message, userAccount, client, compact}: IRaidHelper) => {
+export const _playerRaidHelper = async ({
+  message,
+  userAccount,
+  client,
+  compact
+}: IRaidHelper) => {
   const channelId = message.channelId;
   const userWorkers = userAccount.workers;
-  const registeredWorkersAmount = Object.values(userWorkers).filter(Boolean).length;
+  const registeredWorkersAmount =
+    Object.values(userWorkers).filter(Boolean).length;
   if (!registeredWorkersAmount) {
     return djsMessageHelper.send({
       client,
       channelId,
       options: {
-        content: 'You may need to register your workers to use raid helper',
-      },
+        content: 'You may need to register your workers to use raid helper'
+      }
     });
   }
 
@@ -36,19 +56,19 @@ export const _playerRaidHelper = async ({message, userAccount, client, compact}:
     enemies: raidInfo.enemyFarms.map((enemy) => ({
       level: enemy.level,
       type: enemy.worker,
-      hp: enemy.health,
+      hp: enemy.health
     })),
     workers: raidInfo.workers
-      .filter(worker => !worker.used)
-      .map((worker) => userWorkers[worker.type]),
+      .filter((worker) => !worker.used)
+      .map((worker) => userWorkers[worker.type])
   });
 
-  let shouldSelect = solution.solution.filter(type =>
-    raidInfo.workers.find(worker => worker.type === type && !worker.used),
+  let shouldSelect = solution.solution.filter((type) =>
+    raidInfo.workers.find((worker) => worker.type === type && !worker.used)
   )[0];
 
-  let nextMove = solution.solution.filter(type =>
-    raidInfo.workers.find(worker => worker.type === type && !worker.used),
+  let nextMove = solution.solution.filter((type) =>
+    raidInfo.workers.find((worker) => worker.type === type && !worker.used)
   )[0];
 
   const guideEmbed = generateEmbed({
@@ -57,53 +77,57 @@ export const _playerRaidHelper = async ({message, userAccount, client, compact}:
     userWorkers,
     raidInfo,
     nextMove,
-    compact,
+    compact
   });
   const components = generateComponents({
     raidInfo,
     solution,
-    nextMove,
+    nextMove
   });
   const sentMessage = await djsMessageHelper.send({
     client,
     channelId,
     options: {
       embeds: [guideEmbed],
-      components,
-    },
+      components
+    }
   });
   if (!sentMessage) return;
   const event = await createMessageEditedListener({
-    messageId: message.id,
+    messageId: message.id
   });
   event.on(message.id, async (collected) => {
     raidInfo = messageReaders.raid({message: collected});
-    const selectedWorker = raidInfo.workers.find(worker =>
-      worker.used
-      && !prevWorkers.find(prevWorker => prevWorker.type === worker.type)?.used);
+    const selectedWorker = raidInfo.workers.find(
+      (worker) =>
+        worker.used &&
+        !prevWorkers.find((prevWorker) => prevWorker.type === worker.type)?.used
+    );
 
     if (shouldSelect !== selectedWorker?.type) {
-      const indexOfCurrentEnemy = raidInfo.enemyFarms.findIndex((farm) => farm.health);
+      const indexOfCurrentEnemy = raidInfo.enemyFarms.findIndex(
+        (farm) => farm.health
+      );
       const currentEnemies = raidInfo.enemyFarms.slice(indexOfCurrentEnemy);
       solution = generateBruteForceSolution({
         enemies: currentEnemies.map((enemy) => ({
           level: enemy.level,
           type: enemy.worker,
-          hp: enemy.health,
+          hp: enemy.health
         })),
         workers: raidInfo.workers
-          .filter(worker => !worker.used)
-          .map((worker) => userWorkers[worker.type]),
+          .filter((worker) => !worker.used)
+          .map((worker) => userWorkers[worker.type])
       });
     }
 
-    nextMove = solution.solution.filter(type =>
-      raidInfo.workers.find(worker => worker.type === type && !worker.used),
+    nextMove = solution.solution.filter((type) =>
+      raidInfo.workers.find((worker) => worker.type === type && !worker.used)
     )[0];
 
     prevWorkers = [...raidInfo.workers];
-    shouldSelect = solution.solution.filter(type =>
-      raidInfo.workers.find(worker => worker.type === type && !worker.used),
+    shouldSelect = solution.solution.filter((type) =>
+      raidInfo.workers.find((worker) => worker.type === type && !worker.used)
     )[0];
 
     const guideEmbed = generateEmbed({
@@ -112,25 +136,24 @@ export const _playerRaidHelper = async ({message, userAccount, client, compact}:
       raidInfo,
       userWorkers,
       nextMove,
-      compact,
+      compact
     });
 
     const components = generateComponents({
       raidInfo,
       solution,
-      nextMove,
+      nextMove
     });
     await djsMessageHelper.edit({
       client,
       message: sentMessage,
       options: {
         embeds: [guideEmbed],
-        components,
-      },
+        components
+      }
     });
   });
 };
-
 
 interface IGenerateEmbed {
   solution: ReturnType<typeof generateBruteForceSolution>;
@@ -147,13 +170,16 @@ export const generateEmbed = ({
   raidInfo,
   userWorkers,
   nextMove,
-  compact,
+  compact
 }: IGenerateEmbed) => {
   const embed = new EmbedBuilder().setColor(BOT_COLOR.embed);
 
-
   if (compact) {
-    embed.setDescription(`Farms destroyed: ${totalEnemyFarms - solution.workerLeft} / ${totalEnemyFarms}`);
+    embed.setDescription(
+      `Farms destroyed: ${
+        totalEnemyFarms - solution.workerLeft
+      } / ${totalEnemyFarms}`
+    );
   } else {
     const {enemyFarms, workers} = raidInfo;
     const currentEnemy = enemyFarms.find((farm) => farm.health);
@@ -161,12 +187,13 @@ export const generateEmbed = ({
     if (!currentEnemy?.worker) {
       embed.setDescription('🚫 No enemy found');
     } else {
-      embed.setDescription([
-        '**Current Enemy**',
-        `${BOT_EMOJI.worker[currentEnemy.worker]}`,
-        `${BOT_EMOJI.other.level} ${currentEnemy.level}`,
-        `❤️ ${currentEnemy.health} / ${currentEnemy.maxHealth}`,
-      ].join('\n'),
+      embed.setDescription(
+        [
+          '**Current Enemy**',
+          `${BOT_EMOJI.worker[currentEnemy.worker]}`,
+          `${BOT_EMOJI.other.level} ${currentEnemy.level}`,
+          `❤️ ${currentEnemy.health} / ${currentEnemy.maxHealth}`
+        ].join('\n')
       );
     }
 
@@ -177,45 +204,45 @@ export const generateEmbed = ({
       const power = calcWorkerPower({
         type,
         level: workerInfo.level,
-        decimalPlace: 2,
+        decimalPlace: 2
       });
       const enemyPower = currentEnemy?.worker
         ? calcWorkerPower({
           type: currentEnemy.worker,
           decimalPlace: 2,
-          level: currentEnemy.level,
+          level: currentEnemy.level
         })
         : null;
       const damage = enemyPower
         ? calcWorkerDmg({
           type: 'player',
           atk: power,
-          def: enemyPower,
+          def: enemyPower
         })
         : '∞';
       const isWorkerUsed = !!workers.find((w) => w.type === type)?.used;
       let text = `${BOT_EMOJI.worker[type]} DMG: ${damage}`;
-      if (isWorkerUsed)
-        text = `~~${text}~~`;
+      if (isWorkerUsed) text = `~~${text}~~`;
       workersInfo.push(text);
     }
     embed.addFields({
       name: `${BOT_EMOJI.other.farm} Your farms`,
       value: workersInfo.join('\n'),
-      inline: true,
+      inline: true
     });
 
     embed.addFields({
       name: 'Attack Logs',
       value: solution.log.join('\n'),
-      inline: true,
+      inline: true
     });
 
     embed.setFooter({
-      text: `Farms destroyed: ${totalEnemyFarms - solution.workerLeft} / ${totalEnemyFarms}`,
+      text: `Farms destroyed: ${
+        totalEnemyFarms - solution.workerLeft
+      } / ${totalEnemyFarms}`
     });
   }
-
 
   return embed;
 };
@@ -226,7 +253,11 @@ interface IGenerateComponents {
   nextMove: ValuesOf<typeof IDLE_FARM_WORKER_TYPE>;
 }
 
-export const generateComponents = ({raidInfo, solution, nextMove}: IGenerateComponents) => {
+export const generateComponents = ({
+  raidInfo,
+  solution,
+  nextMove
+}: IGenerateComponents) => {
   const {workers} = raidInfo;
 
   const actionRows = [];
@@ -238,7 +269,9 @@ export const generateComponents = ({raidInfo, solution, nextMove}: IGenerateComp
       const solutionIndex = solution.solution.indexOf(workers[j].type);
       const isSolution = solutionIndex !== -1;
       const isNextMove = nextMove === workers[j].type;
-      const buttonStyle = isNextMove ? ButtonStyle.Success : ButtonStyle.Secondary;
+      const buttonStyle = isNextMove
+        ? ButtonStyle.Success
+        : ButtonStyle.Secondary;
       const disabled = isUsed || !isNextMove;
       const button = new ButtonBuilder()
         .setCustomId(workers[j].type)
@@ -270,12 +303,18 @@ interface IBestSolution {
   hpLeft: number;
 }
 
-const generateBruteForceSolution = ({workers, enemies}: IGenerateBruteForceSolution) => {
-  const possibilities = permute(workers.map((worker) => worker.type), workers.length);
+const generateBruteForceSolution = ({
+  workers,
+  enemies
+}: IGenerateBruteForceSolution) => {
+  const possibilities = permute(
+    workers.map((worker) => worker.type),
+    workers.length
+  );
   const bestSolution: IBestSolution = {
     enemyLeft: 6,
     hpLeft: 100,
-    solution: [],
+    solution: []
   };
   let solutionCount = 0;
   let log: string[] = [];
@@ -286,10 +325,13 @@ const generateBruteForceSolution = ({workers, enemies}: IGenerateBruteForceSolut
   for (const possibility of possibilities) {
     const result = startRaid({
       workers: possibility.map((type) => workersMap[type]),
-      enemies,
+      enemies
     });
-    if (result.enemyLeft < bestSolution.enemyLeft ||
-      (result.enemyLeft === bestSolution.enemyLeft && result.hpLeft < bestSolution.hpLeft)) {
+    if (
+      result.enemyLeft < bestSolution.enemyLeft ||
+      (result.enemyLeft === bestSolution.enemyLeft &&
+        result.hpLeft < bestSolution.hpLeft)
+    ) {
       bestSolution.enemyLeft = result.enemyLeft;
       bestSolution.solution = possibility;
       bestSolution.hpLeft = result.hpLeft;
@@ -305,10 +347,9 @@ const generateBruteForceSolution = ({workers, enemies}: IGenerateBruteForceSolut
     solution: bestSolution.solution,
     workerLeft: bestSolution.enemyLeft,
     solutionCount,
-    log,
+    log
   };
 };
-
 
 interface IStartRaid {
   workers: IUserWorker[];
@@ -316,43 +357,53 @@ interface IStartRaid {
 }
 
 function startRaid({workers, enemies}: IStartRaid) {
-  const _enemies = enemies.map(enemy => ({...enemy}));
+  const _enemies = enemies.map((enemy) => ({...enemy}));
   const log = [];
   for (const worker of workers) {
     if (!_enemies.length) break;
     const enemy = {..._enemies[0]};
-    const enemyPower = enemy.type ? calcWorkerPower({
-      type: enemy.type,
-      level: enemy.level,
-    }) : 0;
+    const enemyPower = enemy.type
+      ? calcWorkerPower({
+        type: enemy.type,
+        level: enemy.level
+      })
+      : 0;
     const workerPower = calcWorkerPower({
       type: worker.type,
-      level: worker.level,
+      level: worker.level
     });
     const damage = calcWorkerDmg({
       type: 'player',
       def: enemyPower,
-      atk: workerPower,
+      atk: workerPower
     });
     _enemies[0].hp -= damage;
     if (_enemies[0].hp <= 0) {
-      log.push(`${BOT_EMOJI.worker[worker.type]} ⚔️ ${enemy.type ? BOT_EMOJI.worker[enemy.type] : '??'} | 💀`);
+      log.push(
+        `${BOT_EMOJI.worker[worker.type]} ⚔️ ${
+          enemy.type ? BOT_EMOJI.worker[enemy.type] : '??'
+        } | 💀`
+      );
       _enemies.shift();
     } else {
-      log.push(`${BOT_EMOJI.worker[worker.type]} ⚔️ ${enemy.type ? BOT_EMOJI.worker[enemy.type] : '??'} | ${_enemies[0].hp} / ${enemy.hp} ❤️`);
+      log.push(
+        `${BOT_EMOJI.worker[worker.type]} ⚔️ ${
+          enemy.type ? BOT_EMOJI.worker[enemy.type] : '??'
+        } | ${_enemies[0].hp} / ${enemy.hp} ❤️`
+      );
     }
   }
   return {
     enemyLeft: _enemies.length,
     hpLeft: _enemies[0]?.hp ?? 0,
-    log,
+    log
   };
 }
-
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 function permute<T>(arr: T[], length: number): T[][] {
+
   // Base case: if the length is 0, return an array with an empty array
   if (length === 0) {
     return [[]];
@@ -363,6 +414,7 @@ function permute<T>(arr: T[], length: number): T[][] {
 
   // Iterate over each element in the array
   for (let i = 0; i < arr.length; i++) {
+
     // Create a new array consisting of all elements of the original array except for the current element
     const rest = arr.slice(0, i).concat(arr.slice(i + 1));
 
@@ -379,4 +431,3 @@ function permute<T>(arr: T[], length: number): T[][] {
 
   return permutations;
 }
-

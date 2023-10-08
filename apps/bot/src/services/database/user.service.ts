@@ -1,7 +1,12 @@
 import {mongoClient} from '@idle-helper/services';
-import {IUser, IUserToggle, IUserWorker, userSchema} from '@idle-helper/models';
-import {IDLE_FARM_DONOR_TIER, IDLE_FARM_ITEMS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
-import {UpdateQuery} from 'mongoose';
+import type {IUser, IUserToggle, IUserWorker} from '@idle-helper/models';
+import { userSchema} from '@idle-helper/models';
+import type {
+  IDLE_FARM_DONOR_TIER,
+  IDLE_FARM_ITEMS,
+  IDLE_FARM_WORKER_TYPE
+} from '@idle-helper/constants';
+import type {UpdateQuery} from 'mongoose';
 
 const dbUser = mongoClient.model<IUser>('users', userSchema);
 
@@ -11,7 +16,11 @@ interface IRegisterUser {
   channelId: string;
 }
 
-const registerUser = async ({userId, username, channelId}: IRegisterUser): Promise<boolean> => {
+const registerUser = async ({
+  userId,
+  username,
+  channelId
+}: IRegisterUser): Promise<boolean> => {
   const user = await dbUser.findOne({userId});
 
   if (!user) {
@@ -19,8 +28,8 @@ const registerUser = async ({userId, username, channelId}: IRegisterUser): Promi
       userId,
       username,
       config: {
-        channelId,
-      },
+        channelId
+      }
     });
 
     await newUser.save();
@@ -82,12 +91,12 @@ const claimFarm = async ({userId}: IClaimFarm): Promise<IUser | null> => {
       $set: {
         'farms.lastClaimedAt': new Date(),
         'farms.itemsUsed.timeCompressor': 0,
-        'farms.itemsUsed.timeSpeeder': 0,
-      },
+        'farms.itemsUsed.timeSpeeder': 0
+      }
     },
     {
-      new: true,
-    },
+      new: true
+    }
   );
 
   return user ?? null;
@@ -98,9 +107,12 @@ interface ISaveUserWorkers {
   workers: IUserWorker[];
 }
 
-const saveUserWorkers = async ({userId, workers}: ISaveUserWorkers): Promise<IUser | null> => {
+const saveUserWorkers = async ({
+  userId,
+  workers
+}: ISaveUserWorkers): Promise<IUser | null> => {
   const query: UpdateQuery<IUser> = {
-    'lastUpdated.workers': new Date(),
+    'lastUpdated.workers': new Date()
   };
   for (const worker of workers) {
     query[`workers.${worker.type}`] = {
@@ -110,17 +122,17 @@ const saveUserWorkers = async ({userId, workers}: ISaveUserWorkers): Promise<IUs
       power: worker.power,
       level: worker.level,
       amount: worker.amount,
-      type: worker.type,
+      type: worker.type
     } as IUserWorker;
   }
   const user = await dbUser.findOneAndUpdate(
     {userId},
     {
-      $set: query,
+      $set: query
     },
     {
-      new: true,
-    },
+      new: true
+    }
   );
   return user ?? null;
 };
@@ -129,7 +141,9 @@ interface IGetUserWorkers {
   userId: string;
 }
 
-const getUserWorkers = async ({userId}: IGetUserWorkers): Promise<IUser['workers']> => {
+const getUserWorkers = async ({
+  userId
+}: IGetUserWorkers): Promise<IUser['workers']> => {
   const user = await dbUser.findOne({userId});
   return user?.workers ?? ({} as IUser['workers']);
 };
@@ -141,18 +155,18 @@ interface ISetClaimReminders {
 
 const setClaimReminders = async ({
   userId,
-  reminderHours,
+  reminderHours
 }: ISetClaimReminders): Promise<IUser | null> => {
   const user = await dbUser.findOneAndUpdate(
     {userId},
     {
       $set: {
-        'farms.reminderHours': reminderHours,
-      },
+        'farms.reminderHours': reminderHours
+      }
     },
     {
-      new: true,
-    },
+      new: true
+    }
   );
   return user ?? null;
 };
@@ -164,18 +178,18 @@ interface IUpdateReminderChannel {
 
 const updateReminderChannel = async ({
   userId,
-  channelId,
+  channelId
 }: IUpdateReminderChannel): Promise<IUser | null> => {
   const user = await dbUser.findOneAndUpdate(
     {userId},
     {
       $set: {
-        'config.channelId': channelId,
-      },
+        'config.channelId': channelId
+      }
     },
     {
-      new: true,
-    },
+      new: true
+    }
   );
   return user ?? null;
 };
@@ -184,7 +198,9 @@ interface IGetUserToggle {
   userId: string;
 }
 
-const getUserToggle = async ({userId}: IGetUserToggle): Promise<IUserToggle> => {
+const getUserToggle = async ({
+  userId
+}: IGetUserToggle): Promise<IUserToggle> => {
   const user = await dbUser.findOne({userId});
   return user?.toggle ?? ({} as IUserToggle);
 };
@@ -194,9 +210,12 @@ interface IUpdateUserToggle {
   query: UpdateQuery<IUser>;
 }
 
-const updateUserToggle = async ({userId, query}: IUpdateUserToggle): Promise<IUser | null> => {
+const updateUserToggle = async ({
+  userId,
+  query
+}: IUpdateUserToggle): Promise<IUser | null> => {
   const user = await dbUser.findOneAndUpdate({userId}, query, {
-    new: true,
+    new: true
   });
   return user ?? null;
 };
@@ -205,17 +224,19 @@ interface IResetUserToggle {
   userId: string;
 }
 
-const resetUserToggle = async ({userId}: IResetUserToggle): Promise<IUser | null> => {
+const resetUserToggle = async ({
+  userId
+}: IResetUserToggle): Promise<IUser | null> => {
   const user = await dbUser.findOneAndUpdate(
     {userId},
     {
       $unset: {
-        toggle: '',
-      },
+        toggle: ''
+      }
     },
     {
-      new: true,
-    },
+      new: true
+    }
   );
   return user ?? null;
 };
@@ -225,11 +246,13 @@ interface IGetUsersById {
 }
 
 const getUsersById = async ({userIds}: IGetUsersById): Promise<IUser[]> => {
-  const users = await dbUser.find({
-    userId: {
-      $in: userIds,
-    },
-  }).lean();
+  const users = await dbUser
+    .find({
+      userId: {
+        $in: userIds
+      }
+    })
+    .lean();
   return users ?? [];
 };
 
@@ -238,17 +261,20 @@ interface IUpdateIdleFarmDonorTier {
   tier: ValuesOf<typeof IDLE_FARM_DONOR_TIER>;
 }
 
-const updateIdleFarmDonorTier = async ({tier, userId}: IUpdateIdleFarmDonorTier) => {
+const updateIdleFarmDonorTier = async ({
+  tier,
+  userId
+}: IUpdateIdleFarmDonorTier) => {
   const user = await dbUser.findOneAndUpdate(
     {userId},
     {
       $set: {
-        'config.donorTier': tier,
-      },
+        'config.donorTier': tier
+      }
     },
     {
-      new: true,
-    },
+      new: true
+    }
   );
   return user ?? null;
 };
@@ -262,15 +288,15 @@ const getTopWorkers = async ({type, limit}: IGetTopWorkers) => {
   const users = await dbUser
     .find({
       [`workers.${type}`]: {
-        $exists: true,
+        $exists: true
       },
       'lastUpdated.workers': {
-        $exists: true,
-      },
+        $exists: true
+      }
     })
     .sort({
       [`workers.${type}.level`]: -1,
-      [`workers.${type}.amount`]: -1,
+      [`workers.${type}.amount`]: -1
     })
     .limit(limit)
     .lean();
@@ -287,17 +313,20 @@ interface IAddTimeCompressorUsage {
   amount: number;
 }
 
-const addTimeCompressorUsage = async ({userId, amount}: IAddTimeCompressorUsage) => {
+const addTimeCompressorUsage = async ({
+  userId,
+  amount
+}: IAddTimeCompressorUsage) => {
   const user = await dbUser.findOneAndUpdate(
     {userId},
     {
       $inc: {
-        'farms.itemsUsed.timeCompressor': amount,
-      },
+        'farms.itemsUsed.timeCompressor': amount
+      }
     },
     {
-      new: true,
-    },
+      new: true
+    }
   );
   return user ?? null;
 };
@@ -312,12 +341,12 @@ const addTimeSpeederUsage = async ({userId, amount}: IAddTimeSpeederUsage) => {
     {userId},
     {
       $inc: {
-        'farms.itemsUsed.timeSpeeder': amount,
-      },
+        'farms.itemsUsed.timeSpeeder': amount
+      }
     },
     {
-      new: true,
-    },
+      new: true
+    }
   );
   return user ?? null;
 };
@@ -328,17 +357,21 @@ interface IRegisterReminder {
   readyAt: Date;
 }
 
-const registerReminder = async ({userId, reminder, readyAt}: IRegisterReminder) => {
+const registerReminder = async ({
+  userId,
+  reminder,
+  readyAt
+}: IRegisterReminder) => {
   const user = await dbUser.findOneAndUpdate(
     {userId},
     {
       $set: {
-        [`reminder.${reminder}.readyAt`]: readyAt,
-      },
+        [`reminder.${reminder}.readyAt`]: readyAt
+      }
     },
     {
-      new: true,
-    },
+      new: true
+    }
   );
   return user ?? null;
 };
@@ -353,12 +386,12 @@ const removeReminder = async ({userId, reminder}: IRemoveReminder) => {
     {userId},
     {
       $unset: {
-        [`reminder.${reminder}.readyAt`]: '',
-      },
+        [`reminder.${reminder}.readyAt`]: ''
+      }
     },
     {
-      new: true,
-    },
+      new: true
+    }
   );
   return user ?? null;
 };
@@ -379,11 +412,13 @@ const saveInventory = async ({userId, items}: ISaveInventory) => {
         ...items.reduce((acc, item) => {
           acc[`items.${item.name}`] = item.amount;
           return acc;
-        }, {} as Record<string, number>),
-      },
-    }, {
-      new: true,
-    });
+        }, {} as Record<string, number>)
+      }
+    },
+    {
+      new: true
+    }
+  );
 
   return user ?? null;
 };
@@ -396,7 +431,13 @@ interface ISaveGameProfile {
   energy: number;
 }
 
-const saveGameProfile = async ({userId, idlons, idlucks, idleCoins, energy}: ISaveGameProfile) => {
+const saveGameProfile = async ({
+  userId,
+  idlons,
+  idlucks,
+  idleCoins,
+  energy
+}: ISaveGameProfile) => {
   const user = await dbUser.findOneAndUpdate(
     {userId},
     {
@@ -404,11 +445,13 @@ const saveGameProfile = async ({userId, idlons, idlucks, idleCoins, energy}: ISa
         'profile.idlons': idlons,
         'profile.idlucks': idlucks,
         'profile.idleCoins': idleCoins,
-        'profile.energy': energy,
-      },
-    }, {
-      new: true,
-    });
+        'profile.energy': energy
+      }
+    },
+    {
+      new: true
+    }
+  );
 
   return user ?? null;
 };
@@ -418,16 +461,21 @@ interface IUpdatePackingMultiplier {
   multiplier: number;
 }
 
-const updatePackingMultiplier = async ({userId, multiplier}: IUpdatePackingMultiplier) => {
+const updatePackingMultiplier = async ({
+  userId,
+  multiplier
+}: IUpdatePackingMultiplier) => {
   const user = await dbUser.findOneAndUpdate(
     {userId},
     {
       $set: {
-        'packing.multiplier': multiplier,
-      },
-    }, {
-      new: true,
-    });
+        'packing.multiplier': multiplier
+      }
+    },
+    {
+      new: true
+    }
+  );
 
   return user ?? null;
 };
@@ -456,5 +504,5 @@ export const userService = {
   removeReminder,
   saveInventory,
   saveGameProfile,
-  updatePackingMultiplier,
+  updatePackingMultiplier
 };

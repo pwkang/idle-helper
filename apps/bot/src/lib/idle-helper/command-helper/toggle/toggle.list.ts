@@ -1,5 +1,5 @@
 import type {IToggleEmbedsInfo} from './toggle.embed';
-import {IGuildToggle, IUserToggle} from '@idle-helper/models';
+import type {IGuildToggle, IUserToggle} from '@idle-helper/models';
 
 const user = (userToggle: IUserToggle): IToggleEmbedsInfo[] => {
   return [
@@ -16,19 +16,19 @@ const user = (userToggle: IUserToggle): IToggleEmbedsInfo[] => {
             {
               value: userToggle.raid.solution,
               path: 'toggle.raid.solution',
-              label: 'Gives best solution',
+              label: 'Gives best solution'
             },
             {
               value: userToggle.raid.compact,
               path: 'toggle.raid.compact',
-              label: 'Compact Mode (best solution only)',
-            },
-          ],
+              label: 'Compact Mode (best solution only)'
+            }
+          ]
         },
         {
           value: userToggle.reminder.claim,
           path: 'toggle.reminder.claim',
-          label: 'Claim Reminder',
+          label: 'Claim Reminder'
         },
         {
           value: userToggle.calculator.all,
@@ -38,22 +38,22 @@ const user = (userToggle: IUserToggle): IToggleEmbedsInfo[] => {
             {
               value: userToggle.calculator.inventory,
               path: 'toggle.calculator.inventory',
-              label: 'Inventory Calculator',
+              label: 'Inventory Calculator'
             },
             {
               value: userToggle.calculator.claim,
               path: 'toggle.calculator.claim',
-              label: 'Claim Calculator',
-            },
-          ],
+              label: 'Claim Calculator'
+            }
+          ]
         },
         {
           value: userToggle.autoSend.profile,
           path: 'toggle.autoSend.profile',
-          label: 'Send last-claim @ `idle p`',
-        },
-      ],
-    },
+          label: 'Send last-claim @ `idle p`'
+        }
+      ]
+    }
   ];
 };
 
@@ -67,19 +67,19 @@ const guild = (guildToggle: IGuildToggle): IToggleEmbedsInfo[] => {
         {
           value: guildToggle?.teamRaid?.helper,
           label: 'Team Raid Helper',
-          path: 'toggle.teamRaid.helper',
+          path: 'toggle.teamRaid.helper'
         },
         {
           value: guildToggle?.teamRaid?.reminder,
           path: 'toggle.teamRaid.reminder',
-          label: 'Team Raid Reminder',
-        },
-      ],
-    },
+          label: 'Team Raid Reminder'
+        }
+      ]
+    }
   ];
 };
 
 export const toggleDisplayList = {
   user,
-  guild,
+  guild
 };

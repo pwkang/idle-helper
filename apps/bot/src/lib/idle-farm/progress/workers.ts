@@ -1,4 +1,4 @@
-import {Client, Embed, Message, User} from 'discord.js';
+import type {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import messageReaders from '../message-readers';
 import {userService} from '../../../services/database/user.service';
@@ -11,11 +11,16 @@ interface IIdleWorker {
   isSlashCommand?: boolean;
 }
 
-export const idleWorker = async ({author, client, isSlashCommand, message}: IIdleWorker) => {
+export const idleWorker = async ({
+  author,
+  client,
+  isSlashCommand,
+  message
+}: IIdleWorker) => {
   let event = createIdleFarmCommandListener({
     author,
     client,
-    channelId: message.channel.id,
+    channelId: message.channel.id
   });
   if (!event) return;
   event.on('embed', async (embed) => {
@@ -24,7 +29,7 @@ export const idleWorker = async ({author, client, isSlashCommand, message}: IIdl
       dailyReminder({
         client,
         channelId: message.channel.id,
-        userId: author.id,
+        userId: author.id
       });
       event?.stop();
     }
@@ -45,7 +50,7 @@ const idleWorkerSuccess = async ({embed, author}: IIdleWorkerSuccess) => {
   const workers = messageReaders.worker({embed});
   await userService.saveUserWorkers({
     userId: author.id,
-    workers,
+    workers
   });
 };
 

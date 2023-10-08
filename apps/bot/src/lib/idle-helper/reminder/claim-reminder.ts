@@ -1,4 +1,4 @@
-import {Client} from 'discord.js';
+import type {Client} from 'discord.js';
 import {userService} from '../../../services/database/user.service';
 import ms from 'ms';
 import {djsMessageHelper} from '../../discordjs/message';
@@ -15,7 +15,7 @@ interface ISendReminder {
 
 const sendReminder = async ({client, userId}: ISendReminder) => {
   const userAccount = await userService.findUser({
-    userId,
+    userId
   });
   if (!userAccount?.farms.lastClaimedAt) return;
 
@@ -28,12 +28,14 @@ const sendReminder = async ({client, userId}: ISendReminder) => {
     channelId: userAccount.config.channelId,
     options: {
       content: `${messageFormatter.user(
-        userId,
-      )}, You have been idle for **${convertMsToHumanReadableString(idleDuration)}**`,
-    },
+        userId
+      )}, You have been idle for **${convertMsToHumanReadableString(
+        idleDuration
+      )}**`
+    }
   });
   await updateReminder({
-    userId,
+    userId
   });
 };
 
@@ -43,26 +45,30 @@ interface IUpdateReminder {
 
 const updateReminder = async ({userId}: IUpdateReminder) => {
   const userAccount = await userService.findUser({
-    userId,
+    userId
   });
   if (!userAccount?.farms.lastClaimedAt) return;
 
   const workedDuration = commandHelper.calculator.idleDuration(userAccount);
 
   const nextReminderTime = Math.min(
-    ...userAccount.farms.reminderHours.filter((h) => ms(`${h}h`) > workedDuration),
+    ...userAccount.farms.reminderHours.filter(
+      (h) => ms(`${h}h`) > workedDuration
+    )
   );
   if (nextReminderTime === Infinity) return;
-  const remindAt = new Date(userAccount.farms.lastClaimedAt.getTime() + ms(`${nextReminderTime}h`));
+  const remindAt = new Date(
+    userAccount.farms.lastClaimedAt.getTime() + ms(`${nextReminderTime}h`)
+  );
   await userReminderServices.saveUserClaimCooldown({
     userId,
-    readyAt: remindAt,
+    readyAt: remindAt
   });
 };
 
 const claimReminder = {
   send: sendReminder,
-  update: updateReminder,
+  update: updateReminder
 };
 
 export default claimReminder;

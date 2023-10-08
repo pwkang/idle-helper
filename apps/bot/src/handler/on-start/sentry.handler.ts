@@ -11,8 +11,9 @@ export const initSentry = () => {
     tracesSampleRate: 1.0,
     profilesSampleRate: 1.0, // Profiling sample rate is relative to tracesSampleRate
     integrations: [
+
       // Add profiling integration to list of integrations
-      new ProfilingIntegration(),
-    ],
+      new ProfilingIntegration()
+    ]
   });
 };

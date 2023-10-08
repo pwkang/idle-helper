@@ -1,4 +1,4 @@
-import {Client, Embed, Message, User} from 'discord.js';
+import type {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import {userService} from '../../../services/database/user.service';
 import {dailyReminder} from '../../idle-helper/reminder/daily-reminder';
@@ -12,11 +12,16 @@ interface IIdleRaid {
   isSlashCommand?: boolean;
 }
 
-export const idleRaid = async ({author, client, isSlashCommand, message}: IIdleRaid) => {
+export const idleRaid = async ({
+  author,
+  client,
+  isSlashCommand,
+  message
+}: IIdleRaid) => {
   let event = createIdleFarmCommandListener({
     author,
     client,
-    channelId: message.channel.id,
+    channelId: message.channel.id
   });
   if (!event) return;
   event.on('embed', async (embed, collected) => {
@@ -25,7 +30,7 @@ export const idleRaid = async ({author, client, isSlashCommand, message}: IIdleR
       dailyReminder({
         client,
         channelId: message.channel.id,
-        userId: author.id,
+        userId: author.id
       });
       event?.stop();
     }
@@ -47,23 +52,27 @@ interface IIdleWorkerSuccess {
   raidMessage: Message;
 }
 
-const idleRaidSuccess = async ({author, client, raidMessage}: IIdleWorkerSuccess) => {
+const idleRaidSuccess = async ({
+  author,
+  client,
+  raidMessage
+}: IIdleWorkerSuccess) => {
   const userToggle = await toggleUserChecker({userId: author.id});
   if (!userToggle?.raid.helper) return;
   const user = await userService.findUser({userId: author.id});
   if (!user) return;
 
-  userToggle.raid.solution ?
-    await commandHelper.raid.player({
+  userToggle.raid.solution
+    ? await commandHelper.raid.player({
       message: raidMessage,
       client,
       userAccount: user,
-      compact: userToggle.raid.compact,
-    }) :
-    await commandHelper.raid.playerGuide({
+      compact: userToggle.raid.compact
+    })
+    : await commandHelper.raid.playerGuide({
       message: raidMessage,
       client,
-      userAccount: user,
+      userAccount: user
     });
 };
 
@@ -81,4 +90,5 @@ interface Checker {
 }
 
 const hasNotEnoughEnergy = ({message, author}: Checker) =>
-  message.content?.includes('you need at least 40') && message.mentions.users.has(author.id);
+  message.content?.includes('you need at least 40') &&
+  message.mentions.users.has(author.id);

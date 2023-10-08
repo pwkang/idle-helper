@@ -5,5 +5,5 @@ import {_playerRaidGuide} from './raid-guide';
 export const _raidHelper = {
   teamRaid: _teamRaidHelper,
   player: _playerRaidHelper,
-  playerGuide: _playerRaidGuide,
+  playerGuide: _playerRaidGuide
 };

@@ -1,6 +1,7 @@
-import {BaseMessageOptions, EmbedBuilder, User} from 'discord.js';
+import type {BaseMessageOptions, User} from 'discord.js';
+import { EmbedBuilder} from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
-import {IUser} from '@idle-helper/models';
+import type {IUser} from '@idle-helper/models';
 import {BOT_COLOR, BOT_EMOJI} from '@idle-helper/constants';
 import {calcWorkerPower} from '../../../idle-farm/calculator/worker-power';
 import {getTop3Power} from '../../../../utils/getTop3Power';
@@ -10,7 +11,9 @@ interface IListWorkers {
   author: User;
 }
 
-export const _top3Workers = async ({author}: IListWorkers): Promise<BaseMessageOptions | null> => {
+export const _top3Workers = async ({
+  author
+}: IListWorkers): Promise<BaseMessageOptions | null> => {
   const userAccount = await userService.findUser({userId: author.id});
   if (!userAccount) return null;
 
@@ -18,9 +21,9 @@ export const _top3Workers = async ({author}: IListWorkers): Promise<BaseMessageO
     embeds: [
       getEmbed({
         author,
-        userAccount,
-      }),
-    ],
+        userAccount
+      })
+    ]
   };
 };
 
@@ -32,7 +35,7 @@ interface IGetEmbed {
 const getEmbed = ({userAccount, author}: IGetEmbed) => {
   const embed = new EmbedBuilder().setColor(BOT_COLOR.embed).setAuthor({
     name: `${author.username} — top 3 workers`,
-    iconURL: author.avatarURL() ?? undefined,
+    iconURL: author.avatarURL() ?? undefined
   });
 
   const workers: string[] = [];
@@ -46,11 +49,13 @@ const getEmbed = ({userAccount, author}: IGetEmbed) => {
     for (const worker of top3Workers) {
       const emoji = BOT_EMOJI.worker[worker.type];
       workers.push(
-        `${emoji} ${BOT_EMOJI.other.level} ${worker.level} :boom: ${calcWorkerPower({
+        `${emoji} ${BOT_EMOJI.other.level} ${
+          worker.level
+        } :boom: ${calcWorkerPower({
           type: worker.type,
           level: worker.level,
-          decimalPlace: 2,
-        })}`,
+          decimalPlace: 2
+        })}`
       );
     }
   } else {

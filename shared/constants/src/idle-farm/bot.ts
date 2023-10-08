@@ -4,5 +4,5 @@ export const IDLE_FARM_DONOR_TIER = {
   nonDonor: 'non-donor',
   common: 'common',
   talented: 'talented',
-  wise: 'wise',
+  wise: 'wise'
 } as const;

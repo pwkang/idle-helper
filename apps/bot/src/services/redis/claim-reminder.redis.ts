@@ -14,7 +14,7 @@ const getReadyUsers = async () => {
       const datetime = await redisService.get(key);
       return {
         userId,
-        datetime: new Date(Number(datetime)),
+        datetime: new Date(Number(datetime))
       };
     })
   );
@@ -28,5 +28,5 @@ const removeUser = async (userId: string) => {
 export const redisClaimReminder = {
   setUser,
   getReadyUsers,
-  removeUser,
+  removeUser
 };

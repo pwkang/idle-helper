@@ -5,7 +5,7 @@ import _setDonorEmbed from './set-donor.embed';
 const embedProvider = {
   howToRegister: _howToRegisterEmbed,
   turnOnAccount: _turnOnAccount,
-  setDonor: _setDonorEmbed,
+  setDonor: _setDonorEmbed
 };
 
 export default embedProvider;

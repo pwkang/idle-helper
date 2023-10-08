@@ -1,4 +1,4 @@
 export const IDLE_FARM_REMINDER_TYPE = {
   vote: 'vote',
-  claim: 'claim',
+  claim: 'claim'
 } as const;

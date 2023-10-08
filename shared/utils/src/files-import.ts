@@ -1,4 +1,5 @@
-import readdirp, {EntryInfo, ReaddirpOptions} from 'readdirp';
+import type {EntryInfo, ReaddirpOptions} from 'readdirp';
+import readdirp from 'readdirp';
 
 interface IImportFiles {
   path: string;
@@ -10,7 +11,10 @@ interface IReturn<T> {
   path: string;
 }
 
-export const importFiles = <T>({options, path}: IImportFiles): Promise<IReturn<T>[]> => {
+export const importFiles = <T>({
+  options,
+  path
+}: IImportFiles): Promise<IReturn<T>[]> => {
   return new Promise((resolve) => {
     const files: Promise<IReturn<T>>[] = [];
     readdirp(path, options)
@@ -21,7 +25,7 @@ export const importFiles = <T>({options, path}: IImportFiles): Promise<IReturn<T
             import(fullPath).then((file) => {
               resolve({
                 data: file.default,
-                path,
+                path
               });
             });
           })

@@ -5,5 +5,5 @@ import {_idleDurationCalculator} from './idle-duration';
 export const _calculatorHelper = {
   inventory: _inventoryCalculator,
   claim: _claimCalculator,
-  idleDuration: _idleDurationCalculator,
+  idleDuration: _idleDurationCalculator
 };

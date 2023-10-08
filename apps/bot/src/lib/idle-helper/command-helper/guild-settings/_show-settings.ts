@@ -1,17 +1,18 @@
-import {
-  ActionRowBuilder,
+import type {
   BaseInteraction,
   BaseMessageOptions,
   Guild,
   InteractionReplyOptions,
-  StringSelectMenuBuilder,
-  StringSelectMenuInteraction,
+  StringSelectMenuInteraction} from 'discord.js';
+import {
+  ActionRowBuilder,
+  StringSelectMenuBuilder
 } from 'discord.js';
 import {generateNavigationRow} from '../../../../utils/pagination-row';
 import {_getGuildSettingsEmbed} from './embed/guild-settings.embed';
 import messageFormatter from '../../../discordjs/message-formatter';
 import {getGuildToggleEmbed} from '../toggle/type/guild.toggle';
-import {IGuild} from '@idle-helper/models';
+import type {IGuild} from '@idle-helper/models';
 import {guildService} from '../../../../services/database/guild.service';
 
 export const ITEMS_PER_PAGE = 20;
@@ -20,7 +21,7 @@ export const GUILD_SELECTOR_NAME = 'guild-selector';
 
 export const GUILD_SETTINGS_PAGE_TYPE = {
   settings: 'settings',
-  toggle: 'toggle',
+  toggle: 'toggle'
 } as const;
 
 interface IShowSettings {
@@ -29,9 +30,13 @@ interface IShowSettings {
   type: ValuesOf<typeof GUILD_SETTINGS_PAGE_TYPE>;
 }
 
-export const _showSettings = async ({server, type, initialGuildRoleId}: IShowSettings) => {
+export const _showSettings = async ({
+  server,
+  type,
+  initialGuildRoleId
+}: IShowSettings) => {
   const guilds = await guildService.getAllGuilds({
-    serverId: server.id,
+    serverId: server.id
   });
   let currentGuildRoleId = initialGuildRoleId ?? guilds[0]?.roleId;
   let page = 0;
@@ -39,20 +44,20 @@ export const _showSettings = async ({server, type, initialGuildRoleId}: IShowSet
   function getMessagePayload(): InteractionReplyOptions {
     if (!guilds.length)
       return {
-        content: 'There is no guild setup in this server',
+        content: 'There is no guild setup in this server'
       };
     if (!guilds.find((guild) => guild.roleId === currentGuildRoleId)) {
       return {
         content: `There is no guild with role ${messageFormatter.role(
           currentGuildRoleId
         )} setup in this server`,
-        ephemeral: true,
+        ephemeral: true
       };
     }
 
     return {
       embeds: [getEmbed()],
-      components: getComponents(),
+      components: getComponents()
     };
   }
 
@@ -60,11 +65,15 @@ export const _showSettings = async ({server, type, initialGuildRoleId}: IShowSet
     switch (type) {
       case GUILD_SETTINGS_PAGE_TYPE.settings:
         return _getGuildSettingsEmbed({
-          guildAccount: guilds.find((guild) => guild.roleId === currentGuildRoleId)!,
+          guildAccount: guilds.find(
+            (guild) => guild.roleId === currentGuildRoleId
+          )!
         });
       case GUILD_SETTINGS_PAGE_TYPE.toggle:
         return getGuildToggleEmbed({
-          guildAccount: guilds.find((guild) => guild.roleId === currentGuildRoleId)!,
+          guildAccount: guilds.find(
+            (guild) => guild.roleId === currentGuildRoleId
+          )!
         });
     }
   }
@@ -77,13 +86,13 @@ export const _showSettings = async ({server, type, initialGuildRoleId}: IShowSet
       page,
       server,
       selectedGuildRoleId: currentGuildRoleId,
-      limit: ITEMS_PER_PAGE,
+      limit: ITEMS_PER_PAGE
     });
 
     const paginator = generateNavigationRow({
       page,
       itemsPerPage: ITEMS_PER_PAGE,
-      total: Math.ceil(guilds.length / ITEMS_PER_PAGE) - 1,
+      total: Math.ceil(guilds.length / ITEMS_PER_PAGE) - 1
     });
 
     if (guilds.length > 1) components.push(guildSelector);
@@ -93,7 +102,10 @@ export const _showSettings = async ({server, type, initialGuildRoleId}: IShowSet
     return components;
   }
 
-  function replyInteraction({interaction, customId}: IReplyInteraction): BaseMessageOptions {
+  function replyInteraction({
+    interaction,
+    customId
+  }: IReplyInteraction): BaseMessageOptions {
     if (interaction.isStringSelectMenu() && customId === GUILD_SELECTOR_NAME) {
       currentGuildRoleId = interaction.values[0];
     }
@@ -102,13 +114,13 @@ export const _showSettings = async ({server, type, initialGuildRoleId}: IShowSet
     }
     return {
       embeds: [getEmbed()],
-      components: getComponents(),
+      components: getComponents()
     };
   }
 
   return {
     getMessagePayload,
-    replyInteraction,
+    replyInteraction
   };
 };
 
@@ -125,7 +137,13 @@ interface IGetPageSelector {
   selectedGuildRoleId?: string;
 }
 
-const _getPageSelector = ({page, guilds, limit, selectedGuildRoleId, server}: IGetPageSelector) => {
+const _getPageSelector = ({
+  page,
+  guilds,
+  limit,
+  selectedGuildRoleId,
+  server
+}: IGetPageSelector) => {
   const actionRow = new ActionRowBuilder<StringSelectMenuBuilder>();
   const menu = new StringSelectMenuBuilder()
     .setCustomId(GUILD_SELECTOR_NAME)
@@ -136,10 +154,14 @@ const _getPageSelector = ({page, guilds, limit, selectedGuildRoleId, server}: IG
   guildsOnPage.forEach((guild) => {
     const roleName = server.roles.cache.get(guild.roleId)?.name;
     menu.addOptions({
-      label: guild.info.name ? guild.info.name : `Role: ${roleName ?? 'Not found'}`,
-      description: guild.info.name ? `Role: ${roleName ?? 'Not found'}` : undefined,
+      label: guild.info.name
+        ? guild.info.name
+        : `Role: ${roleName ?? 'Not found'}`,
+      description: guild.info.name
+        ? `Role: ${roleName ?? 'Not found'}`
+        : undefined,
       value: guild.roleId,
-      default: guild.roleId === selectedGuildRoleId,
+      default: guild.roleId === selectedGuildRoleId
     });
   });
   actionRow.addComponents(menu);

@@ -1,5 +1,5 @@
-import {GuildMember} from 'discord.js';
-import {IGuild} from '@idle-helper/models';
+import type {GuildMember} from 'discord.js';
+import type {IGuild} from '@idle-helper/models';
 
 interface IIsGuildMember {
   guild: IGuild;

@@ -1,38 +1,48 @@
 import {redisUserReminder} from '../redis/user-reminder.redis';
-import {Model} from 'mongoose';
-import {IUserReminder, userReminderSchema} from '@idle-helper/models';
+import type {Model} from 'mongoose';
+import type {IUserReminder} from '@idle-helper/models';
+import { userReminderSchema} from '@idle-helper/models';
 import {mongoClient} from '@idle-helper/services';
 import {IDLE_FARM_REMINDER_TYPE} from '@idle-helper/constants';
 
-userReminderSchema.post('findOneAndUpdate', async function() {
+userReminderSchema.post('findOneAndUpdate', async function () {
   const updatedUserId = this.getQuery().userId;
   await updateNextReminderTime(updatedUserId, this.model);
 });
 
-userReminderSchema.post('deleteMany', async function() {
+userReminderSchema.post('deleteMany', async function () {
   const deletedUserId = this.getQuery().userId;
   await updateNextReminderTime(deletedUserId, this.model);
 });
 
-userReminderSchema.post('updateMany', async function() {
+userReminderSchema.post('updateMany', async function () {
   const updatedUserId = this.getQuery().userId;
   await updateNextReminderTime(updatedUserId, this.model);
 });
 
-async function updateNextReminderTime(userId: string, model: Model<IUserReminder>) {
+async function updateNextReminderTime(
+  userId: string,
+  model: Model<IUserReminder>
+) {
   const nextReminderTime = await model
     .find({
       userId,
-      readyAt: {$gt: new Date()},
+      readyAt: {$gt: new Date()}
     })
     .sort({readyAt: 1})
     .limit(1);
   if (nextReminderTime.length && nextReminderTime[0].readyAt)
-    await redisUserReminder.setReminderTime(userId, nextReminderTime[0].readyAt);
+    await redisUserReminder.setReminderTime(
+      userId,
+      nextReminderTime[0].readyAt
+    );
   else await redisUserReminder.deleteReminderTime(userId);
 }
 
-const dbUserReminder = mongoClient.model<IUserReminder>('user-reminder', userReminderSchema);
+const dbUserReminder = mongoClient.model<IUserReminder>(
+  'user-reminder',
+  userReminderSchema
+);
 
 interface ISaveUserVoteCooldown {
   userId: string;
@@ -41,21 +51,21 @@ interface ISaveUserVoteCooldown {
 
 const saveUserVoteCooldown = async ({
   userId,
-  readyAt,
+  readyAt
 }: ISaveUserVoteCooldown): Promise<void> => {
   await dbUserReminder.findOneAndUpdate(
     {
       userId,
-      type: IDLE_FARM_REMINDER_TYPE.vote,
+      type: IDLE_FARM_REMINDER_TYPE.vote
     },
     {
       $set: {
-        readyAt,
-      },
+        readyAt
+      }
     },
     {
-      upsert: true,
-    },
+      upsert: true
+    }
   );
 };
 
@@ -66,21 +76,21 @@ interface ISaveUserClaimCooldown {
 
 const saveUserClaimCooldown = async ({
   userId,
-  readyAt,
+  readyAt
 }: ISaveUserClaimCooldown): Promise<void> => {
   await dbUserReminder.findOneAndUpdate(
     {
       userId,
-      type: IDLE_FARM_REMINDER_TYPE.claim,
+      type: IDLE_FARM_REMINDER_TYPE.claim
     },
     {
       $set: {
-        readyAt,
-      },
+        readyAt
+      }
     },
     {
-      upsert: true,
-    },
+      upsert: true
+    }
   );
 };
 
@@ -90,20 +100,24 @@ interface IUpdateUserCooldown {
   readyAt?: Date;
 }
 
-const updateUserCooldown = async ({userId, readyAt, type}: IUpdateUserCooldown) => {
+const updateUserCooldown = async ({
+  userId,
+  readyAt,
+  type
+}: IUpdateUserCooldown) => {
   await dbUserReminder.findOneAndUpdate(
     {
       userId,
-      type,
+      type
     },
     {
       $set: {
-        readyAt,
-      },
+        readyAt
+      }
     },
     {
-      upsert: true,
-    },
+      upsert: true
+    }
   );
 };
 
@@ -115,30 +129,38 @@ interface IDeleteUserCooldown {
 const deleteUserCooldowns = async ({userId, types}: IDeleteUserCooldown) => {
   await dbUserReminder.deleteMany({
     userId,
-    type: {$in: types},
+    type: {$in: types}
   });
 };
 
-const findUserReadyCommands = async (userId: string): Promise<IUserReminder[]> => {
+const findUserReadyCommands = async (
+  userId: string
+): Promise<IUserReminder[]> => {
   const reminderList = await dbUserReminder.find({
     userId,
-    readyAt: {$lte: new Date()},
+    readyAt: {$lte: new Date()}
   });
 
-  return reminderList ? reminderList.map((reminder) => reminder.toObject()) : [];
+  return reminderList
+    ? reminderList.map((reminder) => reminder.toObject())
+    : [];
 };
 
-const getUserAllCooldowns = async (userId: string): Promise<IUserReminder[]> => {
+const getUserAllCooldowns = async (
+  userId: string
+): Promise<IUserReminder[]> => {
   const reminderList = await dbUserReminder.find({
-    userId,
+    userId
   });
 
-  return reminderList ? reminderList.map((reminder) => reminder.toObject()) : [];
+  return reminderList
+    ? reminderList.map((reminder) => reminder.toObject())
+    : [];
 };
 
 const clearUserCooldowns = async (userId: string): Promise<void> => {
   await dbUserReminder.deleteMany({
-    userId,
+    userId
   });
 };
 
@@ -147,20 +169,20 @@ interface IGetNextReadyCommand {
 }
 
 const getNextReadyCommand = async ({
-  userId,
+  userId
 }: IGetNextReadyCommand): Promise<IUserReminder | null> => {
   const reminder = await dbUserReminder.find(
     {
       userId,
-      readyAt: {$gte: new Date()},
+      readyAt: {$gte: new Date()}
     },
     null,
     {
       sort: {
-        readyAt: 1,
+        readyAt: 1
       },
-      limit: 1,
-    },
+      limit: 1
+    }
   );
   return reminder?.length ? reminder[0].toObject() : null;
 };
@@ -170,17 +192,20 @@ interface IUpdateRemindedCooldowns {
   types: ValuesOf<typeof IDLE_FARM_REMINDER_TYPE>[];
 }
 
-const updateRemindedCooldowns = async ({userId, types}: IUpdateRemindedCooldowns) => {
+const updateRemindedCooldowns = async ({
+  userId,
+  types
+}: IUpdateRemindedCooldowns) => {
   await dbUserReminder.updateMany(
     {
       userId,
-      type: {$in: types},
+      type: {$in: types}
     },
     {
       $unset: {
-        readyAt: 1,
-      },
-    },
+        readyAt: 1
+      }
+    }
   );
 };
 
@@ -191,11 +216,11 @@ interface IFindUserCooldown {
 
 const findUserCooldown = async ({
   userId,
-  type,
+  type
 }: IFindUserCooldown): Promise<IUserReminder | null> => {
   const reminder = await dbUserReminder.findOne({
     userId,
-    type,
+    type
   });
 
   return reminder ? reminder.toObject() : null;
@@ -211,5 +236,5 @@ export const userReminderServices = {
   clearUserCooldowns,
   getNextReadyCommand,
   updateRemindedCooldowns,
-  findUserCooldown,
+  findUserCooldown
 };

@@ -1,4 +1,5 @@
-import {Client, PermissionsBitField} from 'discord.js';
+import type {Client} from 'discord.js';
+import { PermissionsBitField} from 'discord.js';
 import {djsMemberHelper} from '../../discordjs/member';
 import {serverService} from '../../../services/database/server.service';
 
@@ -10,14 +11,18 @@ interface IIsServerAdmin {
 
 const PERMISSIONS = [
   PermissionsBitField.Flags.ManageGuild,
-  PermissionsBitField.Flags.Administrator,
+  PermissionsBitField.Flags.Administrator
 ];
 
-export const _isServerAdmin = async ({serverId, client, userId}: IIsServerAdmin) => {
+export const _isServerAdmin = async ({
+  serverId,
+  client,
+  userId
+}: IIsServerAdmin) => {
   const member = await djsMemberHelper.getMember({
     client,
     serverId,
-    userId,
+    userId
   });
   if (!member) return false;
   const hasPermission = member.permissions.any(PERMISSIONS);
@@ -26,7 +31,8 @@ export const _isServerAdmin = async ({serverId, client, userId}: IIsServerAdmin)
   if (!serverAccount) return false;
   const memberRoles = member.roles.cache.map((role) => role.id);
   return (
-    serverAccount.settings.admin.rolesId.some((roleId) => memberRoles.includes(roleId)) ||
-    serverAccount.settings.admin.usersId.includes(userId)
+    serverAccount.settings.admin.rolesId.some((roleId) =>
+      memberRoles.includes(roleId)
+    ) || serverAccount.settings.admin.usersId.includes(userId)
   );
 };

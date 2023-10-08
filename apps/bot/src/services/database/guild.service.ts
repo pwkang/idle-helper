@@ -1,5 +1,6 @@
-import {UpdateQuery} from 'mongoose';
-import {guildSchema, IGuild} from '@idle-helper/models';
+import type {UpdateQuery} from 'mongoose';
+import type { IGuild} from '@idle-helper/models';
+import {guildSchema} from '@idle-helper/models';
 import {mongoClient} from '@idle-helper/services';
 import {redisGuildReminder} from '../redis/guild-reminder.redis';
 import {redisGuildMembers} from '../redis/guild-members.redis';
@@ -11,12 +12,12 @@ guildSchema.post('findOneAndUpdate', async (doc: IGuild) => {
     await redisGuildReminder.setReminderTime({
       serverId: doc.serverId,
       readyAt: doc.teamRaid.readyAt,
-      guildRoleId: doc.roleId,
+      guildRoleId: doc.roleId
     });
   } else {
     await redisGuildReminder.deleteReminderTime({
       serverId: doc.serverId,
-      guildRoleId: doc.roleId,
+      guildRoleId: doc.roleId
     });
   }
 });
@@ -29,11 +30,15 @@ interface IRegisterGuild {
   leaderId?: string;
 }
 
-const registerGuild = async ({serverId, roleId, leaderId}: IRegisterGuild): Promise<IGuild> => {
+const registerGuild = async ({
+  serverId,
+  roleId,
+  leaderId
+}: IRegisterGuild): Promise<IGuild> => {
   return await dbGuild.create({
     serverId,
     roleId,
-    leaderId,
+    leaderId
   });
 };
 
@@ -42,7 +47,10 @@ interface IIsRoleUsed {
   roleId: string;
 }
 
-const isRoleUsed = async ({serverId, roleId}: IIsRoleUsed): Promise<boolean> => {
+const isRoleUsed = async ({
+  serverId,
+  roleId
+}: IIsRoleUsed): Promise<boolean> => {
   const guild = await dbGuild.findOne({serverId, roleId});
   return !!guild;
 };
@@ -84,10 +92,10 @@ const updateGuildReminder = async ({
   serverId,
   roleId,
   channelId,
-  reminderMessage,
+  reminderMessage
 }: IUpdateGuildReminder): Promise<IGuild | null> => {
   const updateQuery: UpdateQuery<IGuild> = {
-    $set: {},
+    $set: {}
   };
 
   if (channelId) {
@@ -99,7 +107,7 @@ const updateGuildReminder = async ({
   }
 
   return dbGuild.findOneAndUpdate({serverId, roleId}, updateQuery, {
-    new: true,
+    new: true
   });
 };
 
@@ -127,7 +135,11 @@ interface IUpdateLeader {
 }
 
 const updateLeader = async ({serverId, roleId, leaderId}: IUpdateLeader) => {
-  return dbGuild.findOneAndUpdate({serverId, roleId}, {$set: {leaderId}}, {new: true});
+  return dbGuild.findOneAndUpdate(
+    {serverId, roleId},
+    {$set: {leaderId}},
+    {new: true}
+  );
 };
 
 interface IGetAllGuildRoles {
@@ -145,15 +157,19 @@ interface IRegisterReminder {
   readyIn: number;
 }
 
-const registerReminder = async ({serverId, roleId, readyIn}: IRegisterReminder) => {
+const registerReminder = async ({
+  serverId,
+  roleId,
+  readyIn
+}: IRegisterReminder) => {
   const query: UpdateQuery<IGuild> = {};
   if (readyIn) {
     query.$set = {
-      'teamRaid.readyAt': new Date(Date.now() + readyIn),
+      'teamRaid.readyAt': new Date(Date.now() + readyIn)
     };
   } else {
     query.$unset = {
-      'teamRaid.readyAt': 1,
+      'teamRaid.readyAt': 1
     };
   }
 
@@ -168,7 +184,7 @@ interface IUpdateGuildInfo {
 
 const updateGuildInfo = async ({serverId, roleId, name}: IUpdateGuildInfo) => {
   const query: UpdateQuery<IGuild> = {
-    $set: {},
+    $set: {}
   };
   if (name !== undefined) query.$set!['info.name'] = name;
   if (Object.keys(query.$set!).length === 0) return Promise.resolve(null);
@@ -181,16 +197,20 @@ interface IUpdateToggle {
   query: UpdateQuery<IGuild>;
 }
 
-const updateToggle = async ({serverId, roleId, query}: IUpdateToggle): Promise<IGuild | null> => {
+const updateToggle = async ({
+  serverId,
+  roleId,
+  query
+}: IUpdateToggle): Promise<IGuild | null> => {
   const guild = await dbGuild.findOneAndUpdate(
     {
       serverId,
-      roleId,
+      roleId
     },
     query,
     {
-      new: true,
-    },
+      new: true
+    }
   );
   return guild ?? null;
 };
@@ -200,20 +220,23 @@ interface IResetToggle {
   roleId: string;
 }
 
-const resetToggle = async ({serverId, roleId}: IResetToggle): Promise<IGuild | null> => {
+const resetToggle = async ({
+  serverId,
+  roleId
+}: IResetToggle): Promise<IGuild | null> => {
   const guild = await dbGuild.findOneAndUpdate(
     {
       serverId,
-      roleId,
+      roleId
     },
     {
       $unset: {
-        toggle: '',
-      },
+        toggle: ''
+      }
     },
     {
-      new: true,
-    },
+      new: true
+    }
   );
   return guild ?? null;
 };
@@ -224,22 +247,30 @@ interface IRegisterToGuild {
   usersId: string[];
 }
 
-const registerUsersToGuild = async ({serverId, roleId, usersId}: IRegisterToGuild) => {
-  await dbGuild.findOneAndUpdate({serverId, roleId}, {$addToSet: {membersId: {$each: usersId}}}, {new: true});
+const registerUsersToGuild = async ({
+  serverId,
+  roleId,
+  usersId
+}: IRegisterToGuild) => {
+  await dbGuild.findOneAndUpdate(
+    {serverId, roleId},
+    {$addToSet: {membersId: {$each: usersId}}},
+    {new: true}
+  );
   await dbGuild.findOneAndUpdate(
     {
       $or: [{serverId: {$ne: serverId}}, {roleId: {$ne: roleId}}],
-      membersId: {$in: usersId},
+      membersId: {$in: usersId}
     },
     {$pull: {membersId: {$in: usersId}}},
-    {new: true},
+    {new: true}
   );
 
   for (const userId of usersId) {
     await redisGuildMembers.setGuildMember({
       guildRoleId: roleId,
       serverId,
-      userId,
+      userId
     });
   }
 };
@@ -250,11 +281,19 @@ interface IRemoveUserFromGuild {
   userId: string;
 }
 
-const removeUserFromGuild = async ({serverId, roleId, userId}: IRemoveUserFromGuild) => {
-  await dbGuild.findOneAndUpdate({serverId, roleId}, {$pull: {membersId: userId}}, {new: true});
+const removeUserFromGuild = async ({
+  serverId,
+  roleId,
+  userId
+}: IRemoveUserFromGuild) => {
+  await dbGuild.findOneAndUpdate(
+    {serverId, roleId},
+    {$pull: {membersId: userId}},
+    {new: true}
+  );
 
   await redisGuildMembers.removeGuildInfo({
-    userId,
+    userId
   });
 };
 
@@ -274,7 +313,7 @@ interface IFindUserGuild {
 
 const findUserGuild = async ({userId}: IFindUserGuild) => {
   const cachedGuild = await redisGuildMembers.getGuildInfo({
-    userId,
+    userId
   });
   if (!cachedGuild) {
     const guild = await dbGuild.findOne({membersId: userId}).lean();
@@ -283,13 +322,13 @@ const findUserGuild = async ({userId}: IFindUserGuild) => {
     await redisGuildMembers.setGuildMember({
       guildRoleId: guild.roleId,
       serverId: guild.serverId,
-      userId,
+      userId
     });
     return toGuild(guild);
   }
   const guild = await findGuild({
     serverId: cachedGuild.serverId,
-    roleId: cachedGuild.guildRoleId,
+    roleId: cachedGuild.guildRoleId
   });
   return guild ? toGuild(guild) : null;
 };
@@ -312,5 +351,5 @@ export const guildService = {
   registerUsersToGuild,
   removeUserFromGuild,
   getAllGuildMembers,
-  findUserGuild,
+  findUserGuild
 };

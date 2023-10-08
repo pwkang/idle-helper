@@ -1,4 +1,13 @@
-import {Client, Embed, Message, MessageCollector, TextChannel, ThreadChannel, User} from 'discord.js';
+import type {
+  Client,
+  Embed,
+  Message,
+  MessageCollector,
+  User} from 'discord.js';
+import {
+  TextChannel,
+  ThreadChannel
+} from 'discord.js';
 import {TypedEventEmitter} from './typed-event-emitter';
 import {IDLE_FARM_ID} from '@idle-helper/constants';
 import {createMessageEditedListener} from './message-edited-listener';
@@ -18,8 +27,9 @@ type TEventTypes = {
   end: [];
 };
 
-type CustomEventType = (TypedEventEmitter<TEventTypes> &
-  TExtraProps) | undefined;
+type CustomEventType =
+  | (TypedEventEmitter<TEventTypes> & TExtraProps)
+  | undefined;
 
 type TExtraProps = {
   stop: () => void;
@@ -34,7 +44,7 @@ const filter = (m: Message) => m.author.id === IDLE_FARM_ID;
 export const createIdleFarmCommandListener = ({
   channelId,
   client,
-  author,
+  author
 }: IIdleFarmCommandListener) => {
   const channel = client.channels.cache.get(channelId);
   if (!channel) return;
@@ -50,7 +60,6 @@ export const createIdleFarmCommandListener = ({
   let waitingAnswer = false;
 
   if (event) {
-
     event.stop = () => {
       collector?.stop();
       collector?.removeAllListeners();
@@ -74,7 +83,6 @@ export const createIdleFarmCommandListener = ({
     event.triggerCollect = (message: Message) => {
       messageCollected(message);
     };
-
   }
 
   async function messageCollected(collected: Message) {
@@ -92,6 +100,7 @@ export const createIdleFarmCommandListener = ({
 
       event && event.emit('embed', embed, collected);
     } else if (!collected.embeds.length) {
+
       // Message Content
       if (isBotMaintenance({collected, author})) {
         event?.stop();
@@ -119,13 +128,12 @@ export const createIdleFarmCommandListener = ({
 
   const awaitEdit = async (messageId: string) => {
     const event = await createMessageEditedListener({
-      messageId,
+      messageId
     });
     event.on(messageId, (message) => {
       messageCollected(message);
     });
   };
-
 
   return event;
 };
@@ -137,7 +145,8 @@ interface IChecker {
 
 function isBotMaintenance({author, collected}: IChecker) {
   return (
-    collected.content.includes('The bot is under maintenance!') && collected.mentions.has(author.id)
+    collected.content.includes('The bot is under maintenance!') &&
+    collected.mentions.has(author.id)
   );
 }
 
@@ -145,7 +154,8 @@ function isUserSpamming({author, collected}: IChecker) {
   const embed = collected.embeds[0];
   if (!embed) return false;
   return (
-    embed.author?.name === author.username && embed.fields[0]?.name.includes('please don\'t spam')
+    embed.author?.name === author.username &&
+    embed.fields[0]?.name.includes('please don\'t spam')
   );
 }
 
@@ -155,6 +165,7 @@ const isLoadingContent = ({collected}: IChecker) =>
 
 function isUserInCommand({author, collected}: IChecker) {
   return (
-    collected.content.includes('end your previous command') && collected.mentions.has(author.id)
+    collected.content.includes('end your previous command') &&
+    collected.mentions.has(author.id)
   );
 }

@@ -1,6 +1,9 @@
 import commandHelper from '../../../lib/idle-helper/command-helper';
 import djsInteractionHelper from '../../../lib/discordjs/interaction';
-import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
+import {
+  USER_ACC_OFF_ACTIONS,
+  USER_NOT_REGISTERED_ACTIONS
+} from '@idle-helper/constants';
 import {SLASH_COMMAND} from '../constant';
 
 export default <SlashCommand>{
@@ -8,7 +11,7 @@ export default <SlashCommand>{
   description: SLASH_COMMAND.invite.description,
   preCheck: {
     userAccOff: USER_ACC_OFF_ACTIONS.skip,
-    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
+    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip
   },
   type: 'command',
   execute: async (client, interaction) => {
@@ -16,9 +19,9 @@ export default <SlashCommand>{
     await djsInteractionHelper.replyInteraction({
       client,
       options: {
-        embeds: [botInfo],
+        embeds: [botInfo]
       },
-      interaction,
+      interaction
     });
-  },
+  }
 };

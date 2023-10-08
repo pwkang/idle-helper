@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
-import pino, {Level, Logger} from 'pino';
+import type {Level, Logger} from 'pino';
+import pino from 'pino';
 import pretty from 'pino-pretty';
 
 dotenv.config();
@@ -27,16 +28,19 @@ export const logger = (props: ILogger | string) => {
     loggerChild = pino({});
     loggerChild.setBindings({
       variant,
-      clusterId: props?.clusterId !== undefined ? String(props.clusterId) : undefined,
+      clusterId:
+        props?.clusterId !== undefined ? String(props.clusterId) : undefined
     });
   } else {
     const variantMsg = variant ? `${variant}: ` : '';
     const clusterIdMsg =
-      !isString && props?.clusterId !== undefined ? `[Cluster ${props.clusterId}] ` : '';
+      !isString && props?.clusterId !== undefined
+        ? `[Cluster ${props.clusterId}] `
+        : '';
     loggerChild = pino(
       pretty({
         translateTime: 'SYS:yyyy-mm-dd hh:MM:ss TT',
-        messageFormat: `${clusterIdMsg}${variantMsg}{msg}`,
+        messageFormat: `${clusterIdMsg}${variantMsg}{msg}`
       })
     );
   }
@@ -44,7 +48,7 @@ export const logger = (props: ILogger | string) => {
   log({
     message,
     loggerChild,
-    logLevel: logLevel || 'info',
+    logLevel: logLevel || 'info'
   });
 };
 

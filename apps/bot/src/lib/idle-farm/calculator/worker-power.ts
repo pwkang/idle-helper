@@ -1,4 +1,9 @@
-import {IDLE_FARM_WORKER_ID, IDLE_FARM_WORKER_STATS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import type {
+  IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import {
+  IDLE_FARM_WORKER_ID,
+  IDLE_FARM_WORKER_STATS
+} from '@idle-helper/constants';
 
 interface ICalcWorkerPower {
   type: ValuesOf<typeof IDLE_FARM_WORKER_TYPE>;
@@ -6,7 +11,11 @@ interface ICalcWorkerPower {
   decimalPlace?: number;
 }
 
-export const calcWorkerPower = ({type, level, decimalPlace}: ICalcWorkerPower) => {
+export const calcWorkerPower = ({
+  type,
+  level,
+  decimalPlace
+}: ICalcWorkerPower) => {
   const speed = IDLE_FARM_WORKER_STATS[type].speed;
   const strength = IDLE_FARM_WORKER_STATS[type].strength;
   const intelligence = IDLE_FARM_WORKER_STATS[type].intelligence;
@@ -15,7 +24,7 @@ export const calcWorkerPower = ({type, level, decimalPlace}: ICalcWorkerPower) =
     level,
     strength,
     speed,
-    type: IDLE_FARM_WORKER_ID[type],
+    type: IDLE_FARM_WORKER_ID[type]
   });
   return decimalPlace !== undefined ? +power.toFixed(decimalPlace) : power;
 };

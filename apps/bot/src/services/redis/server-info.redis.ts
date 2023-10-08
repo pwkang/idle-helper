@@ -36,7 +36,7 @@ const fromRedis = (data: string | null): IServerInfo => {
   const parsed = data ? JSON.parse(data) : {};
   return {
     name: parsed.name,
-    id: parsed.id,
+    id: parsed.id
   };
 };
 
@@ -46,5 +46,5 @@ const getPrefix = (serverId: string) => {
 
 export const redisServerInfo = {
   getServerInfo,
-  setServerName,
+  setServerName
 };

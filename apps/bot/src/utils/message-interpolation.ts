@@ -3,7 +3,10 @@ interface IInterpolateMessage {
   variables: Record<string, string>;
 }
 
-export const interpolateMessage = ({message, variables}: IInterpolateMessage) => {
+export const interpolateMessage = ({
+  message,
+  variables
+}: IInterpolateMessage) => {
   const regex = /{([^}]+)}/g;
 
   // remove the markdown wrapper if matched values is empty string

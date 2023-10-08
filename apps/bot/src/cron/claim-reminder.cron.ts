@@ -12,8 +12,8 @@ export default <CronJob>{
       redisClaimReminder.removeUser(user.userId);
       claimReminder.send({
         userId: user.userId,
-        client,
+        client
       });
     });
-  },
+  }
 };

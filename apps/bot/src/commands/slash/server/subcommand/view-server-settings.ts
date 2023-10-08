@@ -2,7 +2,10 @@ import djsInteractionHelper from '../../../../lib/discordjs/interaction';
 import commandHelper from '../../../../lib/idle-helper/command-helper';
 import {SERVER_SETTINGS_PAGE_TYPE} from '../../../../lib/idle-helper/command-helper/server-settings/constant';
 import {SLASH_COMMAND} from '../../constant';
-import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
+import {
+  USER_ACC_OFF_ACTIONS,
+  USER_NOT_REGISTERED_ACTIONS
+} from '@idle-helper/constants';
 import {PermissionsBitField} from 'discord.js';
 
 export default <SlashCommand>{
@@ -11,7 +14,7 @@ export default <SlashCommand>{
   preCheck: {
     userAccOff: USER_ACC_OFF_ACTIONS.skip,
     userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
-    isServerAdmin: true,
+    isServerAdmin: true
   },
   type: 'subcommand',
   commandName: SLASH_COMMAND.server.name,
@@ -19,11 +22,11 @@ export default <SlashCommand>{
   execute: async (client, interaction) => {
     if (!interaction.inGuild() || !interaction.guild) return;
     let serverSettings = await commandHelper.serverSettings.settings({
-      server: interaction.guild,
+      server: interaction.guild
     });
     if (!serverSettings) return;
     const messageOptions = serverSettings.render({
-      type: SERVER_SETTINGS_PAGE_TYPE.randomEvent,
+      type: SERVER_SETTINGS_PAGE_TYPE.randomEvent
     });
     const event = await djsInteractionHelper.replyInteraction({
       client,
@@ -32,12 +35,12 @@ export default <SlashCommand>{
       interactive: true,
       onStop: () => {
         serverSettings = null as any;
-      },
+      }
     });
     if (!event) return;
     event.every((interaction) => {
       if (!interaction.isStringSelectMenu() || !serverSettings) return null;
       return serverSettings.responseInteraction(interaction);
     });
-  },
+  }
 };

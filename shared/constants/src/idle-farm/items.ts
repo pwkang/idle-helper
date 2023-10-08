@@ -25,7 +25,7 @@ export const IDLE_FARM_ITEMS_MATERIAL = {
   meat: 'meat',
   leather: 'leather',
   horn: 'horn',
-  sawdust: 'sawdust',
+  sawdust: 'sawdust'
 } as const;
 
 export const IDLE_FARM_ITEMS_REFINED = {
@@ -46,13 +46,13 @@ export const IDLE_FARM_ITEMS_REFINED = {
   burntFood: 'burnt food',
   lava: 'lava',
   glass: 'glass',
-  brokenGlass: 'broken glass',
+  brokenGlass: 'broken glass'
 } as const;
 
 export const IDLE_FARM_ITEMS_PRODUCT = {
   fabric: 'fabric',
   chair: 'chair',
-  wire: 'wire',
+  wire: 'wire'
 } as const;
 
 export const IDLE_FARM_ITEMS_CONSUMABLE = {
@@ -72,7 +72,7 @@ export const IDLE_FARM_ITEMS_CONSUMABLE = {
   uncommonLootbox: 'uncommon lootbox',
   rareLootbox: 'rare lootbox',
   epicLootbox: 'epic lootbox',
-  mythicLootbox: 'mythic lootbox',
+  mythicLootbox: 'mythic lootbox'
 } as const;
 
 export const IDLE_FARM_ITEMS_BOX = {
@@ -102,7 +102,7 @@ export const IDLE_FARM_ITEMS_BOX = {
   meatBox: 'meat box',
   leatherBox: 'leather box',
   hornBox: 'horn box',
-  sawdustBox: 'sawdust box',
+  sawdustBox: 'sawdust box'
 } as const;
 
 export const IDLE_FARM_ITEMS = {
@@ -111,7 +111,7 @@ export const IDLE_FARM_ITEMS = {
   ...IDLE_FARM_ITEMS_REFINED,
   ...IDLE_FARM_ITEMS_PRODUCT,
   ...IDLE_FARM_ITEMS_CONSUMABLE,
-  ...IDLE_FARM_ITEMS_BOX,
+  ...IDLE_FARM_ITEMS_BOX
 } as const;
 
 export const IDLE_FARM_ITEMS_BOX_TYPE = {
@@ -141,5 +141,5 @@ export const IDLE_FARM_ITEMS_BOX_TYPE = {
   meat: 'meatBox',
   leather: 'leatherBox',
   horn: 'hornBox',
-  sawdust: 'sawdustBox',
+  sawdust: 'sawdustBox'
 } as const;

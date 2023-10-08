@@ -12,7 +12,7 @@ export default <BotMessage>{
   },
   execute: async (client, message) => {
     const serverProfile = await serverService.getServer({
-      serverId: message.guild!.id,
+      serverId: message.guild!.id
     });
     if (!serverProfile) return;
     const randomEvent = serverProfile.settings.randomEvent;
@@ -20,9 +20,9 @@ export default <BotMessage>{
     await djsMessageHelper.send({
       client,
       options: {
-        content: randomEvent.lucky,
+        content: randomEvent.lucky
       },
-      channelId: message.channel.id,
+      channelId: message.channel.id
     });
-  },
+  }
 };

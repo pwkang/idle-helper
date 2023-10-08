@@ -1,4 +1,5 @@
-import {ApplicationCommand, Client, Routes} from 'discord.js';
+import type {ApplicationCommand, Client} from 'discord.js';
+import { Routes} from 'discord.js';
 import {djsRestClient} from '@idle-helper/services';
 import {logger} from '@idle-helper/utils';
 
@@ -6,10 +7,14 @@ export interface IGetGlobalSlashCommands {
   client: Client;
 }
 
-export const _getGlobalSlashCommands = async ({client}: IGetGlobalSlashCommands) => {
+export const _getGlobalSlashCommands = async ({
+  client
+}: IGetGlobalSlashCommands) => {
   if (!client.user) return [];
   try {
-    const data = await djsRestClient.get(Routes.applicationCommands(client.user.id));
+    const data = await djsRestClient.get(
+      Routes.applicationCommands(client.user.id)
+    );
 
     return data as ApplicationCommand[];
   } catch (e: any) {
@@ -17,7 +22,7 @@ export const _getGlobalSlashCommands = async ({client}: IGetGlobalSlashCommands)
       message: e.rawError?.message,
       variant: 'get-global-slash-commands',
       logLevel: 'error',
-      clusterId: client.cluster?.id,
+      clusterId: client.cluster?.id
     });
     return [];
   }

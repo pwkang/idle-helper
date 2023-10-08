@@ -1,7 +1,8 @@
 import {mongoClient} from '@idle-helper/services';
-import {IServer, serverSchema} from '@idle-helper/models';
-import {IDLE_FARM_RANDOM_EVENTS} from '@idle-helper/constants';
-import {UpdateQuery} from 'mongoose';
+import type {IServer} from '@idle-helper/models';
+import { serverSchema} from '@idle-helper/models';
+import type {IDLE_FARM_RANDOM_EVENTS} from '@idle-helper/constants';
+import type {UpdateQuery} from 'mongoose';
 import {typedObjectEntries} from '@idle-helper/utils';
 
 const dbServer = mongoClient.model('servers', serverSchema);
@@ -11,13 +12,16 @@ interface IRegisterServerProps {
   name: string;
 }
 
-const registerServer = async ({serverId, name}: IRegisterServerProps): Promise<IServer> => {
+const registerServer = async ({
+  serverId,
+  name
+}: IRegisterServerProps): Promise<IServer> => {
   const server = await dbServer.findOne({serverId});
 
   if (!server) {
     const newServer = new dbServer({
       serverId,
-      name,
+      name
     });
 
     await newServer.save();
@@ -30,7 +34,9 @@ interface IGetServerProps {
   serverId: string;
 }
 
-const getServer = async ({serverId}: IGetServerProps): Promise<IServer | null> => {
+const getServer = async ({
+  serverId
+}: IGetServerProps): Promise<IServer | null> => {
   const server = await dbServer.findOne({serverId});
 
   return server ?? null;
@@ -40,7 +46,7 @@ const listRegisteredServersId = async (): Promise<string[]> => {
   const servers = await dbServer.find(
     {},
     {
-      serverId: 1,
+      serverId: 1
     }
   );
   return servers?.map((server) => server.serverId) ?? [];
@@ -57,16 +63,18 @@ const findServerById = async (serverId: string): Promise<IServer | null> => {
 
 interface IUpdateRandomEvents {
   serverId: string;
-  randomEvents: Partial<Record<ValuesOf<typeof IDLE_FARM_RANDOM_EVENTS>, string | null>>;
+  randomEvents: Partial<
+    Record<ValuesOf<typeof IDLE_FARM_RANDOM_EVENTS>, string | null>
+  >;
 }
 
 const updateRandomEvents = async ({
   serverId,
-  randomEvents,
+  randomEvents
 }: IUpdateRandomEvents): Promise<IServer | null> => {
   const query: UpdateQuery<IServer> = {
     $set: {},
-    $unset: {},
+    $unset: {}
   };
   for (const [key, value] of typedObjectEntries(randomEvents)) {
     if (value === null) {
@@ -83,5 +91,5 @@ export const serverService = {
   getServer,
   listRegisteredServersId,
   findServerById,
-  updateRandomEvents,
+  updateRandomEvents
 };

@@ -1,5 +1,9 @@
-import {ButtonComponent, Message} from 'discord.js';
-import {IDLE_FARM_FARM_TYPE, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import type { Message} from 'discord.js';
+import {ButtonComponent} from 'discord.js';
+import {
+  IDLE_FARM_FARM_TYPE,
+  IDLE_FARM_WORKER_TYPE
+} from '@idle-helper/constants';
 import {typedObjectEntries} from '@idle-helper/utils';
 
 interface IEnemyWorker {
@@ -23,7 +27,9 @@ interface IPlayer {
 export const _teamRaidReader = (message: Message) => {
   const embed = message.embeds[0];
   const components = message.components;
-  const enemyGuild = embed.description?.match(/You are raiding \*\*(.*)\*\*/)?.[1];
+  const enemyGuild = embed.description?.match(
+    /You are raiding \*\*(.*)\*\*/
+  )?.[1];
   const enemies: IEnemyWorker[][] = [];
   for (const field of embed.fields) {
     if (!isEnemyField(field.name, enemyGuild)) continue;
@@ -34,10 +40,10 @@ export const _teamRaidReader = (message: Message) => {
       const maxHp = row.match(/`\d+\/(\d+)`/)?.[1];
       const level = row.match(/Lv(\d+)/)?.[1];
       const type = typedObjectEntries(IDLE_FARM_WORKER_TYPE).find(([, value]) =>
-        row.includes(value),
+        row.includes(value)
       )?.[0];
       const farm = typedObjectEntries(IDLE_FARM_FARM_TYPE).find(([, value]) =>
-        row.includes(value),
+        row.includes(value)
       )?.[1];
       if (!type) continue;
       workers.push({
@@ -45,7 +51,7 @@ export const _teamRaidReader = (message: Message) => {
         level: level ? Number(level) : 0,
         maxHp: maxHp ? Number(maxHp) : 0,
         hp: hp ? Number(hp) : 0,
-        farm: farm!,
+        farm: farm!
       });
     }
     enemies.push(workers);
@@ -56,7 +62,7 @@ export const _teamRaidReader = (message: Message) => {
     for (const button of row.components) {
       if (!(button instanceof ButtonComponent)) continue;
       const type = typedObjectEntries(IDLE_FARM_WORKER_TYPE).find(
-        ([, value]) => button.emoji?.name === `${value}worker`,
+        ([, value]) => button.emoji?.name === `${value}worker`
       )?.[0];
       const username = button.label!;
       const used = button.disabled;
@@ -64,7 +70,7 @@ export const _teamRaidReader = (message: Message) => {
       if (member) {
         member.workers.push({
           type: type!,
-          used,
+          used
         });
       } else {
         members.push({
@@ -72,9 +78,9 @@ export const _teamRaidReader = (message: Message) => {
           workers: [
             {
               type: type!,
-              used,
-            },
-          ],
+              used
+            }
+          ]
         });
       }
     }

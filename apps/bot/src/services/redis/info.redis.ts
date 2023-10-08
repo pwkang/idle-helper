@@ -1,5 +1,5 @@
 import {redisService} from './redis.service';
-import {IInfo} from '@idle-helper/models/dist/info/info.type';
+import type {IInfo} from '@idle-helper/models/dist/info/info.type';
 import {infoTransformer} from './transformer/info.transformer';
 
 const prefix = 'idle-helper:info';
@@ -15,5 +15,5 @@ const setInfo = async (info: IInfo) => {
 
 export const infoRedis = {
   getInfo,
-  setInfo,
+  setInfo
 };

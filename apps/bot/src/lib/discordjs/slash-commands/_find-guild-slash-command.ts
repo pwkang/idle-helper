@@ -1,4 +1,5 @@
-import {ApplicationCommand, Client, Guild, Routes} from 'discord.js';
+import type {ApplicationCommand, Client, Guild} from 'discord.js';
+import { Routes} from 'discord.js';
 import {djsRestClient} from '@idle-helper/services';
 import {logger} from '@idle-helper/utils';
 
@@ -11,7 +12,7 @@ export interface IGetGuildSlashCommands {
 export const _findGuildSlashCommand = async ({
   guild,
   client,
-  commandId,
+  commandId
 }: IGetGuildSlashCommands) => {
   if (!client.user) return [];
 
@@ -26,7 +27,7 @@ export const _findGuildSlashCommand = async ({
       message: e.rawError?.message,
       variant: 'find-guild-slash-command',
       logLevel: 'error',
-      clusterId: client.cluster?.id,
+      clusterId: client.cluster?.id
     });
     return null;
   }

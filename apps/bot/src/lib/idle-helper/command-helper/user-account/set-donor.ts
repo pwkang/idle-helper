@@ -1,10 +1,11 @@
+import type {
+  BaseMessageOptions,
+  User} from 'discord.js';
 import {
   ActionRowBuilder,
-  BaseMessageOptions,
   ButtonBuilder,
   ButtonStyle,
-  EmbedBuilder,
-  User,
+  EmbedBuilder
 } from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
 import {BOT_COLOR, IDLE_FARM_DONOR_TIER} from '@idle-helper/constants';
@@ -17,26 +18,28 @@ export const _setDonor = ({author}: ISetDonor) => {
   function render(): BaseMessageOptions {
     return {
       embeds: [embed],
-      components: [row],
+      components: [row]
     };
   }
 
-  async function responseInteraction(customId: string): Promise<BaseMessageOptions | null> {
+  async function responseInteraction(
+    customId: string
+  ): Promise<BaseMessageOptions | null> {
     const tier = customId as ValuesOf<typeof IDLE_FARM_DONOR_TIER>;
     await userService.updateIdleFarmDonorTier({
       userId: author.id,
-      tier,
+      tier
     });
 
     return {
       components: [],
-      embeds: [getSuccessEmbed(tier)],
+      embeds: [getSuccessEmbed(tier)]
     };
   }
 
   return {
     render,
-    responseInteraction,
+    responseInteraction
   };
 };
 
@@ -60,10 +63,12 @@ const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 );
 
 const RESPONSE_MSG = {
-  [IDLE_FARM_DONOR_TIER.nonDonor]: 'You have set your donor tier to **Non-donor**',
+  [IDLE_FARM_DONOR_TIER.nonDonor]:
+    'You have set your donor tier to **Non-donor**',
   [IDLE_FARM_DONOR_TIER.common]: 'You have set your donor tier to **Common**',
-  [IDLE_FARM_DONOR_TIER.talented]: 'You have set your donor tier to **Talented**',
-  [IDLE_FARM_DONOR_TIER.wise]: 'You have set your donor tier to **Wise +**',
+  [IDLE_FARM_DONOR_TIER.talented]:
+    'You have set your donor tier to **Talented**',
+  [IDLE_FARM_DONOR_TIER.wise]: 'You have set your donor tier to **Wise +**'
 } as const;
 
 const getSuccessEmbed = (tier: ValuesOf<typeof IDLE_FARM_DONOR_TIER>) => {

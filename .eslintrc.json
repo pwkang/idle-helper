@@ -35,6 +35,40 @@
       "error",
       "always"
     ],
-    "@typescript-eslint/no-explicit-any": "off"
+    "@typescript-eslint/no-explicit-any": "off",
+    "array-bracket-spacing": [
+      "error",
+      "never"
+    ],
+    "brace-style": [
+      "error",
+      "1tbs"
+    ],
+    "comma-dangle": [
+      "error",
+      "never"
+    ],
+    "comma-spacing": [
+      "error",
+      {
+        "before": false,
+        "after": true
+      }
+    ],
+    "eol-last": "error",
+    "lines-around-comment": [
+      "error",
+      {
+        "beforeBlockComment": true,
+        "beforeLineComment": true
+      }
+    ],
+    "max-depth": [
+      "error",
+      4
+    ],
+    "no-multi-spaces": "error",
+    "no-multiple-empty-lines": "error",
+    "@typescript-eslint/consistent-type-imports": "error"
   }
 }

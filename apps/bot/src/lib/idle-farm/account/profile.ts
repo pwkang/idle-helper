@@ -1,4 +1,4 @@
-import {Client, Embed, Message, User} from 'discord.js';
+import type {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import {userService} from '../../../services/database/user.service';
 import {getLastClaimEmbed} from '../../idle-helper/command-helper/farms/status';
@@ -13,11 +13,16 @@ interface IIdleProfile {
   isSlashCommand?: boolean;
 }
 
-export const idleProfile = ({author, client, isSlashCommand, message}: IIdleProfile) => {
+export const idleProfile = ({
+  author,
+  client,
+  isSlashCommand,
+  message
+}: IIdleProfile) => {
   let event = createIdleFarmCommandListener({
     author,
     client,
-    channelId: message.channel.id,
+    channelId: message.channel.id
   });
   if (!event) return;
   event.on('embed', async (embed, collected) => {
@@ -31,7 +36,6 @@ export const idleProfile = ({author, client, isSlashCommand, message}: IIdleProf
     event = undefined;
   });
   if (isSlashCommand) event.triggerCollect(message);
-
 };
 
 interface IIdleProfileSuccess {
@@ -41,16 +45,20 @@ interface IIdleProfileSuccess {
   client: Client;
 }
 
-const idleProfileSuccess = async ({author, message, client}: IIdleProfileSuccess) => {
+const idleProfileSuccess = async ({
+  author,
+  message,
+  client
+}: IIdleProfileSuccess) => {
   const userAccount = await userService.findUser({
-    userId: author.id,
+    userId: author.id
   });
   if (!userAccount) return;
   const toggleUser = await toggleUserChecker({
-    userId: author.id,
+    userId: author.id
   });
   const profile = messageReaders.profile({
-    embed: message.embeds[0],
+    embed: message.embeds[0]
   });
 
   await userService.saveGameProfile({
@@ -58,24 +66,22 @@ const idleProfileSuccess = async ({author, message, client}: IIdleProfileSuccess
     idleCoins: profile.idleCoins,
     userId: author.id,
     idlons: profile.idlons,
-    idlucks: profile.idlucks,
+    idlucks: profile.idlucks
   });
 
   if (toggleUser?.autoSend?.profile) {
     const lastClaimEmbed = getLastClaimEmbed({
       author,
-      userAccount,
+      userAccount
     });
     await djsMessageHelper.send({
       client,
       channelId: message.channelId,
       options: {
-        embeds: [lastClaimEmbed],
-      },
+        embeds: [lastClaimEmbed]
+      }
     });
   }
-
-
 };
 
 const isIdleProfile = ({embed, author}: {embed: any; author: User}) =>

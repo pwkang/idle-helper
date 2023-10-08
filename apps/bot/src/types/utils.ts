@@ -1,5 +1,8 @@
-import {Embed, Message, User} from 'discord.js';
-import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
+import type {Embed, Message, User} from 'discord.js';
+import type {
+  USER_ACC_OFF_ACTIONS,
+  USER_NOT_REGISTERED_ACTIONS
+} from '@idle-helper/constants';
 
 export interface IMessageContentChecker {
   message: Message;

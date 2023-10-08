@@ -25,7 +25,7 @@ const commandHelper = {
   workers: _workersHelper,
   leaderboard: _leaderboardHelper,
   generator: _generatorHelper,
-  packing: _packingHelper,
+  packing: _packingHelper
 };
 
 export default commandHelper;

@@ -9,5 +9,5 @@ export const messageChecker = {
   inventory: _inventoryChecker,
   packing: _packingChecker,
   sell: _sellChecker,
-  buy: _buyChecker,
+  buy: _buyChecker
 };

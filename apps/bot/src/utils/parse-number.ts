@@ -13,7 +13,7 @@ export const parseNumber = (str: string = '') => {
     b: 1e9,
     B: 1e9,
     t: 1e12,
-    T: 1e12,
+    T: 1e12
   }[m];
 
   if (isNaN(Number(n)) || !multiplier) return null;

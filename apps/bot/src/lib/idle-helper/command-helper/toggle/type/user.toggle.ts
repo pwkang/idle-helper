@@ -1,9 +1,10 @@
-import {BaseMessageOptions, User} from 'discord.js';
+import type {BaseMessageOptions, User} from 'discord.js';
 import {userService} from '../../../../../services/database/user.service';
 import {toggleDisplayList} from '../toggle.list';
 import {renderEmbed} from '../toggle.embed';
-import {getUpdateQuery, IUpdateToggle} from '../toggle.helper';
-import {IUser, IUserToggle} from '@idle-helper/models';
+import type { IUpdateToggle} from '../toggle.helper';
+import {getUpdateQuery} from '../toggle.helper';
+import type {IUser, IUserToggle} from '@idle-helper/models';
 import {PREFIX} from '@idle-helper/constants';
 
 interface IGetUserToggle {
@@ -12,21 +13,21 @@ interface IGetUserToggle {
 
 export const getUserToggle = async ({author}: IGetUserToggle) => {
   let userToggle = await userService.getUserToggle({
-    userId: author.id,
+    userId: author.id
   });
   if (!userToggle) return null;
 
   function render(userToggle: IUserToggle): BaseMessageOptions {
     const embed = getEmbed(userToggle);
     return {
-      embeds: [embed],
+      embeds: [embed]
     };
   }
 
   function getEmbed(userToggle: IUserToggle) {
     return getUserToggleEmbed({
       author,
-      userToggle,
+      userToggle
     });
   }
 
@@ -34,11 +35,11 @@ export const getUserToggle = async ({author}: IGetUserToggle) => {
     const query = getUpdateQuery<IUser>({
       on,
       off,
-      toggleInfo: toggleDisplayList.user(userToggle!),
+      toggleInfo: toggleDisplayList.user(userToggle!)
     });
     const userAccount = await userService.updateUserToggle({
       query,
-      userId: author.id,
+      userId: author.id
     });
     if (!userAccount) return null;
     userToggle = userAccount.toggle;
@@ -47,7 +48,7 @@ export const getUserToggle = async ({author}: IGetUserToggle) => {
 
   async function reset() {
     const userAccount = await userService.resetUserToggle({
-      userId: author.id,
+      userId: author.id
     });
     if (!userAccount) return null;
     userToggle = userAccount.toggle;
@@ -57,7 +58,7 @@ export const getUserToggle = async ({author}: IGetUserToggle) => {
   return {
     render: () => render(userToggle!),
     update,
-    reset,
+    reset
   };
 };
 
@@ -68,11 +69,11 @@ interface IGetUserToggleEmbed {
 
 const getUserToggleEmbed = ({userToggle, author}: IGetUserToggleEmbed) => {
   return renderEmbed({
-    embedsInfo: toggleDisplayList.user(userToggle),
+    embedsInfo: toggleDisplayList.user(userToggle)
   })
     .setAuthor({
       name: `${author.username}'s toggle`,
-      iconURL: author.avatarURL() ?? undefined,
+      iconURL: author.avatarURL() ?? undefined
     })
     .setDescription(
       `**Syntax 1:** \`${PREFIX.bot}t <on/off> <ID> [ID] [ID]\` - turn on/off any settings

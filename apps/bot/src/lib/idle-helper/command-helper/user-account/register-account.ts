@@ -1,4 +1,5 @@
-import {BaseMessageOptions, EmbedBuilder, User} from 'discord.js';
+import type {BaseMessageOptions, User} from 'discord.js';
+import { EmbedBuilder} from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
 import {BOT_COLOR} from '@idle-helper/constants';
 
@@ -9,20 +10,20 @@ interface IRegisterAccount {
 
 export const _registerAccount = async ({
   author,
-  channelId,
+  channelId
 }: IRegisterAccount): Promise<BaseMessageOptions> => {
   const created = await userService.registerUser({
     userId: author.id,
     username: author.username,
-    channelId,
+    channelId
   });
   if (created) {
     return {
-      embeds: [registeredEmbed],
+      embeds: [registeredEmbed]
     };
   } else {
     return {
-      content: 'You have already registered!',
+      content: 'You have already registered!'
     };
   }
 };

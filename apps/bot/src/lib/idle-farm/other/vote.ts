@@ -1,4 +1,4 @@
-import {Client, Embed, Message, User} from 'discord.js';
+import type {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import messageReaders from '../message-readers';
 import {userReminderServices} from '../../../services/database/user-reminder.service';
@@ -10,18 +10,23 @@ interface IIdleVote {
   isSlashCommand?: boolean;
 }
 
-export const idleVote = ({author, client, isSlashCommand, message}: IIdleVote) => {
+export const idleVote = ({
+  author,
+  client,
+  isSlashCommand,
+  message
+}: IIdleVote) => {
   let event = createIdleFarmCommandListener({
     author,
     client,
-    channelId: message.channel.id,
+    channelId: message.channel.id
   });
   if (!event) return;
   event.on('embed', async (embed, collected) => {
     if (isIdleVote({embed})) {
       idleVoteSuccess({
         message: collected,
-        author,
+        author
       });
       event?.stop();
     }
@@ -42,12 +47,12 @@ const idleVoteSuccess = async ({message, author}: IIdleMarketSuccess) => {
   if (voteInfo.readyIn) {
     await userReminderServices.saveUserVoteCooldown({
       userId: author.id,
-      readyAt: new Date(Date.now() + voteInfo.readyIn),
+      readyAt: new Date(Date.now() + voteInfo.readyIn)
     });
   } else {
     await userReminderServices.deleteUserCooldowns({
       userId: author.id,
-      types: ['vote'],
+      types: ['vote']
     });
   }
 };

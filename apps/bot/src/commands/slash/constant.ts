@@ -4,119 +4,120 @@ export const SLASH_COMMAND = {
     description: 'Account related commands',
     delete: {
       name: 'delete',
-      description: 'Delete your account',
+      description: 'Delete your account'
     },
     off: {
       name: 'off',
-      description: 'Turn off your account',
+      description: 'Turn off your account'
     },
     on: {
       name: 'on',
-      description: 'Turn on your account',
+      description: 'Turn on your account'
     },
     register: {
       name: 'register',
-      description: 'Register your account',
+      description: 'Register your account'
     },
     reminderChannel: {
       name: 'reminder-channel',
-      description: 'Bind reminder channel to current channel',
+      description: 'Bind reminder channel to current channel'
     },
     settings: {
       name: 'settings',
-      description: 'View your account settings',
+      description: 'View your account settings'
     },
     claimReminder: {
       name: 'claim-reminder',
-      description: 'Set reminder to claim your farm',
+      description: 'Set reminder to claim your farm'
     },
     donor: {
       name: 'donor',
-      description: 'Set IDLE FARM donor tier',
-    },
+      description: 'Set IDLE FARM donor tier'
+    }
   },
   toggle: {
     name: 'toggle',
     description: 'Toggle commands',
     set: {
       name: 'set',
-      description: 'Update personal toggle settings',
+      description: 'Update personal toggle settings'
     },
     show: {
       name: 'show',
-      description: 'Show personal toggle settings',
+      description: 'Show personal toggle settings'
     },
     reset: {
       name: 'reset',
-      description: 'Reset personal toggle settings',
-    },
+      description: 'Reset personal toggle settings'
+    }
   },
   server: {
     name: 'server',
     description: 'Server configuration',
     settings: {
       name: 'settings',
-      description: 'View the server settings',
+      description: 'View the server settings'
     },
     randomEvents: {
       name: 'random-events',
-      description: 'set message to send when random events spawned',
-    },
+      description: 'set message to send when random events spawned'
+    }
   },
   guild: {
     name: 'guild',
     description: 'Guild configuration',
     setup: {
       name: 'setup',
-      description: 'Setup a new guild',
+      description: 'Setup a new guild'
     },
     reminder: {
       name: 'reminder',
-      description: 'Update guild reminder settings',
+      description: 'Update guild reminder settings'
     },
     delete: {
       name: 'delete',
-      description: 'Delete a guild',
+      description: 'Delete a guild'
     },
     settings: {
       name: 'settings',
-      description: 'View guild settings',
+      description: 'View guild settings'
     },
     leader: {
       name: 'leader',
-      description: 'Set guild leader',
+      description: 'Set guild leader'
     },
     toggle: {
       name: 'toggle',
       description: 'Toggle guild settings',
       set: {
         name: 'set',
-        description: 'Update guild toggle settings',
+        description: 'Update guild toggle settings'
       },
       show: {
         name: 'show',
-        description: 'Show guild toggle settings',
+        description: 'Show guild toggle settings'
       },
       reset: {
         name: 'reset',
-        description: 'Reset guild toggle settings',
-      },
+        description: 'Reset guild toggle settings'
+      }
     },
     memberTracker: {
       name: 'member-tracker',
-      description: 'Shows guild member info',
-    },
+      description: 'Shows guild member info'
+    }
   },
   invite: {
     name: 'invite',
-    description: 'Invite IDLE Helper to another server or join the official server',
+    description:
+      'Invite IDLE Helper to another server or join the official server'
   },
   help: {
     name: 'help',
-    description: 'Show all commands or information of IDLE Helper',
+    description: 'Show all commands or information of IDLE Helper'
   },
   lastClaim: {
     name: 'last-claim',
-    description: 'Show last claim time',
-  },
+    description: 'Show last claim time'
+  }
 } as const;

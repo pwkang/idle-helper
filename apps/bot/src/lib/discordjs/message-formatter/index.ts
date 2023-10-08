@@ -13,7 +13,7 @@ const messageFormatter = {
   getInfoFromMessageUrl: _getInfoFromMessageUrl,
   channelUrl: _channelUrl,
   getInfoFromChannelUrl: _getInfoFromChannelUrl,
-  hyperlink: _hyperlink,
+  hyperlink: _hyperlink
 };
 
 export default messageFormatter;

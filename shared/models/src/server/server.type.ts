@@ -1,4 +1,4 @@
-import {IDLE_FARM_RANDOM_EVENTS} from '@idle-helper/constants';
+import type {IDLE_FARM_RANDOM_EVENTS} from '@idle-helper/constants';
 
 export interface IServer {
   serverId: string;

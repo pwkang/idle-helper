@@ -1,4 +1,4 @@
-import {IUpgraid} from './team-raid.type';
+import type {IUpgraid} from './team-raid.type';
 import {Schema} from 'mongoose';
 
 const recordSchema = new Schema<IUpgraid['users'][0]['records'][0]>({
@@ -6,14 +6,14 @@ const recordSchema = new Schema<IUpgraid['users'][0]['records'][0]>({
   serverId: String,
   commandType: String,
   messageID: String,
-  upgraidAt: Date,
+  upgraidAt: Date
 });
 
 const userSchema = new Schema<IUpgraid['users'][0]>({
   uId: String,
   records: {
-    type: [recordSchema],
-  },
+    type: [recordSchema]
+  }
 });
 
 export const teamRaidSchema = new Schema<IUpgraid>({
@@ -21,6 +21,6 @@ export const teamRaidSchema = new Schema<IUpgraid>({
   serverId: String,
   weekAt: Date,
   users: {
-    type: [userSchema],
-  },
+    type: [userSchema]
+  }
 });

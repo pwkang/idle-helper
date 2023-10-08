@@ -1,4 +1,4 @@
-import {IGuild} from '@idle-helper/models';
+import type {IGuild} from '@idle-helper/models';
 
 export const toGuild = (guild: any): IGuild => {
   return {
@@ -7,13 +7,13 @@ export const toGuild = (guild: any): IGuild => {
     leaderId: guild.leaderId,
     serverId: guild.serverId,
     info: {
-      name: guild.info?.name,
+      name: guild.info?.name
     },
     membersId: guild.membersId,
     teamRaid: {
       channelId: guild.teamRaid?.channelId,
       message: guild.teamRaid?.message,
-      readyAt: guild.teamRaid?.readyAt,
-    },
+      readyAt: guild.teamRaid?.readyAt
+    }
   };
 };

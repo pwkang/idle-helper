@@ -3,7 +3,7 @@ import _updateInteraction from './_update-interaction';
 
 const djsInteractionHelper = {
   replyInteraction: _replyInteraction,
-  updateInteraction: _updateInteraction,
+  updateInteraction: _updateInteraction
 };
 
 export default djsInteractionHelper;

@@ -1,4 +1,5 @@
-import {BaseInteraction, Client, Events} from 'discord.js';
+import type {BaseInteraction, Client} from 'discord.js';
+import { Events} from 'discord.js';
 import {preCheckCommand} from '../../utils/command-precheck';
 import isServerWhitelisted from '../../utils/whitelisted-servers-checker';
 
@@ -21,17 +22,18 @@ export default <BotEvent>{
         preCheck: command.preCheck,
         interaction,
         channelId: interaction.channelId,
-        server: interaction.guild,
+        server: interaction.guild
       });
       if (!toExecute) return;
 
       await command.execute(client, interaction);
     }
-  },
+  }
 };
 
 const searchSlashCommand = (client: Client, interaction: BaseInteraction) => {
-  if (!interaction.isCommand() || !interaction.isChatInputCommand()) return null;
+  if (!interaction.isCommand() || !interaction.isChatInputCommand())
+    return null;
   const commandName = interaction.commandName;
   const subcommandGroupName = interaction.options.getSubcommandGroup();
   const subcommandName = interaction.options.getSubcommand(false);

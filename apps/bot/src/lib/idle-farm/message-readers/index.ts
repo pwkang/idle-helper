@@ -25,7 +25,7 @@ const messageReaders = {
   vote: _voteReader,
   packing: _packingReader,
   sell: _sellReader,
-  buy: _buyReader,
+  buy: _buyReader
 };
 
 export default messageReaders;

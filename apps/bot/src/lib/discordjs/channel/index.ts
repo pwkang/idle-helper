@@ -5,7 +5,7 @@ import _getChannel from './_get-channel';
 const djsChannelHelper = {
   muteUser: _muteUser,
   unMuteUser: _unMuteUser,
-  getChannel: _getChannel,
+  getChannel: _getChannel
 };
 
 export default djsChannelHelper;

@@ -1,11 +1,24 @@
-import {BaseMessageOptions, Client, Embed, EmbedBuilder, Guild, GuildMember, Role, User} from 'discord.js';
+import type {
+  BaseMessageOptions,
+  Client,
+  Embed,
+  Guild,
+  GuildMember,
+  Role,
+  User} from 'discord.js';
+import {
+  EmbedBuilder
+} from 'discord.js';
 import {guildService} from '../../../../services/database/guild.service';
 import messageFormatter from '../../../discordjs/message-formatter';
-import {IGuild} from '@idle-helper/models';
+import type {IGuild} from '@idle-helper/models';
 import {createIdleFarmCommandListener} from '../../../../utils/idle-farm-command-listener';
 import messageReaders from '../../../idle-farm/message-readers';
 import {djsMessageHelper} from '../../../discordjs/message';
-import {BOT_COLOR, IDLE_FARM_CLICKABLE_SLASH_COMMANDS} from '@idle-helper/constants';
+import {
+  BOT_COLOR,
+  IDLE_FARM_CLICKABLE_SLASH_COMMANDS
+} from '@idle-helper/constants';
 
 interface IMemberTracker {
   server: Guild;
@@ -26,12 +39,13 @@ export const _memberTracker = async ({
   server,
   client,
   channelId,
-  author,
+  author
 }: IMemberTracker) => {
   const guild = await guildService.findGuild({
     serverId: server.id,
-    roleId: guildRole.id,
+    roleId: guildRole.id
   });
+
   // const databaseMembers = await guildService.getAllGuildMembers({
   //   serverId: server.id,
   //   roleId: guildRole.id,
@@ -43,7 +57,7 @@ export const _memberTracker = async ({
   let event = createIdleFarmCommandListener({
     author,
     client,
-    channelId,
+    channelId
   });
   if (!event || !guild) return null;
 
@@ -51,11 +65,11 @@ export const _memberTracker = async ({
     if (!guild)
       return {
         content: `There is no guild with role ${messageFormatter.role(
-          guildRole.id,
-        )} setup in this server`,
+          guildRole.id
+        )} setup in this server`
       };
     return {
-      content: `Type \`idle guild list\` or use ${IDLE_FARM_CLICKABLE_SLASH_COMMANDS.guildList}`,
+      content: `Type \`idle guild list\` or use ${IDLE_FARM_CLICKABLE_SLASH_COMMANDS.guildList}`
     };
   };
 
@@ -69,8 +83,8 @@ export const _memberTracker = async ({
         cachedServerMembers,
         guild,
         embedUsersId: info.ids,
-        embedUsernames: info.usernames,
-      }),
+        embedUsernames: info.usernames
+      })
     });
     event?.stop();
   });
@@ -80,7 +94,7 @@ export const _memberTracker = async ({
   });
 
   return {
-    getMessagePayload,
+    getMessagePayload
   };
 };
 
@@ -95,27 +109,30 @@ const getMemberRoleStatusMessageOptions = ({
   cachedServerMembers,
   guild,
   embedUsersId,
-  embedUsernames,
+  embedUsernames
 }: IGetMemberRoleStatusEmbed) => {
   const embed = new EmbedBuilder().setColor(BOT_COLOR.embed).setAuthor({
-    name: `${guild.info.name} - members`,
+    name: `${guild.info.name} - members`
   });
 
   const membersWithRole = cachedServerMembers.filter(
     (member) =>
-      embedUsernames.includes(member.user.username) || embedUsersId.includes(member.user.id),
+      embedUsernames.includes(member.user.username) ||
+      embedUsersId.includes(member.user.id)
   );
 
   const nonCachedMembersUsername = embedUsernames.filter(
-    (username) => !cachedServerMembers.some((member) => member.user.username === username),
+    (username) =>
+      !cachedServerMembers.some((member) => member.user.username === username)
   );
   const nonCachedMembersId = embedUsersId.filter(
-    (id) => !cachedServerMembers.some((member) => member.user.id === id),
+    (id) => !cachedServerMembers.some((member) => member.user.id === id)
   );
 
   const nonMembersWithRole = cachedServerMembers.filter(
     (member) =>
-      !embedUsernames.includes(member.user.username) && !embedUsersId.includes(member.user.id),
+      !embedUsernames.includes(member.user.username) &&
+      !embedUsersId.includes(member.user.id)
   );
 
   for (let i = 0; i < membersWithRole.length; i += 30) {
@@ -127,7 +144,7 @@ const getMemberRoleStatusMessageOptions = ({
           .map((member) => messageFormatter.user(member.user.id))
           .join('\n')
         : 'None',
-      inline: true,
+      inline: true
     });
   }
 
@@ -140,24 +157,28 @@ const getMemberRoleStatusMessageOptions = ({
           .map((member) => messageFormatter.user(member.user.id))
           .join('\n')
         : 'None',
-      inline: true,
+      inline: true
     });
   }
 
   let content = '';
-  if (nonMembersWithRole.length || nonCachedMembersId.length || nonCachedMembersUsername.length) {
+  if (
+    nonMembersWithRole.length ||
+    nonCachedMembersId.length ||
+    nonCachedMembersUsername.length
+  ) {
     content = [
       'These users are not cached yet, they either left the server or not active in this server',
       'Mentions these users in any private channel bot has access to and use this command again',
-      `\`\`\`${nonCachedMembersId.map(messageFormatter.user)} ${nonCachedMembersUsername.map(
-        (username) => `@${username}`,
-      )}\`\`\``,
+      `\`\`\`${nonCachedMembersId.map(
+        messageFormatter.user
+      )} ${nonCachedMembersUsername.map((username) => `@${username}`)}\`\`\``
     ].join('\n');
   }
 
   return {
     embeds: [embed],
-    content,
+    content
   };
 };
 
