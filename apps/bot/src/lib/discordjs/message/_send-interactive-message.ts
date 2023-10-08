@@ -1,27 +1,28 @@
-import {
+import type {
   ActionRow,
-  ActionRowBuilder,
   BaseInteraction,
-  ButtonBuilder,
-  ButtonComponent,
-  ButtonStyle,
-  ChannelSelectMenuBuilder,
   Client,
-  Collection,
   InteractionUpdateOptions,
-  MentionableSelectMenuBuilder,
-  MentionableSelectMenuComponent,
   MessageActionRowComponent,
   MessageActionRowComponentBuilder,
   MessageCreateOptions,
   MessagePayload,
+  StringSelectMenuInteraction} from 'discord.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonComponent,
+  ButtonStyle,
+  ChannelSelectMenuBuilder,
+  Collection,
+  MentionableSelectMenuBuilder,
+  MentionableSelectMenuComponent,
   RoleSelectMenuBuilder,
   RoleSelectMenuComponent,
   StringSelectMenuBuilder,
   StringSelectMenuComponent,
-  StringSelectMenuInteraction,
   UserSelectMenuBuilder,
-  UserSelectMenuComponent,
+  UserSelectMenuComponent
 } from 'discord.js';
 import ms from 'ms';
 import {djsMessageHelper} from './index';
@@ -29,7 +30,7 @@ import djsInteractionHelper from '../interaction';
 
 type TEventCB = (
   collected: BaseInteraction | StringSelectMenuInteraction,
-  customId: string,
+  customId: string
 ) => Promise<InteractionUpdateOptions | null> | InteractionUpdateOptions | null;
 
 export interface SendInteractiveMessageProps {
@@ -39,34 +40,33 @@ export interface SendInteractiveMessageProps {
   onEnd?: () => void;
 }
 
-export default async function _sendInteractiveMessage<EventType extends string>(
-  {
-    channelId,
-    options,
-    client,
-    onEnd,
-  }: SendInteractiveMessageProps) {
+export default async function _sendInteractiveMessage<
+  EventType extends string
+>({channelId, options, client, onEnd}: SendInteractiveMessageProps) {
   const channel = client.channels.cache.get(channelId);
   if (!channel) return;
 
   const sentMessage = await djsMessageHelper.send({
     channelId,
     client,
-    options,
+    options
   });
   if (!sentMessage) return;
 
   let allEventsFn: TEventCB | null = null;
   const registeredEvents = new Collection<string | EventType, TEventCB>();
   let collector = sentMessage.createMessageComponentCollector({
-    idle: ms('1m'),
+    idle: ms('1m')
   });
 
   function every(callback: TEventCB) {
     allEventsFn = callback;
   }
 
-  function on(customId: EventType extends undefined ? string : EventType, callback: TEventCB) {
+  function on(
+    customId: EventType extends undefined ? string : EventType,
+    callback: TEventCB
+  ) {
     registeredEvents.set(customId, callback);
   }
 
@@ -84,7 +84,7 @@ export default async function _sendInteractiveMessage<EventType extends string>(
     await djsInteractionHelper.updateInteraction({
       interaction: collected,
       options: replyOptions,
-      client,
+      client
     });
   });
 
@@ -108,28 +108,31 @@ export default async function _sendInteractiveMessage<EventType extends string>(
         client,
         message: sentMessage,
         options: {
-          components: disableAllComponents(sentMessage.components),
-        },
+          components: disableAllComponents(sentMessage.components)
+        }
       });
     }
   });
-
 
   return {
     on,
     stop,
     isEnded,
     every,
-    message: sentMessage,
+    message: sentMessage
   };
 }
 
-function disableAllComponents(components: ActionRow<MessageActionRowComponent>[]) {
+function disableAllComponents(
+  components: ActionRow<MessageActionRowComponent>[]
+) {
   const row: ActionRowBuilder<MessageActionRowComponentBuilder>[] = [];
   for (const component of components) {
     const _components = component.components.map((component) => {
       if (component instanceof ButtonComponent) {
-        return ButtonBuilder.from(component).setDisabled(component.style !== ButtonStyle.Link);
+        return ButtonBuilder.from(component).setDisabled(
+          component.style !== ButtonStyle.Link
+        );
       } else if (component instanceof StringSelectMenuComponent) {
         return StringSelectMenuBuilder.from(component).setDisabled(true);
       } else if (component instanceof UserSelectMenuComponent) {
@@ -142,12 +145,15 @@ function disableAllComponents(components: ActionRow<MessageActionRowComponent>[]
         return ChannelSelectMenuBuilder.from(component).setDisabled(true);
       }
     });
-    row.push(new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(_components));
+    row.push(
+      new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+        _components
+      )
+    );
   }
 
   return row;
 }
-
 
 // function disableAllComponents(components: ActionRow<MessageActionRowComponent>[]) {
 //   // return JSON.parse(JSON.stringify(components));

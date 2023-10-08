@@ -1,4 +1,4 @@
-import {Client, Message, User} from 'discord.js';
+import type {Client, Message, User} from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
 import {infoService} from '../../../../services/database/info.service';
 import {generateEmbed} from './generate-idlons-embed';
@@ -11,12 +11,16 @@ interface IClaimCalculator {
   client: Client;
 }
 
-export const _claimCalculator = async ({author, client, message}: IClaimCalculator) => {
+export const _claimCalculator = async ({
+  author,
+  client,
+  message
+}: IClaimCalculator) => {
   const items = messageReaders.claim({
-    embed: message.embeds[0],
+    embed: message.embeds[0]
   });
   const userAccount = await userService.findUser({
-    userId: author.id,
+    userId: author.id
   });
   if (!userAccount) return;
   const marketItems = await infoService.getMarketItems();
@@ -25,13 +29,13 @@ export const _claimCalculator = async ({author, client, message}: IClaimCalculat
     marketItems,
     author,
     user: userAccount,
-    title: 'Claim Calculator',
+    title: 'Claim Calculator'
   });
   await djsMessageHelper.send({
     options: {
-      embeds: [embed],
+      embeds: [embed]
     },
     client,
-    channelId: message.channel.id,
+    channelId: message.channel.id
   });
 };

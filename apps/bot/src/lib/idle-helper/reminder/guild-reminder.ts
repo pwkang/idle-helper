@@ -1,4 +1,4 @@
-import {Client} from 'discord.js';
+import type {Client} from 'discord.js';
 import {guildService} from '../../../services/database/guild.service';
 import {djsMessageHelper} from '../../discordjs/message';
 
@@ -11,11 +11,11 @@ interface IGuildReminderTimesUp {
 export const guildReminderTimesUp = async ({
   guildRoleId,
   client,
-  serverId,
+  serverId
 }: IGuildReminderTimesUp) => {
   const guild = await guildService.findGuild({
     serverId,
-    roleId: guildRoleId,
+    roleId: guildRoleId
   });
   if (!guild) return;
 
@@ -23,7 +23,7 @@ export const guildReminderTimesUp = async ({
     client,
     channelId: guild.teamRaid.channelId,
     options: {
-      content: guild.teamRaid.message,
-    },
+      content: guild.teamRaid.message
+    }
   });
 };

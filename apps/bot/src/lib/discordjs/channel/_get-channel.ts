@@ -1,4 +1,4 @@
-import {Client} from 'discord.js';
+import type {Client} from 'discord.js';
 import {logger} from '@idle-helper/utils';
 
 interface IGetChannel {
@@ -16,7 +16,7 @@ const _getChannel = async ({channelId, client}: IGetChannel) => {
       logger({
         clusterId: client.cluster?.id,
         logLevel: 'warn',
-        message: err.message,
+        message: err.message
       });
     }
   }

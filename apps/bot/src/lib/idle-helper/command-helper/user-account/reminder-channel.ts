@@ -1,5 +1,6 @@
 import {userService} from '../../../../services/database/user.service';
-import {BaseMessageOptions, EmbedBuilder} from 'discord.js';
+import type {BaseMessageOptions} from 'discord.js';
+import { EmbedBuilder} from 'discord.js';
 import {BOT_COLOR} from '@idle-helper/constants';
 import messageFormatter from '../../../discordjs/message-formatter';
 
@@ -10,19 +11,21 @@ interface IReminderChannel {
 
 export const _reminderChannel = async ({
   userId,
-  channelId,
+  channelId
 }: IReminderChannel): Promise<BaseMessageOptions> => {
   await userService.updateReminderChannel({
     channelId,
-    userId,
+    userId
   });
 
   return {
-    embeds: [getEmbed(channelId)],
+    embeds: [getEmbed(channelId)]
   };
 };
 
 const getEmbed = (channelId: string) =>
   new EmbedBuilder()
     .setColor(BOT_COLOR.embed)
-    .setDescription(`Reminder channel has been set to ${messageFormatter.channel(channelId)}`);
+    .setDescription(
+      `Reminder channel has been set to ${messageFormatter.channel(channelId)}`
+    );

@@ -1,4 +1,4 @@
-import {TAX_RATE_BOX} from '@idle-helper/constants';
+import type {TAX_RATE_BOX} from '@idle-helper/constants';
 
 interface ICalculatePackingProfits {
   boxPrice: number;
@@ -8,7 +8,10 @@ interface ICalculatePackingProfits {
 }
 
 export const calculatePackingProfits = ({
-  boxPrice, multiplier, itemPrice, taxValue,
+  boxPrice,
+  multiplier,
+  itemPrice,
+  taxValue
 }: ICalculatePackingProfits) => {
-  return ((boxPrice * multiplier) * taxValue) - (itemPrice * 100);
+  return boxPrice * multiplier * taxValue - itemPrice * 100;
 };

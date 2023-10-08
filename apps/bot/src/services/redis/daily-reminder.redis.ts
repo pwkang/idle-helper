@@ -6,7 +6,7 @@ const prefix = 'idle-helper:daily-claimed-at:';
 
 const claim = async (userId: string) => {
   await redisService.set(`${prefix}${userId}`, Date.now(), {
-    PX: ms('1d'),
+    PX: ms('1d')
   });
 };
 
@@ -20,5 +20,5 @@ const isClaimed = async (userId: string) => {
 
 export const redisDailyReminder = {
   claim,
-  isClaimed,
+  isClaimed
 };

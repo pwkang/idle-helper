@@ -11,14 +11,14 @@ const url = 'https://json-bin.pwkang.me/api/create';
 export const createJsonBin = async (json: Record<any, any>) => {
   try {
     const response = await axios.post(url, {
-      json: stringify(json),
+      json: stringify(json)
     });
     return response.data as ICreateJsonBinResponse;
   } catch (e: any) {
     logger({
       logLevel: 'error',
       message: e,
-      variant: 'create-json-bin',
+      variant: 'create-json-bin'
     });
   }
 };

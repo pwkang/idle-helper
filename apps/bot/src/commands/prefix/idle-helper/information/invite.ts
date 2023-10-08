@@ -12,9 +12,9 @@ export default <PrefixCommand>{
     await djsMessageHelper.send({
       client,
       options: {
-        embeds: [botInfo],
+        embeds: [botInfo]
       },
-      channelId: message.channel.id,
+      channelId: message.channel.id
     });
-  },
+  }
 };

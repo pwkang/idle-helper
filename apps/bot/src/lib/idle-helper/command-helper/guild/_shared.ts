@@ -1,6 +1,6 @@
-import {Client, EmbedBuilder, Guild} from 'discord.js';
+import type {Client, EmbedBuilder, Guild} from 'discord.js';
 import {guildService} from '../../../../services/database/guild.service';
-import {IGuild} from '@idle-helper/models';
+import type {IGuild} from '@idle-helper/models';
 import commandHelper from '../index';
 import {djsMemberHelper} from '../../../discordjs/member';
 
@@ -14,10 +14,10 @@ export const verifyGuild = async ({userId, client, server}: IVerifyGuild) => {
   const roles = await getUserGuildRoles({
     client,
     userId,
-    server,
+    server
   });
   const userGuild = await guildService.findUserGuild({
-    userId,
+    userId
   });
   let finalGuild: IGuild | null = userGuild;
   let embed: EmbedBuilder | null = null;
@@ -28,14 +28,14 @@ export const verifyGuild = async ({userId, client, server}: IVerifyGuild) => {
     const guildRole = roles.first()!;
     const guild = await guildService.findGuild({
       serverId: server.id,
-      roleId: guildRole.id,
+      roleId: guildRole.id
     });
 
     if (userGuild?.roleId !== guildRole.id)
       await guildService.registerUsersToGuild({
         usersId: [userId],
         serverId: server.id,
-        roleId: guildRole.id,
+        roleId: guildRole.id
       });
     if (guild) finalGuild = guild;
   }
@@ -44,17 +44,17 @@ export const verifyGuild = async ({userId, client, server}: IVerifyGuild) => {
     await guildService.removeUserFromGuild({
       serverId: server.id,
       roleId: userGuild.roleId,
-      userId,
+      userId
     });
     return {
       guild: null,
-      errorEmbed: null,
+      errorEmbed: null
     };
   }
 
   return {
     guild: finalGuild,
-    errorEmbed: embed,
+    errorEmbed: embed
   };
 };
 
@@ -64,15 +64,19 @@ export interface IGetUserGuildRoles {
   userId: string;
 }
 
-export const getUserGuildRoles = async ({server, userId, client}: IGetUserGuildRoles) => {
+export const getUserGuildRoles = async ({
+  server,
+  userId,
+  client
+}: IGetUserGuildRoles) => {
   const serverMember = await djsMemberHelper.getMember({
     serverId: server.id,
     client,
-    userId,
+    userId
   });
   if (!serverMember) return null;
   const guildRoles = await guildService.getAllGuildRoles({serverId: server.id});
   return serverMember.roles.cache.filter((userRole) =>
-    guildRoles.some((guildRole) => userRole.id === guildRole),
+    guildRoles.some((guildRole) => userRole.id === guildRole)
   );
 };

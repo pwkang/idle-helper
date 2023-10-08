@@ -1,5 +1,5 @@
-import {IUser} from '@idle-helper/models';
-import {Client} from 'discord.js';
+import type {IUser} from '@idle-helper/models';
+import type {Client} from 'discord.js';
 
 export interface ReminderReady {
   userAccount: IUser;

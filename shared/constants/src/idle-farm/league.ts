@@ -13,7 +13,7 @@ export const IDLE_FARM_LEAGUE = {
   wheat2: 'wheat2',
   wheat3: 'wheat3',
   wheat4: 'wheat4',
-  wheat5: 'wheat5',
+  wheat5: 'wheat5'
 };
 
 export const IDLE_FARM_LEAGUE_POINTS = {
@@ -31,5 +31,5 @@ export const IDLE_FARM_LEAGUE_POINTS = {
   [IDLE_FARM_LEAGUE.wheat2]: 15000,
   [IDLE_FARM_LEAGUE.wheat3]: 18000,
   [IDLE_FARM_LEAGUE.wheat4]: 21000,
-  [IDLE_FARM_LEAGUE.wheat5]: 24000,
+  [IDLE_FARM_LEAGUE.wheat5]: 24000
 };

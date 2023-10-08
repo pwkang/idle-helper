@@ -12,6 +12,6 @@ export const _getInfoFromChannelUrl = (messageUrl: string) => {
   const [, serverId, channelId] = isValid;
   return {
     serverId,
-    channelId,
+    channelId
   };
 };

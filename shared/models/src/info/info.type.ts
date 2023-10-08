@@ -1,5 +1,5 @@
-import {ValuesOf} from '../type';
-import {IDLE_FARM_ITEMS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import type {ValuesOf} from '../type';
+import type {IDLE_FARM_ITEMS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 
 export interface IMarketItem {
   price: number;
@@ -15,7 +15,10 @@ interface ILeaderboardItem {
 }
 
 export interface IInfo {
-  workerPower: Record<ValuesOf<typeof IDLE_FARM_WORKER_TYPE>, Record<number, number>>;
+  workerPower: Record<
+    ValuesOf<typeof IDLE_FARM_WORKER_TYPE>,
+    Record<number, number>
+  >;
   market: TMarketItems;
   leaderboard: {
     [IDLE_FARM_WORKER_TYPE.useless]: ILeaderboardItem[];

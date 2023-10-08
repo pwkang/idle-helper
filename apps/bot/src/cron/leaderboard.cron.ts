@@ -8,5 +8,5 @@ export default <CronJob>{
   firstClusterOnly: true,
   execute: async () => {
     leaderboard.workers();
-  },
+  }
 };

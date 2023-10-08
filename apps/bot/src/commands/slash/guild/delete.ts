@@ -1,6 +1,9 @@
 import djsInteractionHelper from '../../../lib/discordjs/interaction';
 import {SLASH_COMMAND} from '../constant';
-import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
+import {
+  USER_ACC_OFF_ACTIONS,
+  USER_NOT_REGISTERED_ACTIONS
+} from '@idle-helper/constants';
 import commandHelper from '../../../lib/idle-helper/command-helper';
 
 export default <SlashCommand>{
@@ -11,14 +14,14 @@ export default <SlashCommand>{
   preCheck: {
     userAccOff: USER_ACC_OFF_ACTIONS.skip,
     userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
-    isServerAdmin: true,
+    isServerAdmin: true
   },
   builder: (subcommand) =>
     subcommand.addRoleOption((option) =>
       option
         .setName('role')
         .setDescription('Select the role of the guild to delete')
-        .setRequired(true),
+        .setRequired(true)
     ),
   execute: async (client, interaction) => {
     const role = interaction.options.getRole('role', true);
@@ -27,7 +30,7 @@ export default <SlashCommand>{
       server: interaction.guild!,
       roleId: role.id,
       author: interaction.user,
-      client,
+      client
     });
     const messageOptions = await configureGuild.deleteGuild();
     const event = await djsInteractionHelper.replyInteraction({
@@ -37,13 +40,13 @@ export default <SlashCommand>{
       interactive: true,
       onStop: () => {
         configureGuild = null as any;
-      },
+      }
     });
     if (!event) return;
     event.every(async (interaction) => {
       return await configureGuild.deleteGuildConfirmation({
-        interaction,
+        interaction
       });
     });
-  },
+  }
 };

@@ -13,8 +13,8 @@ export default <PrefixCommand>{
       client,
       channelId: message.channel.id,
       options: {
-        content: 'Leaderboard updated!',
-      },
+        content: 'Leaderboard updated!'
+      }
     });
-  },
+  }
 };

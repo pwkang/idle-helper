@@ -1,4 +1,4 @@
-import {IChecker} from './type';
+import type {IChecker} from './type';
 
 const isSold = ({message, author}: IChecker) =>
   message.mentions.users.has(author.id) &&
@@ -10,5 +10,5 @@ const hasNotEnoughItems = ({message, author}: IChecker) =>
 
 export const _sellChecker = {
   isSold,
-  hasNotEnoughItems,
+  hasNotEnoughItems
 };

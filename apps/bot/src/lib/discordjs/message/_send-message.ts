@@ -1,4 +1,10 @@
-import type {Channel, Client, Message, MessageCreateOptions, MessagePayload} from 'discord.js';
+import type {
+  Channel,
+  Client,
+  Message,
+  MessageCreateOptions,
+  MessagePayload
+} from 'discord.js';
 import {PermissionsBitField, TextChannel, ThreadChannel} from 'discord.js';
 import {logger} from '@idle-helper/utils';
 
@@ -13,7 +19,7 @@ export interface SendMessageProps {
 export default async function _sendMessage({
   channelId,
   options,
-  client,
+  client
 }: SendMessageProps): Promise<Message | undefined> {
   const channel = client.channels.cache.get(channelId);
   if (!channel) return;
@@ -30,12 +36,13 @@ interface CheckTypeAndSendProps {
 async function checkTypeAndSend({
   channel,
   options,
-  client,
+  client
 }: CheckTypeAndSendProps): Promise<Message | undefined> {
   let sentMessage;
   if (channel instanceof TextChannel) {
     const textChannel = channel as TextChannel;
-    if (!textChannel.permissionsFor(client.user!)?.has(requiredPermissions)) return;
+    if (!textChannel.permissionsFor(client.user!)?.has(requiredPermissions))
+      return;
     try {
       sentMessage = await textChannel.send(options);
     } catch (error: any) {
@@ -43,14 +50,15 @@ async function checkTypeAndSend({
         message: error.message,
         logLevel: 'warn',
         variant: 'sendMessage',
-        clusterId: client.cluster?.id,
+        clusterId: client.cluster?.id
       });
       return;
     }
   }
   if (channel instanceof ThreadChannel) {
     const threadChannel = channel as ThreadChannel;
-    if (!threadChannel.permissionsFor(client.user!)?.has(requiredPermissions)) return;
+    if (!threadChannel.permissionsFor(client.user!)?.has(requiredPermissions))
+      return;
     try {
       sentMessage = await threadChannel.send(options);
     } catch (error: any) {
@@ -58,7 +66,7 @@ async function checkTypeAndSend({
         message: error.message,
         logLevel: 'warn',
         variant: 'sendMessage',
-        clusterId: client.cluster?.id,
+        clusterId: client.cluster?.id
       });
       return;
     }

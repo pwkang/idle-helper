@@ -1,7 +1,7 @@
 import {mongoClient} from '@idle-helper/services';
 import {infoSchema} from '@idle-helper/models/dist/info/info.schema';
-import {IInfo, IMarketItem} from '@idle-helper/models/dist/info/info.type';
-import {IDLE_FARM_ITEMS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import type {IInfo, IMarketItem} from '@idle-helper/models/dist/info/info.type';
+import type {IDLE_FARM_ITEMS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 import {infoRedis} from '../redis/info.redis';
 import ms from 'ms';
 
@@ -33,7 +33,11 @@ interface IUpdateWorkerPower {
   power: number;
 }
 
-const updateWorkerPower = async ({worker, level, power}: IUpdateWorkerPower) => {
+const updateWorkerPower = async ({
+  worker,
+  level,
+  power
+}: IUpdateWorkerPower) => {
   const info = await getWorkerPower();
   if (!info) return;
   const targetWorker = info[worker];
@@ -42,12 +46,12 @@ const updateWorkerPower = async ({worker, level, power}: IUpdateWorkerPower) => 
     {},
     {
       $set: {
-        [`workerPower.${worker}.${level}`]: power,
-      },
+        [`workerPower.${worker}.${level}`]: power
+      }
     },
     {
       upsert: true,
-      new: true,
+      new: true
     }
   );
 };
@@ -69,7 +73,11 @@ interface IUpdateMarketItems extends Omit<IMarketItem, 'lastUpdatedAt'> {
   type: keyof typeof IDLE_FARM_ITEMS;
 }
 
-const updateMarketItems = async ({type, price, isOverstocked}: IUpdateMarketItems) => {
+const updateMarketItems = async ({
+  type,
+  price,
+  isOverstocked
+}: IUpdateMarketItems) => {
   const marketItems = await getMarketItems();
   const marketItem = marketItems[type];
   if (
@@ -84,12 +92,12 @@ const updateMarketItems = async ({type, price, isOverstocked}: IUpdateMarketItem
         [`market.${type}`]: {
           price,
           lastUpdatedAt: new Date(),
-          isOverstocked,
-        },
-      },
+          isOverstocked
+        }
+      }
     },
     {
-      new: true,
+      new: true
     }
   );
 };
@@ -104,11 +112,11 @@ const updateLeaderboard = async ({type, values}: IUpdateLeaderboard) => {
     {},
     {
       $set: {
-        [`leaderboard.${type}`]: values,
-      },
+        [`leaderboard.${type}`]: values
+      }
     },
     {
-      new: true,
+      new: true
     }
   );
 };
@@ -125,5 +133,5 @@ export const infoService = {
   updateMarketItems,
   getMarketItems,
   updateLeaderboard,
-  getLeaderboard,
+  getLeaderboard
 };

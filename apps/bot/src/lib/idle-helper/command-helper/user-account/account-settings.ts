@@ -1,9 +1,10 @@
+import type {
+  BaseMessageOptions,
+  StringSelectMenuInteraction,
+  User} from 'discord.js';
 import {
   ActionRowBuilder,
-  BaseMessageOptions,
-  StringSelectMenuBuilder,
-  StringSelectMenuInteraction,
-  User,
+  StringSelectMenuBuilder
 } from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
 import {_getUserSettingsEmbed} from './embeds/user-settings.embed';
@@ -20,11 +21,11 @@ interface IRender {
 
 export const _accountSettings = async ({author}: IAccountSettings) => {
   const userProfile = await userService.findUser({
-    userId: author.id,
+    userId: author.id
   });
   if (!userProfile) return null;
   const guild = await guildService.findUserGuild({
-    userId: author.id,
+    userId: author.id
   });
   const guildServer = guild
     ? await redisServerInfo.getServerInfo({serverId: guild?.serverId})
@@ -34,7 +35,7 @@ export const _accountSettings = async ({author}: IAccountSettings) => {
     author,
     userProfile,
     guildName: guild?.info.name,
-    guildServerName: guildServer?.name,
+    guildServerName: guildServer?.name
   });
 
   function render({type}: IRender) {
@@ -42,24 +43,26 @@ export const _accountSettings = async ({author}: IAccountSettings) => {
       case PAGE_TYPE.settings:
         return {
           embeds: [userSettingsEmbed],
-          components: [getActionRow({selected: PAGE_TYPE.settings})],
+          components: [getActionRow({selected: PAGE_TYPE.settings})]
         };
     }
   }
 
-  function responseInteraction(interaction: StringSelectMenuInteraction): BaseMessageOptions {
+  function responseInteraction(
+    interaction: StringSelectMenuInteraction
+  ): BaseMessageOptions {
     const selected = interaction.values[0] as ValuesOf<typeof PAGE_TYPE>;
     return render({type: selected});
   }
 
   return {
     render,
-    responseInteraction,
+    responseInteraction
   };
 };
 
 const PAGE_TYPE = {
-  settings: 'settings',
+  settings: 'settings'
 } as const;
 
 interface IGetActionRow {
@@ -74,7 +77,7 @@ const getActionRow = ({selected}: IGetActionRow) => {
       .setOptions({
         label: 'Settings',
         value: 'settings',
-        default: selected === PAGE_TYPE.settings,
-      }),
+        default: selected === PAGE_TYPE.settings
+      })
   );
 };

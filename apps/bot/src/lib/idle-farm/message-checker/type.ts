@@ -1,4 +1,4 @@
-import {Embed, Message, User} from 'discord.js';
+import type {Embed, Message, User} from 'discord.js';
 
 export interface IChecker {
   message: Message;

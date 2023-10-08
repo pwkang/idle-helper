@@ -7,5 +7,5 @@ export const _guildSettingsHelper = {
   renderGuildSettingsEmbed: _getGuildSettingsEmbed,
   showSettings: _showSettings,
   configure: _configureGuild,
-  memberTracker: _memberTracker,
+  memberTracker: _memberTracker
 };

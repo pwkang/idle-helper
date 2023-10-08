@@ -1,7 +1,8 @@
-import {Client, Embed, EmbedBuilder, Message, User} from 'discord.js';
+import type {Client, Embed, Message, User} from 'discord.js';
+import { EmbedBuilder} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import {userService} from '../../../services/database/user.service';
-import {IUser} from '@idle-helper/models';
+import type {IUser} from '@idle-helper/models';
 import {BOT_COLOR, BOT_EMOJI} from '@idle-helper/constants';
 import {typedObjectEntries} from '@idle-helper/utils';
 import {calcWorkerPower} from '../calculator/worker-power';
@@ -16,28 +17,36 @@ interface IIdleGuild {
   isSlashCommand?: boolean;
 }
 
-export const idleTeamRaid = async ({author, client, isSlashCommand, message}: IIdleGuild) => {
+export const idleTeamRaid = async ({
+  author,
+  client,
+  isSlashCommand,
+  message
+}: IIdleGuild) => {
   let event = createIdleFarmCommandListener({
     author,
     client,
-    channelId: message.channel.id,
+    channelId: message.channel.id
   });
   if (!event) return;
-  const involvedUsers = [message.author, ...message.mentions.users.map((user) => user)];
+  const involvedUsers = [
+    message.author,
+    ...message.mentions.users.map((user) => user)
+  ];
   event.on('embed', async (embed, collected) => {
     if (isAbleToStart({embed})) {
       const result = await commandHelper.guild.verifyGuild({
         client,
         server: message.guild,
-        userId: message.author.id,
+        userId: message.author.id
       });
       if (result.errorEmbed) {
         await djsMessageHelper.send({
           client,
           channelId: message.channel.id,
           options: {
-            embeds: [result.errorEmbed],
-          },
+            embeds: [result.errorEmbed]
+          }
         });
         event?.stop();
         return;
@@ -50,7 +59,7 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
       const guildRoleId = userGuild?.roleId;
       const toggleGuild = await toggleGuildChecker({
         guildRoleId,
-        serverId: message.guild.id,
+        serverId: message.guild.id
       });
       if (!toggleGuild?.teamRaid.helper) {
         event?.stop();
@@ -60,7 +69,7 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
       await sendConfirmationMessage({
         channelId: message.channel.id,
         client,
-        users: involvedUsers,
+        users: involvedUsers
       });
     }
     if (isTeamRaid(embed)) {
@@ -68,7 +77,7 @@ export const idleTeamRaid = async ({author, client, isSlashCommand, message}: II
         channelId: message.channel.id,
         collected,
         users: involvedUsers,
-        client,
+        client
       });
       event?.stop();
     }
@@ -98,22 +107,22 @@ interface ISendConfirmationMessage {
 export const sendConfirmationMessage = async ({
   channelId,
   client,
-  users,
+  users
 }: ISendConfirmationMessage) => {
   const usersAccount = await userService.getUsersById({
-    userIds: users.map((user) => user.id),
+    userIds: users.map((user) => user.id)
   });
 
   const embed = generateConfirmationEmbed({
     users: usersAccount,
-    authors: users,
+    authors: users
   });
   await djsMessageHelper.send({
     channelId,
     client,
     options: {
-      embeds: [embed],
-    },
+      embeds: [embed]
+    }
   });
 };
 
@@ -122,9 +131,12 @@ interface IGenerateConfirmationEmbed {
   authors: User[];
 }
 
-export const generateConfirmationEmbed = ({authors, users}: IGenerateConfirmationEmbed) => {
+export const generateConfirmationEmbed = ({
+  authors,
+  users
+}: IGenerateConfirmationEmbed) => {
   const embed = new EmbedBuilder().setColor(BOT_COLOR.embed).setAuthor({
-    name: 'Team Raid Confirmation',
+    name: 'Team Raid Confirmation'
   });
 
   for (const author of authors) {
@@ -138,26 +150,32 @@ export const generateConfirmationEmbed = ({authors, users}: IGenerateConfirmatio
           maxExp: worker.maxExp,
           farm: worker.farm,
           type,
-          power: calcWorkerPower({type, level: worker.level, decimalPlace: 3}),
+          power: calcWorkerPower({type, level: worker.level, decimalPlace: 3})
         }))
         .sort((a, b) => b.power - a.power)
         .slice(0, 3);
 
-      const totalPower = top3Workers.reduce((acc, worker) => acc + worker.power, 0);
+      const totalPower = top3Workers.reduce(
+        (acc, worker) => acc + worker.power,
+        0
+      );
       embed.addFields({
         name: `${author.username} • ${totalPower}`,
         value: top3Workers
           .map(
-            (worker) => `${BOT_EMOJI.worker[worker.type]} Lv ${worker.level} | AT: ${worker.power}`,
+            (worker) =>
+              `${BOT_EMOJI.worker[worker.type]} Lv ${worker.level} | AT: ${
+                worker.power
+              }`
           )
           .join('\n'),
-        inline: true,
+        inline: true
       });
     } else {
       embed.addFields({
         name: author.username,
         value: 'Workers not registered',
-        inline: true,
+        inline: true
       });
     }
   }
@@ -172,7 +190,8 @@ interface IIsAbleToStart {
 const isAbleToStart = ({embed}: IIsAbleToStart) =>
   embed.description?.includes('All players have to agree');
 
-const isTeamRaid = (embed: Embed) => embed.description?.includes('You are raiding');
+const isTeamRaid = (embed: Embed) =>
+  embed.description?.includes('You are raiding');
 
 const isNotEnoughPlayer = (message: Message) =>
   message.content.includes('you need at least 2 players');
@@ -181,6 +200,9 @@ const hasOtherGuildMember = (message: Message) =>
   message.content.includes('with players of your guild');
 
 const hasNotEnoughPower = (message: Message) =>
-  message.content.includes('The following player(s) do not have at least 80 energy');
+  message.content.includes(
+    'The following player(s) do not have at least 80 energy'
+  );
 
-const hasNotReachDirt2 = (message: Message) => message.content.includes('dirt league II');
+const hasNotReachDirt2 = (message: Message) =>
+  message.content.includes('dirt league II');

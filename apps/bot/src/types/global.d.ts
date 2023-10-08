@@ -4,12 +4,15 @@ import type {
   Message,
   SlashCommandBuilder,
   SlashCommandSubcommandBuilder,
-  User,
+  User
 } from 'discord.js';
-import {ChatInputCommandInteraction} from 'discord.js';
+import type {ChatInputCommandInteraction} from 'discord.js';
 import type {ScheduleOptions} from 'node-cron';
-import {PREFIX_COMMAND_TYPE, SLASH_MESSAGE_BOT_TYPE} from '@idle-helper/constants';
-import {ICommandPreCheck} from './utils';
+import type {
+  PREFIX_COMMAND_TYPE,
+  SLASH_MESSAGE_BOT_TYPE
+} from '@idle-helper/constants';
+import type {ICommandPreCheck} from './utils';
 
 declare global {
   export type ValuesOf<T extends Record<string, unknown>> = T[keyof T];
@@ -17,17 +20,27 @@ declare global {
   interface PrefixCommand {
     name: string;
     commands: string[];
-    execute: (client: Client, message: Message<true>, args: string[]) => void | Promise<void>;
+    execute: (
+      client: Client,
+      message: Message<true>,
+      args: string[]
+    ) => void | Promise<void>;
     preCheck: ICommandPreCheck;
     type: ValuesOf<typeof PREFIX_COMMAND_TYPE>;
   }
 
-  type SlashCommand = SlashCommandRoot | SlashCommandSubcommand | SlashCommandSubcommandGroup;
+  type SlashCommand =
+    | SlashCommandRoot
+    | SlashCommandSubcommand
+    | SlashCommandSubcommandGroup;
 
   interface SlashCommandBase {
     name: string;
     description: string;
-    execute: (client: Client, interaction: ChatInputCommandInteraction) => Promise<void>;
+    execute: (
+      client: Client,
+      interaction: ChatInputCommandInteraction
+    ) => Promise<void>;
     preCheck: ICommandPreCheck;
   }
 
@@ -40,7 +53,9 @@ declare global {
     type: 'subcommand';
     groupName?: string;
     commandName: string;
-    builder?: (subcommand: SlashCommandSubcommandBuilder) => SlashCommandSubcommandBuilder;
+    builder?: (
+      subcommand: SlashCommandSubcommandBuilder
+    ) => SlashCommandSubcommandBuilder;
   }
 
   interface SlashCommandSubcommandGroup extends SlashCommandBase {
@@ -53,7 +68,11 @@ declare global {
     commandName: string[];
     bot: ValuesOf<typeof SLASH_MESSAGE_BOT_TYPE>;
     preCheck: ICommandPreCheck;
-    execute: (client: Client, message: Message<true>, author: User) => Promise<void>;
+    execute: (
+      client: Client,
+      message: Message<true>,
+      author: User
+    ) => Promise<void>;
   }
 
   interface BotMessage {

@@ -1,14 +1,19 @@
-import {
-  ActionRowBuilder,
+import type {
   BaseInteraction,
   BaseMessageOptions,
+  Client} from 'discord.js';
+import {
+  ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  Client,
   EmbedBuilder,
-  StringSelectMenuBuilder,
+  StringSelectMenuBuilder
 } from 'discord.js';
-import {BOT_COLOR, BOT_INVITE_LINK, SUPPORT_SERVER_INVITE_LINK} from '@idle-helper/constants';
+import {
+  BOT_COLOR,
+  BOT_INVITE_LINK,
+  SUPPORT_SERVER_INVITE_LINK
+} from '@idle-helper/constants';
 import {helpConfig} from './help.config';
 import messageFormatter from '../../../discordjs/message-formatter';
 import {generateNavigationRow} from '../../../../utils/pagination-row';
@@ -26,17 +31,25 @@ export const _help = ({client, channelId, serverId}: IHelp) => {
 
   function render(): BaseMessageOptions {
     const embed = getEmbed({
-      client, page, categoryId, selectMenuId, channelId, serverId,
+      client,
+      page,
+      categoryId,
+      selectMenuId,
+      channelId,
+      serverId
     });
     const components = getComponents({page, categoryId, selectMenuId});
     return {
       embeds: [embed],
-      components,
+      components
     };
   }
 
   function replyInteraction(interaction: BaseInteraction): BaseMessageOptions {
-    if (interaction.isButton() && new RegExp('^category:').test(interaction.customId)) {
+    if (
+      interaction.isButton() &&
+      new RegExp('^category:').test(interaction.customId)
+    ) {
       categoryId = interaction.customId.replace('category:', '');
       selectMenuId = undefined;
       page = 0;
@@ -53,7 +66,7 @@ export const _help = ({client, channelId, serverId}: IHelp) => {
 
   return {
     render,
-    replyInteraction,
+    replyInteraction
   };
 };
 
@@ -68,35 +81,49 @@ interface IGetEmbed {
 
 const LINES_PER_PAGE = 8;
 
-const getEmbed = ({client, categoryId, page, selectMenuId, channelId, serverId}: IGetEmbed) => {
+const getEmbed = ({
+  client,
+  categoryId,
+  page,
+  selectMenuId,
+  channelId,
+  serverId
+}: IGetEmbed) => {
   const embed = new EmbedBuilder()
     .setTitle('IDLE Helper')
     .setColor(BOT_COLOR.embed)
     .setThumbnail(client.user?.displayAvatarURL() ?? null);
 
-  const category = helpConfig.find(v => v.id === categoryId) ?? helpConfig[0];
-  const selectedMenuItem = category.selectMenu.items?.find(v => v.id === selectMenuId);
+  const category = helpConfig.find((v) => v.id === categoryId) ?? helpConfig[0];
+  const selectedMenuItem = category.selectMenu.items?.find(
+    (v) => v.id === selectMenuId
+  );
   embed.setTitle(category.home.title);
   embed.setDescription(category.home.description.join('\n'));
 
   if (selectedMenuItem && selectedMenuItem.commands) {
     const range = {
       start: page * LINES_PER_PAGE,
-      end: (page + 1) * LINES_PER_PAGE,
+      end: (page + 1) * LINES_PER_PAGE
     };
     let currentLines = 0;
     let description = '';
     for (let i = 0; i < selectedMenuItem.commands.length; i++) {
       const command = selectedMenuItem.commands[i];
       if (currentLines >= range.start && currentLines < range.end) {
-        description += [command.name.map(name => convertCommandName({
-          name,
-          channelId,
-          serverId,
-        })).join(' | '),
-        command.description.map(d => `${d}`).join('\n'),
-        '',
-        '',
+        description += [
+          command.name
+            .map((name) =>
+              convertCommandName({
+                name,
+                channelId,
+                serverId
+              })
+            )
+            .join(' | '),
+          command.description.map((d) => `${d}`).join('\n'),
+          '',
+          ''
         ].join('\n');
       }
       currentLines += command.description.length;
@@ -104,7 +131,6 @@ const getEmbed = ({client, categoryId, page, selectMenuId, channelId, serverId}:
     if (description) {
       embed.setDescription(description);
     }
-
   } else if (selectedMenuItem && selectedMenuItem.info) {
     const info = selectedMenuItem.info[page];
     embed.setTitle(info.title);
@@ -112,13 +138,14 @@ const getEmbed = ({client, categoryId, page, selectMenuId, channelId, serverId}:
     if (info.image) embed.setImage(info.image);
   } else {
     if (category.home.fields)
-      embed.addFields(...category.home.fields.map(v => ({
-        name: v.name,
-        value: v.value.join('\n'),
-        inline: v.inline,
-      })));
+      embed.addFields(
+        ...category.home.fields.map((v) => ({
+          name: v.name,
+          value: v.value.join('\n'),
+          inline: v.inline
+        }))
+      );
   }
-
 
   return embed;
 };
@@ -129,24 +156,27 @@ interface IGetComponents {
   selectMenuId?: string;
 }
 
-const getComponents = ({
-  selectMenuId, categoryId, page,
-}: IGetComponents) => {
+const getComponents = ({selectMenuId, categoryId, page}: IGetComponents) => {
   const rows = [];
-  const category = helpConfig.find(v => v.id === categoryId) ?? helpConfig[0];
-  const selectMenu = category?.selectMenu.items.find(v => v.id === selectMenuId);
+  const category = helpConfig.find((v) => v.id === categoryId) ?? helpConfig[0];
+  const selectMenu = category?.selectMenu.items.find(
+    (v) => v.id === selectMenuId
+  );
 
   if (category && selectMenu) {
     if (selectMenu.commands) {
-      const totalLines = selectMenu.commands.reduce((acc, cur) => acc + cur.description.length, 0);
+      const totalLines = selectMenu.commands.reduce(
+        (acc, cur) => acc + cur.description.length,
+        0
+      );
       const totalPages = Math.ceil(totalLines / LINES_PER_PAGE);
       if (totalPages > 1) {
         rows.push(
           generateNavigationRow({
             itemsPerPage: LINES_PER_PAGE,
             page,
-            total: totalLines,
-          }),
+            total: totalLines
+          })
         );
       }
     } else if (selectMenu.info) {
@@ -156,8 +186,8 @@ const getComponents = ({
           generateNavigationRow({
             itemsPerPage: 1,
             page,
-            total: totalPages,
-          }),
+            total: totalPages
+          })
         );
       }
     }
@@ -170,7 +200,7 @@ const getComponents = ({
       new ButtonBuilder()
         .setCustomId(`category:${category.id}`)
         .setLabel(category.label)
-        .setStyle(ButtonStyle.Primary),
+        .setStyle(ButtonStyle.Primary)
     );
   }
   rows.push(categoryRow);
@@ -181,30 +211,31 @@ const getComponents = ({
       new StringSelectMenuBuilder()
         .setCustomId('selectMenu')
         .setPlaceholder(category.selectMenu.name)
-        .setOptions(category.selectMenu.items.map(v => ({
-          value: v.id,
-          label: v.label,
-          description: v.description,
-          emoji: v.emoji,
-          default: v.id === selectMenuId,
-        }))),
+        .setOptions(
+          category.selectMenu.items.map((v) => ({
+            value: v.id,
+            label: v.label,
+            description: v.description,
+            emoji: v.emoji,
+            default: v.id === selectMenuId
+          }))
+        )
     );
   }
   rows.push(selectMenuRow);
-
 
   const linksRow = new ActionRowBuilder<ButtonBuilder>()
     .addComponents(
       new ButtonBuilder()
         .setLabel('Invite')
         .setStyle(ButtonStyle.Link)
-        .setURL(BOT_INVITE_LINK),
+        .setURL(BOT_INVITE_LINK)
     )
     .addComponents(
       new ButtonBuilder()
         .setLabel('Support')
         .setStyle(ButtonStyle.Link)
-        .setURL(SUPPORT_SERVER_INVITE_LINK),
+        .setURL(SUPPORT_SERVER_INVITE_LINK)
     );
   rows.push(linksRow);
 
@@ -224,9 +255,9 @@ const convertCommandName = ({name, channelId, serverId}: IConvertName) => {
     return messageFormatter.hyperlink({
       url: messageFormatter.channelUrl({
         serverId,
-        channelId,
+        channelId
       }),
-      text: name,
+      text: name
     });
   }
 };

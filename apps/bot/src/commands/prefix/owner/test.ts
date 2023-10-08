@@ -11,5 +11,5 @@ export default <PrefixCommand>{
     if (!fetchMessage) return;
     const packingResult = messageReaders.sell(fetchMessage);
     console.log(packingResult);
-  },
+  }
 };

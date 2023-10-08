@@ -28,6 +28,5 @@ export const BOT_CLICKABLE_SLASH_COMMANDS = {
 
   toggleShow: '</toggle show:1136310311968837703>',
   toggleReset: '</toggle reset:1136310311968837703>',
-  toggleSet: '</toggle set:1136310311968837703>',
-
+  toggleSet: '</toggle set:1136310311968837703>'
 } as const;

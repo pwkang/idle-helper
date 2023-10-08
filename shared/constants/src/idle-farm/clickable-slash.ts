@@ -16,5 +16,5 @@ export const IDLE_FARM_CLICKABLE_SLASH_COMMANDS = {
   workerStats: '</worker stats:1128412424630964314>',
   workerHire: '</worker hire:1128412424630964314>',
   workerAssign: '</worker assign:1128412424630964314>',
-  workerAutoAssign: '</worker autoassign:1128412424630964314>',
+  workerAutoAssign: '</worker autoassign:1128412424630964314>'
 } as const;

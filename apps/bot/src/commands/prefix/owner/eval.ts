@@ -13,8 +13,8 @@ export default <PrefixCommand>{
         client,
         channelId: message.channel.id,
         options: {
-          content: 'Please provide a code to eval',
-        },
+          content: 'Please provide a code to eval'
+        }
       });
       return;
     }
@@ -24,17 +24,17 @@ export default <PrefixCommand>{
         client,
         channelId: message.channel.id,
         options: {
-          content: `\`\`\`js\n${result}\`\`\``,
-        },
+          content: `\`\`\`js\n${result}\`\`\``
+        }
       });
     } catch (e) {
       await djsMessageHelper.send({
         client,
         channelId: message.channel.id,
         options: {
-          content: '```js\nError Encountered```',
-        },
+          content: '```js\nError Encountered```'
+        }
       });
     }
-  },
+  }
 };

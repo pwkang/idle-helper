@@ -1,4 +1,4 @@
-import {Client, Embed, Message, User} from 'discord.js';
+import type {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import {redisDailyReminder} from '../../../services/redis/daily-reminder.redis';
 
@@ -9,11 +9,16 @@ interface IIdleDaily {
   isSlashCommand?: boolean;
 }
 
-export const idleDaily = async ({author, client, isSlashCommand, message}: IIdleDaily) => {
+export const idleDaily = async ({
+  author,
+  client,
+  isSlashCommand,
+  message
+}: IIdleDaily) => {
   let event = createIdleFarmCommandListener({
     author,
     client,
-    channelId: message.channel.id,
+    channelId: message.channel.id
   });
   if (!event) return;
   event.on('embed', async (embed) => {

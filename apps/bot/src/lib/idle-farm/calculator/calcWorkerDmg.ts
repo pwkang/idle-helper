@@ -6,7 +6,7 @@ interface ICalcWorkerDmg {
 
 const DAMAGE = {
   player: 80,
-  team: 100,
+  team: 100
 } as const;
 
 export const calcWorkerDmg = ({atk, def, type}: ICalcWorkerDmg) => {

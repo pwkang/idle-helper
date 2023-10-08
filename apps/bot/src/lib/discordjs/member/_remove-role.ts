@@ -1,4 +1,4 @@
-import {Client} from 'discord.js';
+import type {Client} from 'discord.js';
 import {djsServerHelper} from '../server';
 import {_fetchMember} from './_fetch-member';
 import {logger} from '@idle-helper/utils';
@@ -10,16 +10,21 @@ interface IAddRoles {
   roleIds: string[];
 }
 
-export const _removeRoles = async ({client, serverId, userId, roleIds}: IAddRoles) => {
+export const _removeRoles = async ({
+  client,
+  serverId,
+  userId,
+  roleIds
+}: IAddRoles) => {
   const server = await djsServerHelper.getServer({
     serverId,
-    client,
+    client
   });
   if (!server) return;
   const member = await _fetchMember({
     userId,
     client,
-    serverId,
+    serverId
   });
   if (!member) return;
   const roles = server.roles.cache.filter((role) => roleIds.includes(role.id));
@@ -32,8 +37,10 @@ export const _removeRoles = async ({client, serverId, userId, roleIds}: IAddRole
     logger({
       clusterId: client.cluster?.id,
       logLevel: 'error',
-      message: `Failed to remove roles ${roleIds.join(', ')} to ${userId} in ${serverId}`,
-      variant: 'add-roles',
+      message: `Failed to remove roles ${roleIds.join(
+        ', '
+      )} to ${userId} in ${serverId}`,
+      variant: 'add-roles'
     });
   }
 };

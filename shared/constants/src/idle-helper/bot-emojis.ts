@@ -8,7 +8,7 @@ export const BOT_EMOJI = {
     ready: '<:on:863824531445121034>',
     notReady: '🕓',
     heart: '<:heart:1132270394976522341>',
-    taco: '<:taco:1132270398235496468>',
+    taco: '<:taco:1132270398235496468>'
   },
   worker: {
     wise: '<:wiseworker:1134134001813176391>',
@@ -17,7 +17,7 @@ export const BOT_EMOJI = {
     masterful: '<:masterfulworker:1134134019429249034>',
     expert: '<:expertworker:1134134025053810709>',
     deficient: '<:deficientworker:1134134030749667368>',
-    common: '<:commonworker:1134134037724794950>',
+    common: '<:commonworker:1134134037724794950>'
   },
   animatedWorker: {
     wise: '<a:wiseworker:1134134003897737236>',
@@ -26,14 +26,14 @@ export const BOT_EMOJI = {
     masterful: '<a:masterfulworker:1134134021794828298>',
     expert: '<a:expertworker:1134134028937744394>',
     deficient: '<a:deficientworker:1134134033958322197>',
-    common: '<a:commonworker:1134134040253968394>',
+    common: '<a:commonworker:1134134040253968394>'
   },
   other: {
     farm: '<:farm:1134144211344703531>',
     idleCoin: '<:IDLEcoin:1140260422499442778>',
     idlucks: '<:idlucks:1141028891763425342>',
     idlon: '<:idlon:1141028895538298942>',
-    level: '<:level:1147110866748194846>',
+    level: '<:level:1147110866748194846>'
   },
   items: {
     workerTokens: '<:workerTokens:1156520862464364604>',
@@ -132,7 +132,7 @@ export const BOT_EMOJI = {
     uncommonLootbox: '<:uncommonlootbox:1153220935575412776>',
     rareLootbox: '<:rarelootbox:1153220938817609728>',
     epicLootbox: '<:epiclootbox:1153220941359366144>',
-    mythicLootbox: '<:MYTHIClootbox:1153219269807583302>',
+    mythicLootbox: '<:MYTHIClootbox:1153219269807583302>'
   },
   workerText: {
     useless1: '<:useless1:1147730071747039263>',
@@ -175,18 +175,24 @@ export const BOT_EMOJI = {
     masterful4: '<:masterful4:1147731050496282684>',
     masterful5: '<:masterful5:1147731045144346784>',
     masterful6: '<:masterful6:1147731038420877323>',
-    masterful7: '<:masterful7:1147731033496760360>',
-  },
+    masterful7: '<:masterful7:1147731033496760360>'
+  }
 } as const;
 
 export const BOT_IMAGE_URL = {
   worker: {
-    useless: 'https://cdn.discordapp.com/emojis/1134134007219630170.webp?size=96&quality=lossless',
-    deficient: 'https://cdn.discordapp.com/emojis/1134134030749667368.webp?size=96&quality=lossless',
-    common: 'https://cdn.discordapp.com/emojis/1134134037724794950.webp?size=96&quality=lossless',
-    talented: 'https://cdn.discordapp.com/emojis/1134134011996930050.webp?size=96&quality=lossless',
+    useless:
+      'https://cdn.discordapp.com/emojis/1134134007219630170.webp?size=96&quality=lossless',
+    deficient:
+      'https://cdn.discordapp.com/emojis/1134134030749667368.webp?size=96&quality=lossless',
+    common:
+      'https://cdn.discordapp.com/emojis/1134134037724794950.webp?size=96&quality=lossless',
+    talented:
+      'https://cdn.discordapp.com/emojis/1134134011996930050.webp?size=96&quality=lossless',
     wise: 'https://cdn.discordapp.com/emojis/1134134001813176391.webp?size=96&quality=lossless',
-    expert: 'https://cdn.discordapp.com/emojis/1134134025053810709.webp?size=96&quality=lossless',
-    masterful: 'https://cdn.discordapp.com/emojis/1134134019429249034.webp?size=96&quality=lossless',
-  },
+    expert:
+      'https://cdn.discordapp.com/emojis/1134134025053810709.webp?size=96&quality=lossless',
+    masterful:
+      'https://cdn.discordapp.com/emojis/1134134019429249034.webp?size=96&quality=lossless'
+  }
 };

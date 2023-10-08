@@ -11,15 +11,15 @@ const djsRestHelper = {
     global: {
       createOne: _createGlobalSlashCommand,
       getAll: _getGlobalSlashCommands,
-      deleteOne: _deleteGlobalSlashCommand,
+      deleteOne: _deleteGlobalSlashCommand
     },
     guild: {
       createOne: _createGuildSlashCommand,
       deleteOne: _deleteGuildSlashCommand,
       getAll: _getGuildSlashCommands,
-      findOne: _findGuildSlashCommand,
-    },
-  },
+      findOne: _findGuildSlashCommand
+    }
+  }
 };
 
 export default djsRestHelper;

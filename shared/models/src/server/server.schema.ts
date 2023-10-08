@@ -1,5 +1,5 @@
 import {Schema} from 'mongoose';
-import {IServer} from './server.type';
+import type {IServer} from './server.type';
 
 export const serverSchema = new Schema<IServer>({
   serverId: {type: String, required: true},
@@ -7,13 +7,13 @@ export const serverSchema = new Schema<IServer>({
   settings: {
     admin: {
       usersId: [{type: String}],
-      rolesId: [{type: String}],
+      rolesId: [{type: String}]
     },
     randomEvent: {
       worker: {type: String},
       packing: {type: String},
       energy: {type: String},
-      lucky: {type: String},
-    },
-  },
+      lucky: {type: String}
+    }
+  }
 });

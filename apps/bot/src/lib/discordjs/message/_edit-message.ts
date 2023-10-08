@@ -1,4 +1,4 @@
-import {Client, Message, MessageEditOptions, MessagePayload} from 'discord.js';
+import type {Client, Message, MessageEditOptions, MessagePayload} from 'discord.js';
 import {logger} from '@idle-helper/utils';
 
 export interface EditMessageProps {
@@ -7,7 +7,11 @@ export interface EditMessageProps {
   options: string | MessagePayload | MessageEditOptions;
 }
 
-export default async function _editMessage({client, message, options}: EditMessageProps) {
+export default async function _editMessage({
+  client,
+  message,
+  options
+}: EditMessageProps) {
   if (message.author.id !== client.user?.id) return;
   if (!message.editable) return;
   try {
@@ -17,7 +21,7 @@ export default async function _editMessage({client, message, options}: EditMessa
       message: e.rawError?.message,
       variant: 'edit-message',
       logLevel: 'warn',
-      clusterId: client.cluster?.id,
+      clusterId: client.cluster?.id
     });
   }
 }

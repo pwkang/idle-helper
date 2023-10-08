@@ -1,7 +1,10 @@
-import {Embed} from 'discord.js';
-import {IDLE_FARM_FARM_TYPE, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import type {Embed} from 'discord.js';
+import {
+  IDLE_FARM_FARM_TYPE,
+  IDLE_FARM_WORKER_TYPE
+} from '@idle-helper/constants';
 import {typedObjectEntries} from '@idle-helper/utils';
-import {IUserWorker} from '@idle-helper/models';
+import type {IUserWorker} from '@idle-helper/models';
 
 interface IWorkerReader {
   embed: Embed;
@@ -29,7 +32,7 @@ export const _workerReader = ({embed}: IWorkerReader) => {
       farm: farm!,
       exp: Number(exp),
       maxExp: Number(maxExp),
-      amount: Number(amount),
+      amount: Number(amount)
     });
   }
   return workers;

@@ -9,5 +9,5 @@ export const djsMessageHelper = {
   delete: _deleteMessage,
   edit: _editMessage,
   reply: _replyMessage,
-  interactiveSend: _sendInteractiveMessage,
+  interactiveSend: _sendInteractiveMessage
 };

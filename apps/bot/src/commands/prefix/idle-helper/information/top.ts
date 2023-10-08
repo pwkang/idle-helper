@@ -1,4 +1,8 @@
-import {PREFIX_COMMAND_TYPE, USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
+import {
+  PREFIX_COMMAND_TYPE,
+  USER_ACC_OFF_ACTIONS,
+  USER_NOT_REGISTERED_ACTIONS
+} from '@idle-helper/constants';
 import commandHelper from '../../../../lib/idle-helper/command-helper';
 import {djsMessageHelper} from '../../../../lib/discordjs/message';
 
@@ -8,7 +12,7 @@ export default <PrefixCommand>{
   commands: ['top'],
   preCheck: {
     userAccOff: USER_ACC_OFF_ACTIONS.skip,
-    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
+    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip
   },
   execute: async (client, message) => {
     let leaderboard = await commandHelper.leaderboard.show();
@@ -18,11 +22,11 @@ export default <PrefixCommand>{
       options: leaderboard.render(),
       onEnd: () => {
         leaderboard = null as any;
-      },
+      }
     });
     if (!event) return;
     event.every((interaction) => {
       return leaderboard.replyInteraction(interaction);
     });
-  },
+  }
 };

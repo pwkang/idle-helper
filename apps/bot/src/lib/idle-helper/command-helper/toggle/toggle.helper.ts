@@ -1,5 +1,5 @@
-import {IToggleEmbedsInfo} from './toggle.embed';
-import {UpdateQuery} from 'mongoose';
+import type {IToggleEmbedsInfo} from './toggle.embed';
+import type {UpdateQuery} from 'mongoose';
 import {getUserToggle} from './type/user.toggle';
 import {getGuildToggle} from './type/guild.toggle';
 
@@ -17,14 +17,22 @@ const filterKeyword = (keyword: string): string[] =>
   keyword
     .toLowerCase()
     .split(' ')
-    .filter((item) => regexParent.test(item) || regexChild.test(item) || regexRange);
+    .filter(
+      (item) => regexParent.test(item) || regexChild.test(item) || regexRange
+    );
 
-export const getUpdateQuery = <T>({on, off, toggleInfo}: IGetUpdateQuery): UpdateQuery<T> => {
+export const getUpdateQuery = <T>({
+  on,
+  off,
+  toggleInfo
+}: IGetUpdateQuery): UpdateQuery<T> => {
   const itemOn = on
     ? filterKeyword(on).flatMap((item) => getPathsFromKeyword(item, toggleInfo))
     : [];
   const itemOff = off
-    ? filterKeyword(off).flatMap((item) => getPathsFromKeyword(item, toggleInfo))
+    ? filterKeyword(off).flatMap((item) =>
+      getPathsFromKeyword(item, toggleInfo)
+    )
     : [];
   const query: Record<string, boolean> = {};
 
@@ -38,7 +46,7 @@ export const getUpdateQuery = <T>({on, off, toggleInfo}: IGetUpdateQuery): Updat
     query[item] = false;
   }
   return {
-    $set: query,
+    $set: query
   };
 };
 
@@ -52,7 +60,7 @@ const getPathsFromKeyword = (
     return findPath({
       toggleInfo,
       groupIndex: parseGroupIndex(_key[1]),
-      parentIndex: parseParentIndex(_key[2]),
+      parentIndex: parseParentIndex(_key[2])
     });
   } else if (regexChild.test(key)) {
     const _key = key.match(regexChild);
@@ -61,7 +69,7 @@ const getPathsFromKeyword = (
       toggleInfo,
       groupIndex: parseGroupIndex(_key[1]),
       parentIndex: parseParentIndex(_key[2]),
-      childIndex: parseChildIndex(_key[3]),
+      childIndex: parseChildIndex(_key[3])
     });
   } else if (regexRange.test(key)) {
     const _key = key.match(regexRange);
@@ -76,7 +84,7 @@ const getPathsFromKeyword = (
       const path = findPath({
         toggleInfo,
         groupIndex: fromGroupIndex,
-        parentIndex: i,
+        parentIndex: i
       });
       if (path) items.push(path);
     }
@@ -96,7 +104,12 @@ interface IFindPath {
   childIndex?: number;
 }
 
-const findPath = ({toggleInfo, groupIndex, parentIndex, childIndex}: IFindPath): string | null => {
+const findPath = ({
+  toggleInfo,
+  groupIndex,
+  parentIndex,
+  childIndex
+}: IFindPath): string | null => {
   const parent = toggleInfo[groupIndex]?.children[parentIndex] ?? null;
 
   if (!parent) return null;
@@ -115,5 +128,5 @@ export interface IUpdateToggle {
 
 export const _toggleHelper = {
   user: getUserToggle,
-  guild: getGuildToggle,
+  guild: getGuildToggle
 };

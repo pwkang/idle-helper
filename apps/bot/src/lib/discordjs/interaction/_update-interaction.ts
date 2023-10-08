@@ -1,4 +1,8 @@
-import {Client, InteractionUpdateOptions, MessageComponentInteraction} from 'discord.js';
+import type {
+  Client,
+  InteractionUpdateOptions,
+  MessageComponentInteraction
+} from 'discord.js';
 import {logger} from '@idle-helper/utils';
 
 export interface IUpdateInteraction {
@@ -10,7 +14,7 @@ export interface IUpdateInteraction {
 export default async function _updateInteraction({
   interaction,
   options,
-  client,
+  client
 }: IUpdateInteraction) {
   try {
     await interaction.update(options);
@@ -19,7 +23,7 @@ export default async function _updateInteraction({
       message: error.rawError,
       variant: 'updateInteraction',
       logLevel: 'warn',
-      clusterId: client.cluster?.id,
+      clusterId: client.cluster?.id
     });
   }
 }

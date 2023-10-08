@@ -16,15 +16,17 @@ export default <BotMessage>{
     const embed = message.embeds[0];
     const workers = messageReaders.worker({embed});
     await updateWorkersPower(workers);
-  },
+  }
 };
 
-const updateWorkersPower = async (userWorkers: ReturnType<typeof messageReaders.worker>) => {
+const updateWorkersPower = async (
+  userWorkers: ReturnType<typeof messageReaders.worker>
+) => {
   for (const worker of userWorkers) {
     await infoService.updateWorkerPower({
       worker: worker.type,
       power: worker.power,
-      level: worker.level,
+      level: worker.level
     });
   }
 };

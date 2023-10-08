@@ -1,4 +1,4 @@
-import {Client, Embed, Message, User} from 'discord.js';
+import type {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import {createMessageEditedListener} from '../../../utils/message-edited-listener';
 import messageReaders from '../message-readers';
@@ -11,17 +11,22 @@ interface IIdleMarket {
   isSlashCommand?: boolean;
 }
 
-export const idleMarket = ({author, client, isSlashCommand, message}: IIdleMarket) => {
+export const idleMarket = ({
+  author,
+  client,
+  isSlashCommand,
+  message
+}: IIdleMarket) => {
   let event = createIdleFarmCommandListener({
     author,
     client,
-    channelId: message.channel.id,
+    channelId: message.channel.id
   });
   if (!event) return;
   event.on('embed', async (embed, collected) => {
     if (isMarketDaily({embed})) {
       idleMarketSuccess({
-        message: collected,
+        message: collected
       });
       event?.stop();
     }
@@ -38,7 +43,7 @@ interface IIdleMarketSuccess {
 
 const idleMarketSuccess = async ({message}: IIdleMarketSuccess) => {
   const event = await createMessageEditedListener({
-    messageId: message.id,
+    messageId: message.id
   });
   if (!event) return;
   event.on(message.id, (collected) => {
@@ -52,13 +57,13 @@ interface IMarketPageChanged {
 
 const marketPageChanged = ({embed}: IMarketPageChanged) => {
   const marketItems = messageReaders.market({
-    embed,
+    embed
   });
   marketItems.forEach((item) => {
     infoService.updateMarketItems({
       isOverstocked: item.isOverstocked,
       type: item.type,
-      price: item.price,
+      price: item.price
     });
   });
 };

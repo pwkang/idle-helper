@@ -1,4 +1,8 @@
-import {PREFIX_COMMAND_TYPE, USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
+import {
+  PREFIX_COMMAND_TYPE,
+  USER_ACC_OFF_ACTIONS,
+  USER_NOT_REGISTERED_ACTIONS
+} from '@idle-helper/constants';
 import commandHelper from '../../../../lib/idle-helper/command-helper';
 import {djsMessageHelper} from '../../../../lib/discordjs/message';
 
@@ -8,13 +12,13 @@ export default <PrefixCommand>{
   type: PREFIX_COMMAND_TYPE.bot,
   preCheck: {
     userAccOff: USER_ACC_OFF_ACTIONS.askToTurnOn,
-    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.askToRegister,
+    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.askToRegister
   },
   execute: async (client, message) => {
     let topPowerListing = await commandHelper.guild.topPowerListing({
       client,
       authorId: message.author.id,
-      server: message.guild,
+      server: message.guild
     });
     const event = await djsMessageHelper.interactiveSend({
       client,
@@ -22,9 +26,9 @@ export default <PrefixCommand>{
       channelId: message.channel.id,
       onEnd: () => {
         topPowerListing = null as any;
-      },
+      }
     });
     if (!event) return;
     event.every(topPowerListing.replyInteraction);
-  },
+  }
 };

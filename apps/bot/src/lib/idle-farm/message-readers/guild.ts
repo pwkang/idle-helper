@@ -1,4 +1,4 @@
-import {Embed} from 'discord.js';
+import type {Embed} from 'discord.js';
 import ms from 'ms';
 
 interface IGuildReader {
@@ -18,13 +18,14 @@ export const _guildReader = ({embed}: IGuildReader) => {
       readyIn += ms(t);
     }
   }
-  const raidedAmount = embed.footer?.text.match(/Your guild was raided (\d+)/)?.[1] ?? '0';
+  const raidedAmount =
+    embed.footer?.text.match(/Your guild was raided (\d+)/)?.[1] ?? '0';
   return {
     name,
     playerCount: Number(playerCount),
     rank: Number(rank),
     honor: Number(honor),
     readyIn,
-    raidedAmount: Number(raidedAmount),
+    raidedAmount: Number(raidedAmount)
   };
 };

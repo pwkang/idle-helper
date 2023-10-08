@@ -1,4 +1,4 @@
-import {ValuesOf} from '../type';
+import type {ValuesOf} from '../type';
 
 export const DONOR_TIER = {} as const;
 

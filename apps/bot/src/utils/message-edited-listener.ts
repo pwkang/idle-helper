@@ -1,4 +1,4 @@
-import {Message} from 'discord.js';
+import type {Message} from 'discord.js';
 import {redisMessageEdited} from '../services/redis/message-edited.redis';
 import {EventEmitter} from 'events';
 import ms from 'ms';
@@ -12,14 +12,16 @@ interface ICreateMessageEditedListener {
 
 export const createMessageEditedListener = async ({
   messageId,
-  timeout = ms('10m'),
+  timeout = ms('10m')
 }: ICreateMessageEditedListener) => {
   await redisMessageEdited.register({
-    messageId,
+    messageId
   });
 
-  messageEditedEvent.on = (messageId: string | symbol, callback: (message: Message) => void): any => {
-
+  messageEditedEvent.on = (
+    messageId: string | symbol,
+    callback: (message: Message) => void
+  ): any => {
     setTimeout(() => {
       messageEditedEvent.removeListener(messageId, callback);
     }, timeout);
@@ -33,7 +35,7 @@ export const createMessageEditedListener = async ({
 export const emitMessageEdited = async (message: Message) => {
   const messageId = message.id;
   const isEdited = await redisMessageEdited.isEdited({
-    messageId,
+    messageId
   });
   if (!isEdited) return;
   messageEditedEvent.emit(messageId, message);
@@ -48,10 +50,9 @@ interface IRemoveMessageEditedListener {
 export const removeMessageEditedListener = async ({
   timeout = ms('10m'),
   messageId,
-  callback,
+  callback
 }: IRemoveMessageEditedListener) => {
   setTimeout(() => {
-
     messageEditedEvent.removeListener(messageId, callback);
   }, timeout);
 };

@@ -1,5 +1,6 @@
-import {IInfo, TMarketItems} from './info.type';
-import {Schema, SchemaDefinition, SchemaDefinitionType} from 'mongoose';
+import type {IInfo, TMarketItems} from './info.type';
+import type { SchemaDefinition, SchemaDefinitionType} from 'mongoose';
+import {Schema} from 'mongoose';
 import {typedObjectEntries} from '@idle-helper/utils';
 import {IDLE_FARM_ITEMS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 
@@ -11,13 +12,13 @@ export const infoSchema = new Schema<IInfo>({
     talented: {type: Schema.Types.Mixed},
     wise: {type: Schema.Types.Mixed},
     expert: {type: Schema.Types.Mixed},
-    masterful: {type: Schema.Types.Mixed},
+    masterful: {type: Schema.Types.Mixed}
   },
   market: typedObjectEntries(IDLE_FARM_ITEMS).reduce((acc, [key]) => {
     acc[key] = {
       price: Number,
       isOverstocked: Boolean,
-      lastUpdatedAt: Date,
+      lastUpdatedAt: Date
     };
     return acc;
   }, {} as SchemaDefinition<SchemaDefinitionType<TMarketItems>>),
@@ -25,6 +26,6 @@ export const infoSchema = new Schema<IInfo>({
     ...typedObjectEntries(IDLE_FARM_WORKER_TYPE).reduce((acc, [key]) => {
       acc[key] = [{name: String, value: String}];
       return acc;
-    }, {} as SchemaDefinition<SchemaDefinitionType<IInfo['leaderboard']>>),
-  },
+    }, {} as SchemaDefinition<SchemaDefinitionType<IInfo['leaderboard']>>)
+  }
 });

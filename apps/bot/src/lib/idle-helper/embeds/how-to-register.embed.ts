@@ -1,4 +1,5 @@
-import {EmbedBuilder, User} from 'discord.js';
+import type { User} from 'discord.js';
+import {EmbedBuilder} from 'discord.js';
 import {BOT_CLICKABLE_SLASH_COMMANDS, BOT_COLOR} from '@idle-helper/constants';
 
 interface IHowToRegister {

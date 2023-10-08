@@ -8,9 +8,9 @@ export default <BotEvent>{
   execute: async (client) => {
     logger({
       message: `Logged in as ${client.user?.tag}!`,
-      clusterId: client.cluster?.id,
+      clusterId: client.cluster?.id
     });
 
     loadServerOnReady(client);
-  },
+  }
 };

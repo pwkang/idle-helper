@@ -1,5 +1,8 @@
 import {SLASH_COMMAND} from '../constant';
-import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
+import {
+  USER_ACC_OFF_ACTIONS,
+  USER_NOT_REGISTERED_ACTIONS
+} from '@idle-helper/constants';
 import commandHelper from '../../../lib/idle-helper/command-helper';
 import djsInteractionHelper from '../../../lib/discordjs/interaction';
 
@@ -10,11 +13,14 @@ export default <SlashCommand>{
   type: 'subcommand',
   preCheck: {
     userAccOff: USER_ACC_OFF_ACTIONS.skip,
-    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
+    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip
   },
   builder: (subcommand) =>
     subcommand.addRoleOption((option) =>
-      option.setName('role').setDescription('Guild role of the guild').setRequired(true),
+      option
+        .setName('role')
+        .setDescription('Guild role of the guild')
+        .setRequired(true)
     ),
   execute: async (client, interaction) => {
     const role = interaction.options.getRole('role', true);
@@ -24,7 +30,7 @@ export default <SlashCommand>{
       guildRole: role,
       client,
       author: interaction.user,
-      channelId: interaction.channelId,
+      channelId: interaction.channelId
     });
     if (!memberTracker) return;
     await djsInteractionHelper.replyInteraction({
@@ -33,7 +39,7 @@ export default <SlashCommand>{
       interaction,
       onStop: () => {
         memberTracker = null as any;
-      },
+      }
     });
-  },
+  }
 };

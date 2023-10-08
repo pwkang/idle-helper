@@ -1,8 +1,7 @@
-import {IChecker} from './type';
+import type {IChecker} from './type';
 
 const isFail = ({message, author}: IChecker) =>
-  isNotValidItem({message, author}) ||
-  isNotEnoughItems({message, author});
+  isNotValidItem({message, author}) || isNotEnoughItems({message, author});
 
 const isNotEnoughItems = ({message, author}: IChecker) =>
   message.mentions.users.has(author.id) &&
@@ -10,7 +9,9 @@ const isNotEnoughItems = ({message, author}: IChecker) =>
 
 const isNotValidItem = ({author, message}: IChecker) =>
   message.mentions.users.has(author.id) &&
-  message.content?.includes('That\'s not an item or it cannot be packed into boxes');
+  message.content?.includes(
+    'That\'s not an item or it cannot be packed into boxes'
+  );
 
 const isIdlePacking = ({message, author}: IChecker) =>
   message.mentions.users.has(author.id) &&
@@ -20,5 +21,5 @@ export const _packingChecker = {
   isFail,
   isNotEnoughItems,
   isNotValidItem,
-  isIdlePacking,
+  isIdlePacking
 };

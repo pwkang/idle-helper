@@ -1,4 +1,11 @@
-import {ApplicationCommand, Client, Guild, Routes, SlashCommandBuilder} from 'discord.js';
+import type {
+  ApplicationCommand,
+  Client,
+  Guild,
+  SlashCommandBuilder} from 'discord.js';
+import {
+  Routes
+} from 'discord.js';
 import {logger} from '@idle-helper/utils';
 import {djsRestClient} from '@idle-helper/services';
 
@@ -11,14 +18,14 @@ export interface ICreateGuildSlashCommand {
 export const _createGuildSlashCommand = async ({
   commands,
   client,
-  guild,
+  guild
 }: ICreateGuildSlashCommand) => {
   if (!client.user) return [];
   try {
     const data = await djsRestClient.post(
       Routes.applicationGuildCommands(client.user.id!, guild.id),
       {
-        body: commands,
+        body: commands
       }
     );
     return data as ApplicationCommand;
@@ -27,7 +34,7 @@ export const _createGuildSlashCommand = async ({
       message: e.rawError,
       variant: 'create-guild-slash-command',
       logLevel: 'error',
-      clusterId: client.cluster?.id,
+      clusterId: client.cluster?.id
     });
     return null;
   }

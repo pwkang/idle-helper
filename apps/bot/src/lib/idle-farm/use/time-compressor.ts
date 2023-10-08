@@ -1,4 +1,4 @@
-import {Client, Message, User} from 'discord.js';
+import type {Client, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import {userService} from '../../../services/database/user.service';
 import claimReminder from '../../idle-helper/reminder/claim-reminder';
@@ -10,11 +10,16 @@ interface IUseTimeCompressor {
   isSlashCommand?: boolean;
 }
 
-export const idleUseTimeCompressor = ({author, client, isSlashCommand, message}: IUseTimeCompressor) => {
+export const idleUseTimeCompressor = ({
+  author,
+  client,
+  isSlashCommand,
+  message
+}: IUseTimeCompressor) => {
   let event = createIdleFarmCommandListener({
     author,
     client,
-    channelId: message.channel.id,
+    channelId: message.channel.id
   });
   if (!event) return;
   event.on('content', async (content, collected) => {
@@ -34,18 +39,21 @@ interface IIdleUseTimeCompressorSuccess {
   message: Message;
 }
 
-export const idleUseTimeCompressorSuccess = async ({author, message}: IIdleUseTimeCompressorSuccess) => {
+export const idleUseTimeCompressorSuccess = async ({
+  author,
+  message
+}: IIdleUseTimeCompressorSuccess) => {
   const amount = message.content?.match(/clicks a button on the (\d+)/)?.[1];
 
   if (!amount) return;
 
   await userService.addTimeCompressorUsage({
     userId: author.id,
-    amount: Number(amount),
+    amount: Number(amount)
   });
 
   await claimReminder.update({
-    userId: author.id,
+    userId: author.id
   });
 };
 
@@ -55,4 +63,6 @@ interface IChecker {
 }
 
 export const isTimeCompressorUsed = ({author, message}: IChecker) =>
-  [author.username, 'time compressor', 'were added to your farms!'].every((text) => message.content.includes(text));
+  [author.username, 'time compressor', 'were added to your farms!'].every(
+    (text) => message.content.includes(text)
+  );

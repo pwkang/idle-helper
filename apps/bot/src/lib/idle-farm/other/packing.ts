@@ -1,4 +1,4 @@
-import {Client, Message, User} from 'discord.js';
+import type {Client, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import messageReaders from '../message-readers';
 import {userService} from '../../../services/database/user.service';
@@ -11,11 +11,16 @@ interface IIdlePacking {
   isSlashCommand?: boolean;
 }
 
-export const idlePacking = ({message, client, isSlashCommand, author}: IIdlePacking) => {
+export const idlePacking = ({
+  message,
+  client,
+  isSlashCommand,
+  author
+}: IIdlePacking) => {
   let event = createIdleFarmCommandListener({
     author,
     client,
-    channelId: message.channel.id,
+    channelId: message.channel.id
   });
   if (!event) return;
   event.on('content', async (content, collected) => {
@@ -23,7 +28,7 @@ export const idlePacking = ({message, client, isSlashCommand, author}: IIdlePack
       event?.stop();
       idlePackingSuccess({
         author,
-        message: collected,
+        message: collected
       });
     }
     if (messageChecker.packing.isFail({message: collected, author})) {
@@ -46,6 +51,6 @@ const idlePackingSuccess = async ({message, author}: IIdlePackingSuccess) => {
   if (packingResult.multiplier === 1) return;
   await userService.updatePackingMultiplier({
     userId: author.id,
-    multiplier: packingResult.multiplier,
+    multiplier: packingResult.multiplier
   });
 };

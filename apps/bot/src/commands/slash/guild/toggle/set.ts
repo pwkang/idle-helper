@@ -1,7 +1,10 @@
 import djsInteractionHelper from '../../../../lib/discordjs/interaction';
 import {SLASH_COMMAND} from '../../constant';
 import commandHelper from '../../../../lib/idle-helper/command-helper';
-import {USER_ACC_OFF_ACTIONS, USER_NOT_REGISTERED_ACTIONS} from '@idle-helper/constants';
+import {
+  USER_ACC_OFF_ACTIONS,
+  USER_NOT_REGISTERED_ACTIONS
+} from '@idle-helper/constants';
 
 export default <SlashCommand>{
   name: SLASH_COMMAND.guild.toggle.set.name,
@@ -11,7 +14,7 @@ export default <SlashCommand>{
   type: 'subcommand',
   preCheck: {
     userAccOff: USER_ACC_OFF_ACTIONS.skip,
-    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip,
+    userNotRegistered: USER_NOT_REGISTERED_ACTIONS.skip
   },
   builder: (subcommand) =>
     subcommand
@@ -21,8 +24,12 @@ export default <SlashCommand>{
           .setDescription('Select the role of the guild to update')
           .setRequired(true)
       )
-      .addStringOption((option) => option.setName('on').setDescription('Features to turn on'))
-      .addStringOption((option) => option.setName('off').setDescription('Features to turn off')),
+      .addStringOption((option) =>
+        option.setName('on').setDescription('Features to turn on')
+      )
+      .addStringOption((option) =>
+        option.setName('off').setDescription('Features to turn off')
+      ),
   execute: async (client, interaction) => {
     if (!interaction.inGuild()) return;
     const guildRole = interaction.options.getRole('role', true);
@@ -33,19 +40,19 @@ export default <SlashCommand>{
       author: interaction.user,
       client,
       server: interaction.guild!,
-      roleId: guildRole.id,
+      roleId: guildRole.id
     });
 
     const messageOptions = await toggleGuild.updateToggle({
       on: onStr ?? undefined,
-      off: offStr ?? undefined,
+      off: offStr ?? undefined
     });
 
     if (!messageOptions) return;
     await djsInteractionHelper.replyInteraction({
       client,
       interaction,
-      options: messageOptions,
+      options: messageOptions
     });
-  },
+  }
 };

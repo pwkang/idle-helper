@@ -8,14 +8,16 @@ import {
   _toggleRaidCompact,
   _toggleRaidHelper,
   _toggleRaidSolution,
-  _toggleVoteReminder,
+  _toggleVoteReminder
 } from './toggle-user-checker-list';
 
 interface IToggleUserChecker {
   userId: string;
 }
 
-export type IToggleUserCheckerReturnType = Awaited<ReturnType<typeof toggleUserChecker>>;
+export type IToggleUserCheckerReturnType = Awaited<
+  ReturnType<typeof toggleUserChecker>
+>;
 
 const toggleUserChecker = async ({userId}: IToggleUserChecker) => {
   const userAccount = await userService.findUser({userId});
@@ -26,20 +28,20 @@ const toggleUserChecker = async ({userId}: IToggleUserChecker) => {
     reminder: {
       claim: _toggleClaimReminder({toggle: userToggle}),
       vote: _toggleVoteReminder({toggle: userToggle}),
-      daily: _toggleDailyReminder({toggle: userToggle}),
+      daily: _toggleDailyReminder({toggle: userToggle})
     },
     raid: {
       helper: _toggleRaidHelper({toggle: userToggle}),
       solution: _toggleRaidSolution({toggle: userToggle}),
-      compact: _toggleRaidCompact({toggle: userToggle}),
+      compact: _toggleRaidCompact({toggle: userToggle})
     },
     calculator: {
       claim: _toggleCalculatorClaim({toggle: userToggle}),
-      inventory: _toggleCalculatorInventory({toggle: userToggle}),
+      inventory: _toggleCalculatorInventory({toggle: userToggle})
     },
     autoSend: {
-      profile: _toggleAutoSendOnProfile({toggle: userToggle}),
-    },
+      profile: _toggleAutoSendOnProfile({toggle: userToggle})
+    }
   };
 };
 

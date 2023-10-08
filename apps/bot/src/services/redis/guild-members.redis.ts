@@ -14,15 +14,24 @@ interface ISetGuildMember {
   userId: string;
 }
 
-const setGuildMember = async ({serverId, guildRoleId, userId}: ISetGuildMember) => {
-  await redisService.set(`${prefix}${userId}`, toRedis({serverId, guildRoleId, userId}));
+const setGuildMember = async ({
+  serverId,
+  guildRoleId,
+  userId
+}: ISetGuildMember) => {
+  await redisService.set(
+    `${prefix}${userId}`,
+    toRedis({serverId, guildRoleId, userId})
+  );
 };
 
 interface IGetGuildInfo {
   userId: string;
 }
 
-const getGuildInfo = async ({userId}: IGetGuildInfo): Promise<IRedisData | null> => {
+const getGuildInfo = async ({
+  userId
+}: IGetGuildInfo): Promise<IRedisData | null> => {
   const data = await redisService.get(`${prefix}${userId}`);
   if (!data) return null;
   return fromRedis(data);
@@ -41,7 +50,7 @@ const fromRedis = (data: any): IRedisData => {
   return {
     guildRoleId: parsed.guildRoleId,
     serverId: parsed.serverId,
-    userId: parsed.userId,
+    userId: parsed.userId
   };
 };
 
@@ -55,12 +64,12 @@ const toRedis = ({serverId, guildRoleId, userId}: IToRedis) => {
   return JSON.stringify({
     serverId,
     guildRoleId,
-    userId,
+    userId
   });
 };
 
 export const redisGuildMembers = {
   setGuildMember,
   getGuildInfo,
-  removeGuildInfo,
+  removeGuildInfo
 };

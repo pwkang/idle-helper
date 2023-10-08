@@ -5,5 +5,5 @@ import {_topPowerListing} from './top-power-listing';
 export const _guildHelper = {
   renderMultipleGuildEmbed: _renderMultipleGuildEmbed,
   verifyGuild: verifyGuild,
-  topPowerListing: _topPowerListing,
+  topPowerListing: _topPowerListing
 };

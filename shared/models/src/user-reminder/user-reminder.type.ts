@@ -1,4 +1,4 @@
-import {IDLE_FARM_REMINDER_TYPE} from '@idle-helper/constants';
+import type {IDLE_FARM_REMINDER_TYPE} from '@idle-helper/constants';
 
 type BaseUserReminder = {
   userId: string;
@@ -12,6 +12,5 @@ type VoteReminderProps = {
 type ClaimReminderProps = {
   type: typeof IDLE_FARM_REMINDER_TYPE.claim;
 } & BaseUserReminder;
-
 
 export type IUserReminder = VoteReminderProps | ClaimReminderProps;
