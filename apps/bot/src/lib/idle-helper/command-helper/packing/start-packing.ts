@@ -219,7 +219,7 @@ export const _startPacking = async ({
       material: false,
       box: false
     };
-    if (materialName && inventoryInfo[materialName] !== undefined) {
+    if (materialName && inventoryInfo[materialName] !== undefined && materialAmount === 0) {
       materialAmount = inventoryInfo[materialName] ?? 0;
       isChanged.material = true;
     }
@@ -232,7 +232,7 @@ export const _startPacking = async ({
       isChanged.workerTokens = true;
     }
 
-    if (materialBoxType && inventoryInfo[materialBoxType] !== undefined) {
+    if (materialBoxType && inventoryInfo[materialBoxType] !== undefined && boxAmount === 0) {
       boxAmount = inventoryInfo[materialBoxType] ?? 0;
       isChanged.box = true;
     }
