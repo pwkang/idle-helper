@@ -5,6 +5,7 @@ export interface IMarketItem {
   price: number;
   isOverstocked: boolean;
   lastUpdatedAt: Date;
+  rate: number;
 }
 
 export type TMarketItems = Record<keyof typeof IDLE_FARM_ITEMS, IMarketItem>;

@@ -1,8 +1,4 @@
-import type {
-  IInfo,
-  IMarketItem,
-  TMarketItems
-} from '@idle-helper/models/dist/info/info.type';
+import type {IInfo, IMarketItem, TMarketItems} from '@idle-helper/models/dist/info/info.type';
 import {typedObjectEntries} from '@idle-helper/utils';
 import {IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 
@@ -25,7 +21,8 @@ const transformMarketItem = (marketItem?: any): IMarketItem => {
     lastUpdatedAt:
       marketItem.lastUpdatedAt === undefined
         ? new Date()
-        : new Date(marketItem.lastUpdatedAt)
+        : new Date(marketItem.lastUpdatedAt),
+    rate: marketItem.rate === undefined ? 0 : Number(marketItem.rate)
   };
 };
 

@@ -5,7 +5,7 @@ import type {IDLE_FARM_ITEMS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constant
 import {infoRedis} from '../redis/info.redis';
 import ms from 'ms';
 
-infoSchema.post('findOneAndUpdate', async function (doc) {
+infoSchema.post('findOneAndUpdate', async function(doc) {
   if (!doc) return;
   await infoRedis.setInfo(doc);
 });
@@ -76,7 +76,8 @@ interface IUpdateMarketItems extends Omit<IMarketItem, 'lastUpdatedAt'> {
 const updateMarketItems = async ({
   type,
   price,
-  isOverstocked
+  isOverstocked,
+  rate
 }: IUpdateMarketItems) => {
   const marketItems = await getMarketItems();
   const marketItem = marketItems[type];
@@ -92,7 +93,8 @@ const updateMarketItems = async ({
         [`market.${type}`]: {
           price,
           lastUpdatedAt: new Date(),
-          isOverstocked
+          isOverstocked,
+          rate
         }
       }
     },
