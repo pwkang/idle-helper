@@ -1,8 +1,7 @@
 import type {Client, Message, User} from 'discord.js';
-import { EmbedBuilder} from 'discord.js';
+import {EmbedBuilder} from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
-import type {
-  IDLE_FARM_DONOR_TIER} from '@idle-helper/constants';
+import type {IDLE_FARM_DONOR_TIER} from '@idle-helper/constants';
 import {
   BOT_COLOR,
   BOT_EMOJI,
@@ -89,7 +88,8 @@ export const _startPacking = async ({
   let event = createIdleFarmCommandListener({
     author,
     channelId: message.channel.id,
-    client
+    client,
+    readAuthorMessage: true
   });
   if (!event) return;
 
@@ -137,13 +137,21 @@ export const _startPacking = async ({
       nextAction();
     }
     if (messageChecker.inventory.isInventory({embed, author})) {
-      if (workerTokens !== undefined) return;
       readInventory(collected);
       trackWorkerToken(collected);
     }
   });
   event.on('end', () => {
     event = undefined;
+  });
+  event.on('author', (content) => {
+    if (content.toLowerCase().trim() === 'stop') {
+      endPacking({
+        client,
+        channelId: message.channel.id
+      });
+      event?.stop();
+    }
   });
 
   nextAction();
@@ -206,8 +214,14 @@ export const _startPacking = async ({
       embed: inventoryMsg.embeds[0]
     });
 
+    const isChanged = {
+      workerTokens: false,
+      material: false,
+      box: false
+    };
     if (materialName && inventoryInfo[materialName] !== undefined) {
       materialAmount = inventoryInfo[materialName] ?? 0;
+      isChanged.material = true;
     }
 
     if (
@@ -215,6 +229,15 @@ export const _startPacking = async ({
       workerTokens === undefined
     ) {
       workerTokens = inventoryInfo.workerTokens;
+      isChanged.workerTokens = true;
+    }
+
+    if (materialBoxType && inventoryInfo[materialBoxType] !== undefined) {
+      boxAmount = inventoryInfo[materialBoxType] ?? 0;
+      isChanged.box = true;
+    }
+
+    if (isChanged.workerTokens || (workerTokens !== undefined && (isChanged.material || isChanged.box))) {
       nextAction();
     }
   }
@@ -394,6 +417,11 @@ async function sendNextCommand({
     text: `Target Idlons: ${currentIdlons.toLocaleString()} / ${targetIdlons.toLocaleString()}`
   });
 
+  embed.addFields({
+    name: '\u200b',
+    value: 'Type `stop` to stop packing'
+  });
+
   await djsMessageHelper.send({
     client,
     channelId,
@@ -402,3 +430,22 @@ async function sendNextCommand({
     }
   });
 }
+
+interface IEndPacking {
+  client: Client;
+  channelId: string;
+}
+
+export const endPacking = async ({client, channelId}: IEndPacking) => {
+  const embed = new EmbedBuilder()
+    .setColor(BOT_COLOR.embed)
+    .setDescription('Packing helper stopped');
+
+  await djsMessageHelper.send({
+    options: {
+      embeds: [embed]
+    },
+    channelId,
+    client
+  });
+};
