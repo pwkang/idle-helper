@@ -1,5 +1,5 @@
 import type {IInfo, TMarketItems} from './info.type';
-import type { SchemaDefinition, SchemaDefinitionType} from 'mongoose';
+import type {SchemaDefinition, SchemaDefinitionType} from 'mongoose';
 import {Schema} from 'mongoose';
 import {typedObjectEntries} from '@idle-helper/utils';
 import {IDLE_FARM_ITEMS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
@@ -18,7 +18,8 @@ export const infoSchema = new Schema<IInfo>({
     acc[key] = {
       price: Number,
       isOverstocked: Boolean,
-      lastUpdatedAt: Date
+      lastUpdatedAt: Date,
+      rate: Number
     };
     return acc;
   }, {} as SchemaDefinition<SchemaDefinitionType<TMarketItems>>),

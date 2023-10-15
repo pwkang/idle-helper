@@ -1,5 +1,5 @@
 import {PREFIX_COMMAND_TYPE} from '@idle-helper/constants';
-import messageReaders from '../../../lib/idle-farm/message-readers';
+import {messageChecker} from '../../../lib/idle-farm/message-checker';
 
 export default <PrefixCommand>{
   name: 'test',
@@ -9,7 +9,10 @@ export default <PrefixCommand>{
   execute: async (client, message, args) => {
     const fetchMessage = await message.channel.messages.fetch(args[1]);
     if (!fetchMessage) return;
-    const packingResult = messageReaders.sell(fetchMessage);
-    console.log(packingResult);
+    const is = messageChecker.claim.isBoosted({
+      author: message.author,
+      embed: fetchMessage.embeds[0]
+    });
+    console.log(is);
   }
 };

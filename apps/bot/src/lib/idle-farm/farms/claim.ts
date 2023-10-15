@@ -1,6 +1,5 @@
 import type {Client, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
-import type {IMessageEmbedChecker} from '../../../types/utils';
 import {userService} from '../../../services/database/user.service';
 import {dailyReminder} from '../../idle-helper/reminder/daily-reminder';
 import claimReminder from '../../idle-helper/reminder/claim-reminder';
@@ -8,6 +7,7 @@ import commandHelper from '../../idle-helper/command-helper';
 import embedProvider from '../../idle-helper/embeds';
 import {djsMessageHelper} from '../../discordjs/message';
 import toggleUserChecker from '../../idle-helper/toggle-checker/user';
+import {messageChecker} from '../message-checker';
 
 interface IIdleClaim {
   client: Client;
@@ -29,7 +29,7 @@ export const idleClaim = async ({
   });
   if (!event) return;
   event.on('embed', async (embed, collected) => {
-    if (isIdleClaimSuccess({author, embed})) {
+    if (messageChecker.claim.isIdleClaimSuccess({author, embed})) {
       await idleClaimSuccess({
         client,
         channelId: message.channel.id,
@@ -109,5 +109,3 @@ const checkUser = async ({author, channelId, client}: IUserChecker) => {
   return !embed;
 };
 
-const isIdleClaimSuccess = ({author, embed}: IMessageEmbedChecker) =>
-  embed.author?.name === `${author.username} — claim`;

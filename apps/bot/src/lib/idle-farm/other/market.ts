@@ -63,7 +63,8 @@ const marketPageChanged = ({embed}: IMarketPageChanged) => {
     infoService.updateMarketItems({
       isOverstocked: item.isOverstocked,
       type: item.type,
-      price: item.price
+      price: item.price,
+      rate: item.priceRate
     });
   });
 };

@@ -24,7 +24,7 @@ export const _marketReader = ({embed}: IMarketReader) => {
       .match(/\*\*Price\*\*: ([\d,]+) <:idlons:/)?.[1]
       ?.replaceAll(',', '');
     const isOverstocked = field.name.includes('OVERSTOCKED');
-    const priceRate = field.value.match(/`(.*)`/)?.[1]?.replaceAll('%', '');
+    const priceRate = field.value.match(/`([+-]\d+)%`/)?.[1];
     if (!name || !price) continue;
     items.push({
       type: name,
