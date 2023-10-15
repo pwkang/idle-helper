@@ -1,13 +1,5 @@
-import type {
-  Client,
-  Embed,
-  Message,
-  MessageCollector,
-  User} from 'discord.js';
-import {
-  TextChannel,
-  ThreadChannel
-} from 'discord.js';
+import type {Client, Embed, Message, MessageCollector, User} from 'discord.js';
+import {TextChannel, ThreadChannel} from 'discord.js';
 import {TypedEventEmitter} from './typed-event-emitter';
 import {IDLE_FARM_ID} from '@idle-helper/constants';
 import {createMessageEditedListener} from './message-edited-listener';
@@ -17,6 +9,7 @@ interface IIdleFarmCommandListener {
   client: Client;
   channelId: string;
   author: User;
+  readAuthorMessage?: boolean;
 }
 
 type TEventTypes = {
@@ -25,6 +18,7 @@ type TEventTypes = {
   cooldown: [number];
   attachments: [Message['attachments'], Message<true>];
   end: [];
+  author: [Message['content'], Message<true>];
 };
 
 type CustomEventType =
@@ -39,16 +33,17 @@ type TExtraProps = {
   triggerCollect: (message: Message) => void;
 };
 
-const filter = (m: Message) => m.author.id === IDLE_FARM_ID;
 
 export const createIdleFarmCommandListener = ({
   channelId,
   client,
-  author
+  author,
+  readAuthorMessage
 }: IIdleFarmCommandListener) => {
   const channel = client.channels.cache.get(channelId);
   if (!channel) return;
   let collector: MessageCollector | undefined;
+  const filter = (m: Message) => m.author.id === IDLE_FARM_ID || (!!readAuthorMessage && m.author.id === author.id);
   if (channel instanceof TextChannel) {
     collector = channel.createMessageCollector({time: ms('1m'), filter});
   }
@@ -100,6 +95,10 @@ export const createIdleFarmCommandListener = ({
 
       event && event.emit('embed', embed, collected);
     } else if (!collected.embeds.length) {
+
+      if (readAuthorMessage && collected.author.id === author.id) {
+        event && event.emit('author', collected.content, collected);
+      }
 
       // Message Content
       if (isBotMaintenance({collected, author})) {
