@@ -276,6 +276,14 @@ export const helpConfig: IHelpConfig = [
               description: ['- Show your top 3 power workers']
             },
             {
+              name: ['worker assign', 'wo assign'],
+              description: [
+                '- Worker assign helper',
+                '- Bot will list all your farms and buttons of your workers for you to assign',
+                '- Once you have assigned all workers, bot will send list of commands for you to copy and paste'
+              ]
+            },
+            {
               name: ['packing'],
               description: [
                 '- View the most profitable packing item',
@@ -332,6 +340,7 @@ export const helpConfig: IHelpConfig = [
         '- Last Claim Duration',
         '- Global Worker Leaderboard',
         '- Inventory idlons Calculator',
+        '- Worker Assign Helper',
         '- etc...'
       ]
     },

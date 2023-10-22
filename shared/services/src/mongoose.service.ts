@@ -8,32 +8,32 @@ const uri = process.env.MONGO_URI || 'mongodb://localhost:27017';
 const dbName = process.env.MONGO_DB_NAME || 'idle_helper';
 
 const client = mongoose.createConnection(uri, {
-  connectTimeoutMS: 10000,
+  connectTimeoutMS: 10000
 });
 
 export const mongoClient = client.useDb(dbName);
 mongoClient.on('connected', () => {
   logger({
-    message: 'Connected to MongoDB',
+    message: 'Connected to MongoDB'
   });
 });
 
 mongoClient.on('error', (err) => {
   logger({
     message: err.message,
-    logLevel: 'error',
+    logLevel: 'error'
   });
 });
 
 mongoClient.on('disconnected', () => {
   logger({
     message: 'Disconnected from MongoDB',
-    logLevel: 'warn',
+    logLevel: 'warn'
   });
 });
 
 mongoClient.on('reconnected', () => {
   logger({
-    message: 'Reconnected to MongoDB',
+    message: 'Reconnected to MongoDB'
   });
 });

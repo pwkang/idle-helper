@@ -1,11 +1,12 @@
 import type {BaseMessageOptions, User} from 'discord.js';
-import { EmbedBuilder} from 'discord.js';
+import {EmbedBuilder} from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
 import type {IUser} from '@idle-helper/models';
 import {BOT_COLOR, BOT_EMOJI} from '@idle-helper/constants';
 import {calcWorkerPower} from '../../../idle-farm/calculator/worker-power';
 import {getTop3Power} from '../../../../utils/getTop3Power';
 import {getTop3Workers} from '../../../../utils/getTop3Workers';
+import {workerCommandsField} from './shared';
 
 interface IListWorkers {
   author: User;
@@ -63,5 +64,7 @@ const getEmbed = ({userAccount, author}: IGetEmbed) => {
   }
 
   embed.setDescription(workers.join('\n'));
+  embed.addFields(workerCommandsField);
+
   return embed;
 };

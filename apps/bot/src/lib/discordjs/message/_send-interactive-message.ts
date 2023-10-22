@@ -7,7 +7,8 @@ import type {
   MessageActionRowComponentBuilder,
   MessageCreateOptions,
   MessagePayload,
-  StringSelectMenuInteraction} from 'discord.js';
+  StringSelectMenuInteraction
+} from 'discord.js';
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -30,7 +31,7 @@ import djsInteractionHelper from '../interaction';
 
 type TEventCB = (
   collected: BaseInteraction | StringSelectMenuInteraction,
-  customId: string
+  customId: string,
 ) => Promise<InteractionUpdateOptions | null> | InteractionUpdateOptions | null;
 
 export interface SendInteractiveMessageProps {
@@ -56,7 +57,7 @@ export default async function _sendInteractiveMessage<
   let allEventsFn: TEventCB | null = null;
   const registeredEvents = new Collection<string | EventType, TEventCB>();
   let collector = sentMessage.createMessageComponentCollector({
-    idle: ms('1m')
+    idle: ms('3m')
   });
 
   function every(callback: TEventCB) {
