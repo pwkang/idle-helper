@@ -357,14 +357,14 @@ const startAssign = async ({message, client, author, preferenceFarms}: IStartAss
   });
   if (!event) return;
   event.on('content', (content) => {
-    event?.resetTimer(ms('3m'));
-    const workerAssignInfo = messageReaders.workerAssign({content});
-    const farm = preferenceFarms.find(farm => farm.id === workerAssignInfo.farmId);
-    if (!farm) return;
-
-    farm.assignedWorker = workerAssignInfo.workerType;
-
     if (messageChecker.workerAssign.isSuccessfulAssigned(content)) {
+      event?.resetTimer(ms('3m'));
+      const workerAssignInfo = messageReaders.workerAssign({content});
+      const farm = preferenceFarms.find(farm => farm.id === workerAssignInfo.farmId);
+      if (!farm) return;
+
+      farm.assignedWorker = workerAssignInfo.workerType;
+
       if (isAllAssigned(preferenceFarms)) {
         djsMessageHelper.send({
           client,
