@@ -11,6 +11,8 @@ import {_voteReader} from './vote';
 import {_packingReader} from './packing';
 import {_sellReader} from './sell';
 import {_buyReader} from './buy';
+import {_farmReader} from './farm';
+import {_workerAssignReader} from './worker-assign';
 
 const messageReaders = {
   worker: _workerReader,
@@ -25,7 +27,9 @@ const messageReaders = {
   vote: _voteReader,
   packing: _packingReader,
   sell: _sellReader,
-  buy: _buyReader
+  buy: _buyReader,
+  farm: _farmReader,
+  workerAssign: _workerAssignReader
 };
 
 export default messageReaders;
