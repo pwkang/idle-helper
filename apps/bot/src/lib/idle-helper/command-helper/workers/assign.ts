@@ -23,6 +23,7 @@ interface IReadFarms {
 interface PreferenceFarm {
   farm?: keyof typeof IDLE_FARM_FARM_TYPE;
   id?: string;
+  currentWorker?: ValuesOf<typeof IDLE_FARM_WORKER_TYPE> | null;
   targetWorker?: ValuesOf<typeof IDLE_FARM_WORKER_TYPE> | null;
   assignedWorker?: ValuesOf<typeof IDLE_FARM_WORKER_TYPE> | null;
   assigned: boolean;
@@ -117,7 +118,8 @@ const collectUserFarms = async ({message, client, author, userAccount}: ICollect
           assignedWorker: null,
           assigned: false,
           id: farm.id,
-          level: farm.level
+          level: farm.level,
+          currentWorker: farm.worker ?? null
         });
       }
     });
@@ -311,6 +313,10 @@ const generateSetComponents = ({preferenceFarms, workers, ended = false}: IGener
 
 };
 
+const isAllAssigned = (preferenceFarms: PreferenceFarm[]) =>
+  preferenceFarms.every(farm => farm.assignedWorker || farm.targetWorker === farm.currentWorker);
+
+
 interface IStartAssign {
   message: Message;
   client: Client;
@@ -319,6 +325,19 @@ interface IStartAssign {
 }
 
 const startAssign = async ({message, client, author, preferenceFarms}: IStartAssign) => {
+  if (isAllAssigned(preferenceFarms)) {
+    await djsMessageHelper.send({
+      client,
+      channelId: message.channel.id,
+      options: {
+        embeds: [
+          new EmbedBuilder().setColor(BOT_COLOR.embed).setDescription('No changes detected')
+        ]
+      }
+    });
+    return;
+  }
+
   await djsMessageHelper.send({
     client,
     channelId: message.channel.id,
@@ -343,18 +362,10 @@ const startAssign = async ({message, client, author, preferenceFarms}: IStartAss
       const workerAssignInfo = messageReaders.workerAssign({content});
       const farm = preferenceFarms.find(farm => farm.id === workerAssignInfo.farmId);
       if (!farm) return;
+
       farm.assignedWorker = workerAssignInfo.workerType;
-      djsMessageHelper.send({
-        client,
-        channelId: message.channel.id,
-        options: {
-          content: generateAssignContent({preferenceFarms}),
-          embeds: [
-            generatedAssignEmbed({preferenceFarms, author})
-          ]
-        }
-      });
-      if (preferenceFarms.every(farm => farm.assignedWorker)) {
+
+      if (isAllAssigned(preferenceFarms)) {
         djsMessageHelper.send({
           client,
           channelId: message.channel.id,
@@ -365,7 +376,19 @@ const startAssign = async ({message, client, author, preferenceFarms}: IStartAss
           }
         });
         event?.stop();
+        return;
       }
+
+      djsMessageHelper.send({
+        client,
+        channelId: message.channel.id,
+        options: {
+          content: generateAssignContent({preferenceFarms}),
+          embeds: [
+            generatedAssignEmbed({preferenceFarms, author})
+          ]
+        }
+      });
     }
   });
   event.on('author', (content) => {
@@ -392,7 +415,12 @@ interface IGenerateAssignContent {
 }
 
 const generateAssignContent = ({preferenceFarms}: IGenerateAssignContent) => {
-  const nextWorker = preferenceFarms.find(farm => !farm.assignedWorker);
+  const nextWorker = preferenceFarms.find(farm =>
+    farm.targetWorker &&
+    !farm.assignedWorker &&
+    farm.id &&
+    farm.currentWorker !== farm.targetWorker
+  );
   if (!nextWorker) return '';
   const workerType = nextWorker.targetWorker;
   const farmId = nextWorker.id;
@@ -411,7 +439,7 @@ const generatedAssignEmbed = ({preferenceFarms, author}: IGeneratedAssignEmbed) 
   });
 
   for (const farm of preferenceFarms) {
-    if (!farm.targetWorker || farm.assignedWorker || !farm.id) continue;
+    if (!farm.targetWorker || farm.assignedWorker || !farm.id || farm.currentWorker === farm.targetWorker) continue;
     const workerType = farm.targetWorker;
     const farmId = farm.id;
     embed.addFields({
