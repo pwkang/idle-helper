@@ -323,6 +323,7 @@ const startAssign = async ({message, client, author, preferenceFarms}: IStartAss
     client,
     channelId: message.channel.id,
     options: {
+      content: generateAssignContent({preferenceFarms}),
       embeds: [
         generatedAssignEmbed({preferenceFarms, author})
       ]
@@ -347,6 +348,7 @@ const startAssign = async ({message, client, author, preferenceFarms}: IStartAss
         client,
         channelId: message.channel.id,
         options: {
+          content: generateAssignContent({preferenceFarms}),
           embeds: [
             generatedAssignEmbed({preferenceFarms, author})
           ]
@@ -383,6 +385,18 @@ const startAssign = async ({message, client, author, preferenceFarms}: IStartAss
   event.on('end', () => {
     event = undefined;
   });
+};
+
+interface IGenerateAssignContent {
+  preferenceFarms: PreferenceFarm[];
+}
+
+const generateAssignContent = ({preferenceFarms}: IGenerateAssignContent) => {
+  const nextWorker = preferenceFarms.find(farm => !farm.assignedWorker);
+  if (!nextWorker) return '';
+  const workerType = nextWorker.targetWorker;
+  const farmId = nextWorker.id;
+  return `${PREFIX.idleFarm}wo assign ${workerType} ${farmId}`;
 };
 
 interface IGeneratedAssignEmbed {
