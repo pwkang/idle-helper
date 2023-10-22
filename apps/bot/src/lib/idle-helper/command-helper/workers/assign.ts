@@ -187,7 +187,7 @@ const collectPreferenceFarms = async ({
       nextFarm.assigned = true;
     }
     if (type === 'confirm') {
-      startAssign({message, client, author, preferenceFarms, userAccount});
+      startAssign({message, client, author, preferenceFarms});
       event?.stop();
       return {
         embeds: [
@@ -316,10 +316,9 @@ interface IStartAssign {
   client: Client;
   author: User;
   preferenceFarms: PreferenceFarm[];
-  userAccount: IUser;
 }
 
-const startAssign = async ({message, client, author, preferenceFarms, userAccount}: IStartAssign) => {
+const startAssign = async ({message, client, author, preferenceFarms}: IStartAssign) => {
   await djsMessageHelper.send({
     client,
     channelId: message.channel.id,
