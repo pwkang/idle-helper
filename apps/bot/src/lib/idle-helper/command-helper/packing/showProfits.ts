@@ -2,12 +2,15 @@ import type {User} from 'discord.js';
 import {EmbedBuilder} from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
 import {infoService} from '../../../../services/database/info.service';
+import type {IDLE_FARM_ITEMS_PACKING_MATERIAL} from '@idle-helper/constants';
 import {
   BOT_COLOR,
   BOT_EMOJI,
   IDLE_FARM_ITEMS,
-  IDLE_FARM_ITEMS_PACKING_MATERIAL,
+  IDLE_FARM_ITEMS_MATERIAL,
   IDLE_FARM_ITEMS_PACKING_PAIR,
+  IDLE_FARM_ITEMS_REFINED,
+  IDLE_FARM_LEAGUE_POINTS,
   PREFIX,
   TAX_RATE_BOX,
   TAX_RATE_LABEL
@@ -18,9 +21,11 @@ import embedProvider from '../../embeds';
 
 interface IShowPackingProfits {
   author: User;
+  multiplier?: number;
+  container?: boolean;
 }
 
-export const _showPackingProfits = async ({author}: IShowPackingProfits) => {
+export const _showPackingProfits = async ({author, container, multiplier}: IShowPackingProfits) => {
   const user = await userService.findUser({
     userId: author.id
   });
@@ -31,10 +36,16 @@ export const _showPackingProfits = async ({author}: IShowPackingProfits) => {
       embeds: [embedProvider.setDonor()]
     };
   }
+  const includeContainer = container || (user.profile.league && IDLE_FARM_LEAGUE_POINTS[user.profile.league] >= IDLE_FARM_LEAGUE_POINTS.wheat3);
 
-  const packingMultiplier = user.packing.multiplier;
+  const availableMaterials = [
+    ...typedObjectEntries(IDLE_FARM_ITEMS_MATERIAL),
+    ...(includeContainer ? typedObjectEntries(IDLE_FARM_ITEMS_REFINED) : [])
+  ];
+
+  const packingMultiplier = multiplier ?? user.packing.multiplier;
   const marketItems = await infoService.getMarketItems();
-  const profits = typedObjectEntries(IDLE_FARM_ITEMS_PACKING_MATERIAL).map(([key]) => {
+  const profits = availableMaterials.map(([key]) => {
     const itemPrice = marketItems[key]?.price ?? 0;
     const taxValue = TAX_RATE_BOX[user.config.donorTier];
     const itemBoxName = IDLE_FARM_ITEMS_PACKING_PAIR[key];
@@ -118,8 +129,11 @@ const generateEmbed = ({
   embed.addFields({
     name: 'Commands',
     value: [
-      `\`${PREFIX.bot}packing\` -> show packing profits`,
-      `\`${PREFIX.bot}packing start [target idlons] [item name]\` -> Show guide to pack selected item until target idlons reached`
+      `- \`${PREFIX.bot}packing\` -> show packing profits`,
+      ' - `-m [multiplier]` -> custom multiplier',
+      ' - `-c` -> include container',
+      ` - e.g. \`${PREFIX.bot}pa -m 1.5 -c\``,
+      `- \`${PREFIX.bot}packing start [target idlons] [item name]\` -> Show guide to pack selected item until target idlons reached`
     ].join('\n')
   });
 

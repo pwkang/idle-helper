@@ -1,11 +1,8 @@
 import {mongoClient} from '@idle-helper/services';
 import type {IUser, IUserToggle, IUserWorker} from '@idle-helper/models';
-import { userSchema} from '@idle-helper/models';
-import type {
-  IDLE_FARM_DONOR_TIER,
-  IDLE_FARM_ITEMS,
-  IDLE_FARM_WORKER_TYPE
-} from '@idle-helper/constants';
+import {userSchema} from '@idle-helper/models';
+import type {IDLE_FARM_DONOR_TIER, IDLE_FARM_ITEMS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import type {IDLE_FARM_LEAGUE} from '@idle-helper/constants';
 import type {UpdateQuery} from 'mongoose';
 
 const dbUser = mongoClient.model<IUser>('users', userSchema);
@@ -429,6 +426,7 @@ interface ISaveGameProfile {
   idlucks: number;
   idleCoins: number;
   energy: number;
+  league: keyof typeof IDLE_FARM_LEAGUE;
 }
 
 const saveGameProfile = async ({
@@ -436,7 +434,8 @@ const saveGameProfile = async ({
   idlons,
   idlucks,
   idleCoins,
-  energy
+  energy,
+  league
 }: ISaveGameProfile) => {
   const user = await dbUser.findOneAndUpdate(
     {userId},
@@ -445,7 +444,8 @@ const saveGameProfile = async ({
         'profile.idlons': idlons,
         'profile.idlucks': idlucks,
         'profile.idleCoins': idleCoins,
-        'profile.energy': energy
+        'profile.energy': energy,
+        'profile.league': league
       }
     },
     {

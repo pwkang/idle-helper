@@ -10,9 +10,13 @@ export default <PrefixCommand>{
     userAccOff: USER_ACC_OFF_ACTIONS.askToTurnOn,
     userNotRegistered: USER_NOT_REGISTERED_ACTIONS.askToRegister
   },
-  execute: async (client, message) => {
+  execute: async (client, message, args) => {
+    const container = args.includes('-c');
+    const multiplier = args.includes('-m') ? args[args.indexOf('-m') + 1] : undefined;
     const messageOptions = await commandHelper.packing.showProfits({
-      author: message.author
+      author: message.author,
+      container,
+      multiplier: isNaN(Number(multiplier)) ? undefined : Number(multiplier)
     });
     if (!messageOptions) return;
     djsMessageHelper.send({

@@ -21,9 +21,9 @@ export const _profileReader = ({embed}: IProfileReader) => {
     embed.fields[3].value.match(/\*\*Idlucks\*\*: ([\d,]+)/)?.[1] ?? '0';
   const idleCoins =
     embed.fields[3].value.match(/\*\*Idle coins\*\*: ([\d,]+)/)?.[1] ?? '0';
-  const league = typedObjectEntries(LEAGUE_LABEL).find(([, value]) =>
+  const league = (typedObjectEntries(LEAGUE_LABEL).find(([, value]) =>
     embed.title?.includes(value)
-  )?.[0];
+  )?.[0] ?? IDLE_FARM_LEAGUE.dirt1) as keyof typeof IDLE_FARM_LEAGUE;
 
   return {
     energy: Number(energy),
