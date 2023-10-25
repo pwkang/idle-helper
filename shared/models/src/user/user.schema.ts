@@ -1,4 +1,4 @@
-import type { SchemaDefinition} from 'mongoose';
+import type {SchemaDefinition} from 'mongoose';
 import {Schema} from 'mongoose';
 import type {IUser, IUserWorker} from './user.type';
 import {IDLE_FARM_ITEMS} from '@idle-helper/constants';
@@ -68,7 +68,8 @@ export const userSchema = new Schema<IUser>({
     talented: workerSchema,
     wise: workerSchema,
     expert: workerSchema,
-    masterful: workerSchema
+    masterful: workerSchema,
+    spooky: workerSchema
   },
   farms: {
     lastClaimedAt: Date,

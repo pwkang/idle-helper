@@ -123,7 +123,7 @@ export const BOT_EMOJI = {
     expert: '<:expertworker:1134134025053810709>',
     deficient: '<:deficientworker:1134134030749667368>',
     common: '<:commonworker:1134134037724794950>',
-    spookyworker: '<:spookyworker:1166532556364197948>'
+    spooky: '<:spookyworker:1166532556364197948>'
   },
   animatedWorker: {
     wise: '<a:wiseworker:1134134003897737236>',
@@ -133,7 +133,7 @@ export const BOT_EMOJI = {
     expert: '<a:expertworker:1134134028937744394>',
     deficient: '<a:deficientworker:1134134033958322197>',
     common: '<a:commonworker:1134134040253968394>',
-    spookyworker: '<a:spookyworker:1166532070298877963>'
+    spooky: '<a:spookyworker:1166532070298877963>'
   },
   other: {
     farm: '<:farm:1134144211344703531>',
@@ -234,6 +234,6 @@ export const BOT_IMAGE_URL = {
       'https://cdn.discordapp.com/emojis/1134134025053810709.webp?size=96&quality=lossless',
     masterful:
       'https://cdn.discordapp.com/emojis/1134134019429249034.webp?size=96&quality=lossless',
-    spookyworker: 'https://cdn.discordapp.com/emojis/1161136523815686216.webp?size=96&quality=lossless'
+    spooky: 'https://cdn.discordapp.com/emojis/1161136523815686216.webp?size=96&quality=lossless'
   }
 };
