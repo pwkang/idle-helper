@@ -1,19 +1,16 @@
 import type {Message} from 'discord.js';
 import {typedObjectEntries} from '@idle-helper/utils';
-import {
-  IDLE_FARM_ITEMS_BOX,
-  IDLE_FARM_ITEMS_MATERIAL
-} from '@idle-helper/constants';
+import {IDLE_FARM_ITEMS_PACKING_ITEMS, IDLE_FARM_ITEMS_PACKING_MATERIAL} from '@idle-helper/constants';
 
 export const _packingReader = (message: Message) => {
-  const materialType = typedObjectEntries(IDLE_FARM_ITEMS_MATERIAL).find(
+  const materialType = typedObjectEntries(IDLE_FARM_ITEMS_PACKING_MATERIAL).find(
     ([, value]) => message.content.match(new RegExp(`\\*\\*${value}\\*\\*`))
   )?.[0];
   const material = message.content
     .match(/<@\d+>, ([\d,]+) <:/)?.[1]
     ?.replaceAll(',', '');
   const materialAmount = material ? Number(material) : 0;
-  const boxType = typedObjectEntries(IDLE_FARM_ITEMS_BOX).find(([, value]) =>
+  const boxType = typedObjectEntries(IDLE_FARM_ITEMS_PACKING_ITEMS).find(([, value]) =>
     message.content.match(new RegExp(`\\*\\*${value}\\*\\*`))
   )?.[0];
   const box = message.content

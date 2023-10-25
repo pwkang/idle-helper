@@ -1,4 +1,4 @@
-import type { User} from 'discord.js';
+import type {User} from 'discord.js';
 import {EmbedBuilder} from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
 import {infoService} from '../../../../services/database/info.service';
@@ -6,8 +6,8 @@ import {
   BOT_COLOR,
   BOT_EMOJI,
   IDLE_FARM_ITEMS,
-  IDLE_FARM_ITEMS_BOX_TYPE,
-  IDLE_FARM_ITEMS_MATERIAL,
+  IDLE_FARM_ITEMS_PACKING_MATERIAL,
+  IDLE_FARM_ITEMS_PACKING_PAIR,
   PREFIX,
   TAX_RATE_BOX,
   TAX_RATE_LABEL
@@ -34,10 +34,10 @@ export const _showPackingProfits = async ({author}: IShowPackingProfits) => {
 
   const packingMultiplier = user.packing.multiplier;
   const marketItems = await infoService.getMarketItems();
-  const profits = typedObjectEntries(IDLE_FARM_ITEMS_MATERIAL).map(([key]) => {
+  const profits = typedObjectEntries(IDLE_FARM_ITEMS_PACKING_MATERIAL).map(([key]) => {
     const itemPrice = marketItems[key]?.price ?? 0;
     const taxValue = TAX_RATE_BOX[user.config.donorTier];
-    const itemBoxName = IDLE_FARM_ITEMS_BOX_TYPE[key];
+    const itemBoxName = IDLE_FARM_ITEMS_PACKING_PAIR[key];
     const boxPrice = marketItems[itemBoxName]?.price ?? 0;
     return {
       name: key,
@@ -70,7 +70,7 @@ export const _showPackingProfits = async ({author}: IShowPackingProfits) => {
 
 interface IGenerateEmbed {
   items: {
-    name: keyof typeof IDLE_FARM_ITEMS_MATERIAL;
+    name: keyof typeof IDLE_FARM_ITEMS_PACKING_MATERIAL;
     profits: number;
   }[];
   packingMultiplier: number;

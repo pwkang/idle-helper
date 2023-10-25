@@ -5,9 +5,9 @@ import type {IDLE_FARM_DONOR_TIER} from '@idle-helper/constants';
 import {
   BOT_COLOR,
   BOT_EMOJI,
-  IDLE_FARM_ITEMS_BOX,
-  IDLE_FARM_ITEMS_BOX_TYPE,
-  IDLE_FARM_ITEMS_MATERIAL,
+  IDLE_FARM_ITEMS_PACKING_ITEMS,
+  IDLE_FARM_ITEMS_PACKING_MATERIAL,
+  IDLE_FARM_ITEMS_PACKING_PAIR,
   PREFIX,
   TAX_RATE_BOX
 } from '@idle-helper/constants';
@@ -54,7 +54,7 @@ export const _startPacking = async ({
   const targetIdlons = parseNumber(args[2]);
   const selectedItem = args.slice(3).join(' ');
   const marketItems = await infoService.getMarketItems();
-  const materialName = typedObjectEntries(IDLE_FARM_ITEMS_MATERIAL).find(
+  const materialName = typedObjectEntries(IDLE_FARM_ITEMS_PACKING_MATERIAL).find(
     ([, label]) => label.toLowerCase() === selectedItem.toLowerCase()
   )?.[0];
 
@@ -82,7 +82,7 @@ export const _startPacking = async ({
   }
   const materialPrice = marketItems[materialName].price;
 
-  const materialBoxType = IDLE_FARM_ITEMS_BOX_TYPE[materialName];
+  const materialBoxType = IDLE_FARM_ITEMS_PACKING_PAIR[materialName];
   const boxPrice = marketItems[materialBoxType].price;
 
   let event = createIdleFarmCommandListener({
@@ -268,7 +268,7 @@ const sendCommandEmbed = async ({
 };
 
 interface ISendNextCommand {
-  materialName: keyof typeof IDLE_FARM_ITEMS_MATERIAL;
+  materialName: keyof typeof IDLE_FARM_ITEMS_PACKING_MATERIAL;
   materialPrice: number;
   currentIdlons: number;
   targetIdlons: number;
@@ -310,10 +310,10 @@ async function sendNextCommand({
     // sell boxes
 
     title = `Sell ${boxAmount.toLocaleString()} ${
-      IDLE_FARM_ITEMS_BOX[IDLE_FARM_ITEMS_BOX_TYPE[materialName]]
+      IDLE_FARM_ITEMS_PACKING_ITEMS[IDLE_FARM_ITEMS_PACKING_PAIR[materialName]]
     }`;
     nextCommand = `${PREFIX.idleFarm}sell ${
-      IDLE_FARM_ITEMS_BOX[IDLE_FARM_ITEMS_BOX_TYPE[materialName]]
+      IDLE_FARM_ITEMS_PACKING_ITEMS[IDLE_FARM_ITEMS_PACKING_PAIR[materialName]]
     } ${boxAmount}`;
 
     newIdlons += boxAmount * boxPrice * TAX_RATE_BOX[donorTier];
@@ -329,9 +329,9 @@ async function sendNextCommand({
     );
 
     title = `Pack ${availablePackingAmount.toLocaleString()} ${
-      IDLE_FARM_ITEMS_MATERIAL[materialName]
+      IDLE_FARM_ITEMS_PACKING_MATERIAL[materialName]
     }`;
-    nextCommand = `${PREFIX.idleFarm}packing ${IDLE_FARM_ITEMS_MATERIAL[materialName]} ${availablePackingAmount}`;
+    nextCommand = `${PREFIX.idleFarm}packing ${IDLE_FARM_ITEMS_PACKING_MATERIAL[materialName]} ${availablePackingAmount}`;
 
     newBoxAmount += availablePackingAmount * multiplier;
     newBoxAmount = Math.floor(newBoxAmount);
@@ -359,9 +359,9 @@ async function sendNextCommand({
     newMaterialAmount += materialsToBuy;
 
     title = `Buy ${materialsToBuy.toLocaleString()} ${
-      IDLE_FARM_ITEMS_MATERIAL[materialName]
+      IDLE_FARM_ITEMS_PACKING_MATERIAL[materialName]
     }`;
-    nextCommand = `${PREFIX.idleFarm}buy ${IDLE_FARM_ITEMS_MATERIAL[materialName]} ${materialsToBuy}`;
+    nextCommand = `${PREFIX.idleFarm}buy ${IDLE_FARM_ITEMS_PACKING_MATERIAL[materialName]} ${materialsToBuy}`;
   }
 
   const embed = new EmbedBuilder().setColor(BOT_COLOR.embed);
@@ -385,15 +385,15 @@ async function sendNextCommand({
     workerTokensText += ` -> ${newWorkerTokens.toLocaleString()}`;
 
   let materialAmountText = `${BOT_EMOJI.items[materialName]} **${
-    IDLE_FARM_ITEMS_MATERIAL[materialName]
+    IDLE_FARM_ITEMS_PACKING_MATERIAL[materialName]
   }:** ${materialAmount.toLocaleString()}`;
   if (isMaterialAmountChanged)
     materialAmountText += ` -> ${newMaterialAmount.toLocaleString()}`;
 
   let boxAmountText = `${
-    BOT_EMOJI.items[IDLE_FARM_ITEMS_BOX_TYPE[materialName]]
+    BOT_EMOJI.items[IDLE_FARM_ITEMS_PACKING_PAIR[materialName]]
   } **${
-    IDLE_FARM_ITEMS_BOX[IDLE_FARM_ITEMS_BOX_TYPE[materialName]]
+    IDLE_FARM_ITEMS_PACKING_ITEMS[IDLE_FARM_ITEMS_PACKING_PAIR[materialName]]
   }:** ${boxAmount.toLocaleString()}`;
   if (isBoxAmountChanged)
     boxAmountText += ` -> ${newBoxAmount.toLocaleString()}`;
