@@ -29,5 +29,6 @@ export interface IInfo {
     [IDLE_FARM_WORKER_TYPE.wise]: ILeaderboardItem[];
     [IDLE_FARM_WORKER_TYPE.expert]: ILeaderboardItem[];
     [IDLE_FARM_WORKER_TYPE.masterful]: ILeaderboardItem[];
+    [IDLE_FARM_WORKER_TYPE.spookyworker]: ILeaderboardItem[];
   };
 }

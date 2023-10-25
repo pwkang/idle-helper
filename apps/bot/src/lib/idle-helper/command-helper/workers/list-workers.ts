@@ -44,15 +44,16 @@ const getEmbed = ({userAccount, author}: IGetEmbed) => {
     for (const [workerType] of typedObjectEntries(IDLE_FARM_WORKER_TYPE)) {
       const worker = userAccount.workers[workerType];
       const emoji = BOT_EMOJI.worker[workerType];
+      const levelEmoji = BOT_EMOJI.other.level;
+      const level = worker?.level ?? 0;
+      const power = calcWorkerPower({
+        type: workerType,
+        level,
+        decimalPlace: 2
+      });
       if (worker) {
         workers.push(
-          `${emoji} ${BOT_EMOJI.other.level} ${
-            worker.level
-          } :boom: ${calcWorkerPower({
-            type: workerType,
-            level: worker.level,
-            decimalPlace: 2
-          })}`
+          `${emoji} ${levelEmoji} ${level} :boom: ${power.toFixed(2)}`
         );
       } else {
         workers.push(`${BOT_EMOJI.worker[workerType]} -`);
