@@ -314,8 +314,9 @@ const generateSetComponents = ({preferenceFarms, workers, ended = false}: IGener
 };
 
 const isAllAssigned = (preferenceFarms: PreferenceFarm[]) =>
-  preferenceFarms.every(farm => farm.assignedWorker || farm.targetWorker === farm.currentWorker);
-
+  preferenceFarms
+    .filter(farm => farm.targetWorker)
+    .every(farm => farm.assignedWorker || farm.targetWorker === farm.currentWorker);
 
 interface IStartAssign {
   message: Message;
