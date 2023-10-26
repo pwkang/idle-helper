@@ -134,8 +134,8 @@ const generateEmbed = ({
       `- \`${PREFIX.bot}packing <args> ...\` -> show packing profits`,
       ' - `-m [multiplier]` -> custom multiplier',
       ' - `-c` -> include container',
-      ' - `-f2p` -> 20% tax',
-      ' - `-p2w` -> 10% tax',
+      ' - `-f2p` -> 10% tax',
+      ' - `-p2w` -> 5% tax',
       `- \`${PREFIX.bot}packing start [target idlons] [item name]\` -> Show guide to pack selected item until target idlons reached`
     ].join('\n')
   });
