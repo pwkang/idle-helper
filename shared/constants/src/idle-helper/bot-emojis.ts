@@ -1,5 +1,6 @@
 const ITEMS = {
   workerTokens: '<:workerTokens:1156520862464364604>',
+  rareWorkerTokens: '<:rareWorkerToken:1167086121449181275>',
   algae: '<:algae:1140204930918002748>',
   aluminiumIngot: '<:aluminiumingot:1140204927210242080>',
   aluminiumOre: '<:aluminiumore:1140204923590561825>',

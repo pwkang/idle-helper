@@ -8,6 +8,8 @@ import {
   IDLE_FARM_ITEMS_PACKING_ITEMS,
   IDLE_FARM_ITEMS_PACKING_MATERIAL,
   IDLE_FARM_ITEMS_PACKING_PAIR,
+  IDLE_FARM_ITEMS_REFINED,
+  IDLE_FARM_WORKER_TOKENS,
   PREFIX,
   TAX_RATE_BOX
 } from '@idle-helper/constants';
@@ -47,7 +49,7 @@ export const _startPacking = async ({
       channelId: message.channel.id
     });
   let idlons: number;
-  let workerTokens: number;
+  let workerTokens: number | undefined;
   let boxAmount: number = 0;
   let materialAmount: number = 0;
   let multiplier = userAccount.packing.multiplier;
@@ -84,6 +86,8 @@ export const _startPacking = async ({
 
   const materialBoxType = IDLE_FARM_ITEMS_PACKING_PAIR[materialName];
   const boxPrice = marketItems[materialBoxType].price;
+
+  const workerTokenToUsed: keyof typeof IDLE_FARM_WORKER_TOKENS = materialName in IDLE_FARM_ITEMS_REFINED ? 'rareWorkerTokens' : 'workerTokens';
 
   let event = createIdleFarmCommandListener({
     author,
@@ -195,7 +199,8 @@ export const _startPacking = async ({
         multiplier,
         itemPrice: materialPrice,
         taxValue: TAX_RATE_BOX[userAccount.config.donorTier]
-      })
+      }),
+      workerTokensType: workerTokenToUsed
     });
   }
 
@@ -216,6 +221,7 @@ export const _startPacking = async ({
 
     const isChanged = {
       workerTokens: false,
+      rareWorkerTokens: false,
       material: false,
       box: false
     };
@@ -225,12 +231,13 @@ export const _startPacking = async ({
     }
 
     if (
-      inventoryInfo.workerTokens !== undefined &&
+      inventoryInfo[workerTokenToUsed] !== undefined &&
       workerTokens === undefined
     ) {
-      workerTokens = inventoryInfo.workerTokens;
+      workerTokens = inventoryInfo[workerTokenToUsed];
       isChanged.workerTokens = true;
     }
+
 
     if (materialBoxType && inventoryInfo[materialBoxType] !== undefined && boxAmount === 0) {
       boxAmount = inventoryInfo[materialBoxType] ?? 0;
@@ -281,6 +288,7 @@ interface ISendNextCommand {
   profitsPerToken: number;
   multiplier: number;
   donorTier: ValuesOf<typeof IDLE_FARM_DONOR_TIER>;
+  workerTokensType: keyof typeof IDLE_FARM_WORKER_TOKENS;
 }
 
 async function sendNextCommand({
@@ -296,7 +304,8 @@ async function sendNextCommand({
   boxPrice,
   profitsPerToken,
   multiplier,
-  donorTier
+  donorTier,
+  workerTokensType
 }: ISendNextCommand) {
   let title: string;
   let nextCommand: string;
@@ -379,8 +388,8 @@ async function sendNextCommand({
   if (isIdlonChanged) idlonsText += ` -> ${newIdlons.toLocaleString()}`;
 
   let workerTokensText = `${
-    BOT_EMOJI.items.workerTokens
-  } **Worker tokens:** ${currentWorkerTokens.toLocaleString()}`;
+    BOT_EMOJI.items[workerTokensType]
+  } **${IDLE_FARM_WORKER_TOKENS[workerTokensType]}:** ${currentWorkerTokens.toLocaleString()}`;
   if (isWorkerTokenChanged)
     workerTokensText += ` -> ${newWorkerTokens.toLocaleString()}`;
 

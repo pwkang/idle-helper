@@ -136,8 +136,14 @@ export const IDLE_FARM_ITEMS_PACKING_ITEMS = {
   ...IDLE_FARM_ITEMS_CONTAINER
 } as const;
 
-export const IDLE_FARM_ITEMS = {
+export const IDLE_FARM_WORKER_TOKENS = {
   workerTokens: 'worker tokens',
+  rareWorkerTokens: 'rare worker tokens'
+
+} as const;
+
+export const IDLE_FARM_ITEMS = {
+  ...IDLE_FARM_WORKER_TOKENS,
   ...IDLE_FARM_ITEMS_MATERIAL,
   ...IDLE_FARM_ITEMS_REFINED,
   ...IDLE_FARM_ITEMS_PRODUCT,

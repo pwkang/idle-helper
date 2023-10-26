@@ -23,9 +23,10 @@ interface IShowPackingProfits {
   author: User;
   multiplier?: number;
   container?: boolean;
+  taxValue?: ValuesOf<typeof TAX_RATE_BOX>;
 }
 
-export const _showPackingProfits = async ({author, container, multiplier}: IShowPackingProfits) => {
+export const _showPackingProfits = async ({author, container, multiplier, taxValue}: IShowPackingProfits) => {
   const user = await userService.findUser({
     userId: author.id
   });
@@ -45,9 +46,10 @@ export const _showPackingProfits = async ({author, container, multiplier}: IShow
 
   const packingMultiplier = multiplier ?? user.packing.multiplier;
   const marketItems = await infoService.getMarketItems();
+  const taxValueToUse = taxValue ?? TAX_RATE_BOX[user.config.donorTier];
   const profits = availableMaterials.map(([key]) => {
     const itemPrice = marketItems[key]?.price ?? 0;
-    const taxValue = TAX_RATE_BOX[user.config.donorTier];
+    const taxValue = taxValueToUse;
     const itemBoxName = IDLE_FARM_ITEMS_PACKING_PAIR[key];
     const boxPrice = marketItems[itemBoxName]?.price ?? 0;
     return {
@@ -70,7 +72,7 @@ export const _showPackingProfits = async ({author, container, multiplier}: IShow
   const embed = generateEmbed({
     items: top10Profits,
     packingMultiplier,
-    taxValue: TAX_RATE_BOX[user.config.donorTier],
+    taxValue: taxValueToUse,
     lastUpdatedAt
   });
 
@@ -129,10 +131,11 @@ const generateEmbed = ({
   embed.addFields({
     name: 'Commands',
     value: [
-      `- \`${PREFIX.bot}packing\` -> show packing profits`,
+      `- \`${PREFIX.bot}packing <args> ...\` -> show packing profits`,
       ' - `-m [multiplier]` -> custom multiplier',
       ' - `-c` -> include container',
-      ` - e.g. \`${PREFIX.bot}pa -m 1.5 -c\``,
+      ' - `-f2p` -> 20% tax',
+      ' - `-p2w` -> 10% tax',
       `- \`${PREFIX.bot}packing start [target idlons] [item name]\` -> Show guide to pack selected item until target idlons reached`
     ].join('\n')
   });

@@ -1,23 +1,11 @@
-import type {
-  Client,
-  Message} from 'discord.js';
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  EmbedBuilder
-} from 'discord.js';
+import type {Client, Message} from 'discord.js';
+import {ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder} from 'discord.js';
 import type {IUser, IUserWorker} from '@idle-helper/models';
 import {djsMessageHelper} from '../../../discordjs/message';
 import {createMessageEditedListener} from '../../../../utils/message-edited-listener';
 import messageReaders from '../../../idle-farm/message-readers';
-import type {
-  IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
-import {
-  BOT_COLOR,
-  BOT_EMOJI,
-  BOT_IMAGE_URL
-} from '@idle-helper/constants';
+import type {IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import {BOT_COLOR, BOT_EMOJI, BOT_IMAGE_URL} from '@idle-helper/constants';
 import {calcWorkerPower} from '../../../idle-farm/calculator/worker-power';
 import {calcWorkerDmg} from '../../../idle-farm/calculator/calcWorkerDmg';
 
@@ -308,7 +296,7 @@ const generateBruteForceSolution = ({
   enemies
 }: IGenerateBruteForceSolution) => {
   const possibilities = permute(
-    workers.map((worker) => worker.type),
+    workers.map((worker) => worker?.type).filter(Boolean),
     workers.length
   );
   const bestSolution: IBestSolution = {
