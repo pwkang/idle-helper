@@ -27,7 +27,8 @@ export const userSchema = new Schema<IUser>({
     energyMax: {type: Number, default: 0},
     idlons: {type: Number, default: 0},
     idlucks: {type: Number, default: 0},
-    idleCoins: {type: Number, default: 0}
+    idleCoins: {type: Number, default: 0},
+    league: {type: String}
   },
   items: typedObjectEntries(IDLE_FARM_ITEMS).reduce((acc, [key]) => {
     acc[key] = {

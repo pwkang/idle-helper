@@ -1,13 +1,16 @@
-import type { User} from 'discord.js';
+import type {User} from 'discord.js';
 import {EmbedBuilder} from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
 import {infoService} from '../../../../services/database/info.service';
+import type {IDLE_FARM_ITEMS_PACKING_MATERIAL} from '@idle-helper/constants';
 import {
   BOT_COLOR,
   BOT_EMOJI,
   IDLE_FARM_ITEMS,
-  IDLE_FARM_ITEMS_BOX_TYPE,
   IDLE_FARM_ITEMS_MATERIAL,
+  IDLE_FARM_ITEMS_PACKING_PAIR,
+  IDLE_FARM_ITEMS_REFINED,
+  IDLE_FARM_LEAGUE_POINTS,
   PREFIX,
   TAX_RATE_BOX,
   TAX_RATE_LABEL
@@ -18,9 +21,12 @@ import embedProvider from '../../embeds';
 
 interface IShowPackingProfits {
   author: User;
+  multiplier?: number;
+  container?: boolean;
+  taxValue?: ValuesOf<typeof TAX_RATE_BOX>;
 }
 
-export const _showPackingProfits = async ({author}: IShowPackingProfits) => {
+export const _showPackingProfits = async ({author, container, multiplier, taxValue}: IShowPackingProfits) => {
   const user = await userService.findUser({
     userId: author.id
   });
@@ -31,13 +37,20 @@ export const _showPackingProfits = async ({author}: IShowPackingProfits) => {
       embeds: [embedProvider.setDonor()]
     };
   }
+  const includeContainer = container || (user.profile.league && IDLE_FARM_LEAGUE_POINTS[user.profile.league] >= IDLE_FARM_LEAGUE_POINTS.wheat3);
 
-  const packingMultiplier = user.packing.multiplier;
+  const availableMaterials = [
+    ...typedObjectEntries(IDLE_FARM_ITEMS_MATERIAL),
+    ...(includeContainer ? typedObjectEntries(IDLE_FARM_ITEMS_REFINED) : [])
+  ];
+
+  const packingMultiplier = multiplier ?? user.packing.multiplier;
   const marketItems = await infoService.getMarketItems();
-  const profits = typedObjectEntries(IDLE_FARM_ITEMS_MATERIAL).map(([key]) => {
+  const taxValueToUse = taxValue ?? TAX_RATE_BOX[user.config.donorTier];
+  const profits = availableMaterials.map(([key]) => {
     const itemPrice = marketItems[key]?.price ?? 0;
-    const taxValue = TAX_RATE_BOX[user.config.donorTier];
-    const itemBoxName = IDLE_FARM_ITEMS_BOX_TYPE[key];
+    const taxValue = taxValueToUse;
+    const itemBoxName = IDLE_FARM_ITEMS_PACKING_PAIR[key];
     const boxPrice = marketItems[itemBoxName]?.price ?? 0;
     return {
       name: key,
@@ -59,7 +72,7 @@ export const _showPackingProfits = async ({author}: IShowPackingProfits) => {
   const embed = generateEmbed({
     items: top10Profits,
     packingMultiplier,
-    taxValue: TAX_RATE_BOX[user.config.donorTier],
+    taxValue: taxValueToUse,
     lastUpdatedAt
   });
 
@@ -70,7 +83,7 @@ export const _showPackingProfits = async ({author}: IShowPackingProfits) => {
 
 interface IGenerateEmbed {
   items: {
-    name: keyof typeof IDLE_FARM_ITEMS_MATERIAL;
+    name: keyof typeof IDLE_FARM_ITEMS_PACKING_MATERIAL;
     profits: number;
   }[];
   packingMultiplier: number;
@@ -118,8 +131,12 @@ const generateEmbed = ({
   embed.addFields({
     name: 'Commands',
     value: [
-      `\`${PREFIX.bot}packing\` -> show packing profits`,
-      `\`${PREFIX.bot}packing start [target idlons] [item name]\` -> Show guide to pack selected item until target idlons reached`
+      `- \`${PREFIX.bot}packing <args> ...\` -> show packing profits`,
+      ' - `-m [multiplier]` -> custom multiplier',
+      ' - `-c` -> include container',
+      ' - `-f2p` -> 20% tax',
+      ' - `-p2w` -> 10% tax',
+      `- \`${PREFIX.bot}packing start [target idlons] [item name]\` -> Show guide to pack selected item until target idlons reached`
     ].join('\n')
   });
 

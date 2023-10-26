@@ -5,9 +5,11 @@ import type {IDLE_FARM_DONOR_TIER} from '@idle-helper/constants';
 import {
   BOT_COLOR,
   BOT_EMOJI,
-  IDLE_FARM_ITEMS_BOX,
-  IDLE_FARM_ITEMS_BOX_TYPE,
-  IDLE_FARM_ITEMS_MATERIAL,
+  IDLE_FARM_ITEMS_PACKING_ITEMS,
+  IDLE_FARM_ITEMS_PACKING_MATERIAL,
+  IDLE_FARM_ITEMS_PACKING_PAIR,
+  IDLE_FARM_ITEMS_REFINED,
+  IDLE_FARM_WORKER_TOKENS,
   PREFIX,
   TAX_RATE_BOX
 } from '@idle-helper/constants';
@@ -47,14 +49,14 @@ export const _startPacking = async ({
       channelId: message.channel.id
     });
   let idlons: number;
-  let workerTokens: number;
+  let workerTokens: number | undefined;
   let boxAmount: number = 0;
   let materialAmount: number = 0;
   let multiplier = userAccount.packing.multiplier;
   const targetIdlons = parseNumber(args[2]);
   const selectedItem = args.slice(3).join(' ');
   const marketItems = await infoService.getMarketItems();
-  const materialName = typedObjectEntries(IDLE_FARM_ITEMS_MATERIAL).find(
+  const materialName = typedObjectEntries(IDLE_FARM_ITEMS_PACKING_MATERIAL).find(
     ([, label]) => label.toLowerCase() === selectedItem.toLowerCase()
   )?.[0];
 
@@ -82,8 +84,10 @@ export const _startPacking = async ({
   }
   const materialPrice = marketItems[materialName].price;
 
-  const materialBoxType = IDLE_FARM_ITEMS_BOX_TYPE[materialName];
+  const materialBoxType = IDLE_FARM_ITEMS_PACKING_PAIR[materialName];
   const boxPrice = marketItems[materialBoxType].price;
+
+  const workerTokenToUsed: keyof typeof IDLE_FARM_WORKER_TOKENS = materialName in IDLE_FARM_ITEMS_REFINED ? 'rareWorkerTokens' : 'workerTokens';
 
   let event = createIdleFarmCommandListener({
     author,
@@ -195,7 +199,8 @@ export const _startPacking = async ({
         multiplier,
         itemPrice: materialPrice,
         taxValue: TAX_RATE_BOX[userAccount.config.donorTier]
-      })
+      }),
+      workerTokensType: workerTokenToUsed
     });
   }
 
@@ -216,6 +221,7 @@ export const _startPacking = async ({
 
     const isChanged = {
       workerTokens: false,
+      rareWorkerTokens: false,
       material: false,
       box: false
     };
@@ -225,12 +231,13 @@ export const _startPacking = async ({
     }
 
     if (
-      inventoryInfo.workerTokens !== undefined &&
+      inventoryInfo[workerTokenToUsed] !== undefined &&
       workerTokens === undefined
     ) {
-      workerTokens = inventoryInfo.workerTokens;
+      workerTokens = inventoryInfo[workerTokenToUsed];
       isChanged.workerTokens = true;
     }
+
 
     if (materialBoxType && inventoryInfo[materialBoxType] !== undefined && boxAmount === 0) {
       boxAmount = inventoryInfo[materialBoxType] ?? 0;
@@ -268,7 +275,7 @@ const sendCommandEmbed = async ({
 };
 
 interface ISendNextCommand {
-  materialName: keyof typeof IDLE_FARM_ITEMS_MATERIAL;
+  materialName: keyof typeof IDLE_FARM_ITEMS_PACKING_MATERIAL;
   materialPrice: number;
   currentIdlons: number;
   targetIdlons: number;
@@ -281,6 +288,7 @@ interface ISendNextCommand {
   profitsPerToken: number;
   multiplier: number;
   donorTier: ValuesOf<typeof IDLE_FARM_DONOR_TIER>;
+  workerTokensType: keyof typeof IDLE_FARM_WORKER_TOKENS;
 }
 
 async function sendNextCommand({
@@ -296,7 +304,8 @@ async function sendNextCommand({
   boxPrice,
   profitsPerToken,
   multiplier,
-  donorTier
+  donorTier,
+  workerTokensType
 }: ISendNextCommand) {
   let title: string;
   let nextCommand: string;
@@ -310,10 +319,10 @@ async function sendNextCommand({
     // sell boxes
 
     title = `Sell ${boxAmount.toLocaleString()} ${
-      IDLE_FARM_ITEMS_BOX[IDLE_FARM_ITEMS_BOX_TYPE[materialName]]
+      IDLE_FARM_ITEMS_PACKING_ITEMS[IDLE_FARM_ITEMS_PACKING_PAIR[materialName]]
     }`;
     nextCommand = `${PREFIX.idleFarm}sell ${
-      IDLE_FARM_ITEMS_BOX[IDLE_FARM_ITEMS_BOX_TYPE[materialName]]
+      IDLE_FARM_ITEMS_PACKING_ITEMS[IDLE_FARM_ITEMS_PACKING_PAIR[materialName]]
     } ${boxAmount}`;
 
     newIdlons += boxAmount * boxPrice * TAX_RATE_BOX[donorTier];
@@ -329,9 +338,9 @@ async function sendNextCommand({
     );
 
     title = `Pack ${availablePackingAmount.toLocaleString()} ${
-      IDLE_FARM_ITEMS_MATERIAL[materialName]
+      IDLE_FARM_ITEMS_PACKING_MATERIAL[materialName]
     }`;
-    nextCommand = `${PREFIX.idleFarm}packing ${IDLE_FARM_ITEMS_MATERIAL[materialName]} ${availablePackingAmount}`;
+    nextCommand = `${PREFIX.idleFarm}packing ${IDLE_FARM_ITEMS_PACKING_MATERIAL[materialName]} ${availablePackingAmount}`;
 
     newBoxAmount += availablePackingAmount * multiplier;
     newBoxAmount = Math.floor(newBoxAmount);
@@ -359,9 +368,9 @@ async function sendNextCommand({
     newMaterialAmount += materialsToBuy;
 
     title = `Buy ${materialsToBuy.toLocaleString()} ${
-      IDLE_FARM_ITEMS_MATERIAL[materialName]
+      IDLE_FARM_ITEMS_PACKING_MATERIAL[materialName]
     }`;
-    nextCommand = `${PREFIX.idleFarm}buy ${IDLE_FARM_ITEMS_MATERIAL[materialName]} ${materialsToBuy}`;
+    nextCommand = `${PREFIX.idleFarm}buy ${IDLE_FARM_ITEMS_PACKING_MATERIAL[materialName]} ${materialsToBuy}`;
   }
 
   const embed = new EmbedBuilder().setColor(BOT_COLOR.embed);
@@ -379,21 +388,21 @@ async function sendNextCommand({
   if (isIdlonChanged) idlonsText += ` -> ${newIdlons.toLocaleString()}`;
 
   let workerTokensText = `${
-    BOT_EMOJI.items.workerTokens
-  } **Worker tokens:** ${currentWorkerTokens.toLocaleString()}`;
+    BOT_EMOJI.items[workerTokensType]
+  } **${IDLE_FARM_WORKER_TOKENS[workerTokensType]}:** ${currentWorkerTokens.toLocaleString()}`;
   if (isWorkerTokenChanged)
     workerTokensText += ` -> ${newWorkerTokens.toLocaleString()}`;
 
   let materialAmountText = `${BOT_EMOJI.items[materialName]} **${
-    IDLE_FARM_ITEMS_MATERIAL[materialName]
+    IDLE_FARM_ITEMS_PACKING_MATERIAL[materialName]
   }:** ${materialAmount.toLocaleString()}`;
   if (isMaterialAmountChanged)
     materialAmountText += ` -> ${newMaterialAmount.toLocaleString()}`;
 
   let boxAmountText = `${
-    BOT_EMOJI.items[IDLE_FARM_ITEMS_BOX_TYPE[materialName]]
+    BOT_EMOJI.items[IDLE_FARM_ITEMS_PACKING_PAIR[materialName]]
   } **${
-    IDLE_FARM_ITEMS_BOX[IDLE_FARM_ITEMS_BOX_TYPE[materialName]]
+    IDLE_FARM_ITEMS_PACKING_ITEMS[IDLE_FARM_ITEMS_PACKING_PAIR[materialName]]
   }:** ${boxAmount.toLocaleString()}`;
   if (isBoxAmountChanged)
     boxAmountText += ` -> ${newBoxAmount.toLocaleString()}`;

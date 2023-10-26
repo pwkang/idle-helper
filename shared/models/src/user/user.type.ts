@@ -5,6 +5,7 @@ import type {
   IDLE_FARM_ITEMS,
   IDLE_FARM_WORKER_TYPE
 } from '@idle-helper/constants';
+import type {IDLE_FARM_LEAGUE} from '@idle-helper/constants';
 
 export interface IUserToggle
   extends Record<string, boolean | Record<string, boolean>> {
@@ -48,6 +49,7 @@ export interface IUser {
     idlons: number;
     idlucks: number;
     idleCoins: number;
+    league: keyof typeof IDLE_FARM_LEAGUE;
   };
   packing: {
     level: number;

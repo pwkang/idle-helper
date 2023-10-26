@@ -49,6 +49,11 @@ export const IDLE_FARM_ITEMS_REFINED = {
   brokenGlass: 'broken glass'
 } as const;
 
+export const IDLE_FARM_ITEMS_PACKING_MATERIAL = {
+  ...IDLE_FARM_ITEMS_MATERIAL,
+  ...IDLE_FARM_ITEMS_REFINED
+} as const;
+
 export const IDLE_FARM_ITEMS_PRODUCT = {
   fabric: 'fabric',
   chair: 'chair',
@@ -105,13 +110,46 @@ export const IDLE_FARM_ITEMS_BOX = {
   sawdustBox: 'sawdust box'
 } as const;
 
-export const IDLE_FARM_ITEMS = {
+export const IDLE_FARM_ITEMS_CONTAINER = {
+  plankContainer: 'plank container',
+  threadContainer: 'thread container',
+  ironIngotContainer: 'iron ingot container',
+  copperIngotContainer: 'copper ingot container',
+  aluminiumIngotContainer: 'aluminium ingot container',
+  steelIngotContainer: 'steel ingot container',
+  goldIngotContainer: 'gold ingot container',
+  yoghurtContainer: 'yoghurt container',
+  bacteriaContainer: 'bacteria container',
+  cheeseContainer: 'cheese container',
+  dustIngotContainer: 'dust ingot container',
+  dirtIngotContainer: 'dirt ingot container',
+  dusirtIngotContainer: 'dusirt ingot container',
+  breadContainer: 'bread container',
+  burntFoodContainer: 'burnt food container',
+  lavaContainer: 'lava container',
+  glassContainer: 'glass container',
+  brokenGlassContainer: 'broken glass container'
+} as const;
+
+export const IDLE_FARM_ITEMS_PACKING_ITEMS = {
+  ...IDLE_FARM_ITEMS_BOX,
+  ...IDLE_FARM_ITEMS_CONTAINER
+} as const;
+
+export const IDLE_FARM_WORKER_TOKENS = {
   workerTokens: 'worker tokens',
+  rareWorkerTokens: 'rare worker tokens'
+
+} as const;
+
+export const IDLE_FARM_ITEMS = {
+  ...IDLE_FARM_WORKER_TOKENS,
   ...IDLE_FARM_ITEMS_MATERIAL,
   ...IDLE_FARM_ITEMS_REFINED,
   ...IDLE_FARM_ITEMS_PRODUCT,
   ...IDLE_FARM_ITEMS_CONSUMABLE,
-  ...IDLE_FARM_ITEMS_BOX
+  ...IDLE_FARM_ITEMS_BOX,
+  ...IDLE_FARM_ITEMS_CONTAINER
 } as const;
 
 export const IDLE_FARM_ITEMS_BOX_TYPE = {
@@ -142,4 +180,31 @@ export const IDLE_FARM_ITEMS_BOX_TYPE = {
   leather: 'leatherBox',
   horn: 'hornBox',
   sawdust: 'sawdustBox'
+} as const;
+
+
+export const IDLE_FARM_ITEMS_CONTAINER_TYPE = {
+  plank: 'plankContainer',
+  thread: 'threadContainer',
+  ironIngot: 'ironIngotContainer',
+  copperIngot: 'copperIngotContainer',
+  aluminiumIngot: 'aluminiumIngotContainer',
+  steelIngot: 'steelIngotContainer',
+  goldIngot: 'goldIngotContainer',
+  yoghurt: 'yoghurtContainer',
+  bacteria: 'bacteriaContainer',
+  cheese: 'cheeseContainer',
+  dustIngot: 'dustIngotContainer',
+  dirtIngot: 'dirtIngotContainer',
+  dusirtIngot: 'dusirtIngotContainer',
+  bread: 'breadContainer',
+  burntFood: 'burntFoodContainer',
+  lava: 'lavaContainer',
+  glass: 'glassContainer',
+  brokenGlass: 'brokenGlassContainer'
+} as const;
+
+export const IDLE_FARM_ITEMS_PACKING_PAIR = {
+  ...IDLE_FARM_ITEMS_BOX_TYPE,
+  ...IDLE_FARM_ITEMS_CONTAINER_TYPE
 } as const;

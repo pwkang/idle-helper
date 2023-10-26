@@ -21,9 +21,9 @@ export const _profileReader = ({embed}: IProfileReader) => {
     embed.fields[3].value.match(/\*\*Idlucks\*\*: ([\d,]+)/)?.[1] ?? '0';
   const idleCoins =
     embed.fields[3].value.match(/\*\*Idle coins\*\*: ([\d,]+)/)?.[1] ?? '0';
-  const league = typedObjectEntries(LEAGUE_LABEL).find(([, value]) =>
+  const league = (typedObjectEntries(LEAGUE_LABEL).find(([, value]) =>
     embed.title?.includes(value)
-  )?.[0];
+  )?.[0] ?? IDLE_FARM_LEAGUE.dirt1) as keyof typeof IDLE_FARM_LEAGUE;
 
   return {
     energy: Number(energy),
@@ -53,5 +53,10 @@ const LEAGUE_LABEL = {
   [IDLE_FARM_LEAGUE.wheat2]: 'Wheat league II',
   [IDLE_FARM_LEAGUE.wheat3]: 'Wheat league III',
   [IDLE_FARM_LEAGUE.wheat4]: 'Wheat league IV',
-  [IDLE_FARM_LEAGUE.wheat5]: 'Wheat league V'
+  [IDLE_FARM_LEAGUE.wheat5]: 'Wheat league V',
+  [IDLE_FARM_LEAGUE.glass1]: 'Glass league I',
+  [IDLE_FARM_LEAGUE.glass2]: 'Glass league II',
+  [IDLE_FARM_LEAGUE.glass3]: 'Glass league III',
+  [IDLE_FARM_LEAGUE.glass4]: 'Glass league IV',
+  [IDLE_FARM_LEAGUE.glass5]: 'Glass league V'
 } as Record<keyof typeof IDLE_FARM_LEAGUE, string>;

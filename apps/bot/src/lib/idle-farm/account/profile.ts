@@ -66,7 +66,8 @@ const idleProfileSuccess = async ({
     idleCoins: profile.idleCoins,
     userId: author.id,
     idlons: profile.idlons,
-    idlucks: profile.idlucks
+    idlucks: profile.idlucks,
+    league: profile.league
   });
 
   if (toggleUser?.autoSend?.profile) {
