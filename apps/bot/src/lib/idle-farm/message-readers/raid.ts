@@ -1,9 +1,6 @@
-import type { Message} from 'discord.js';
+import type {Message} from 'discord.js';
 import {ButtonComponent} from 'discord.js';
-import {
-  IDLE_FARM_FARM_TYPE,
-  IDLE_FARM_WORKER_TYPE
-} from '@idle-helper/constants';
+import {IDLE_FARM_FARM_TYPE, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
 import {typedObjectEntries} from '@idle-helper/utils';
 
 interface IRaidReader {
@@ -19,7 +16,7 @@ interface IEnemyFarmInfo {
 }
 
 interface IWorkerInfo {
-  type: keyof typeof IDLE_FARM_WORKER_TYPE;
+  type?: keyof typeof IDLE_FARM_WORKER_TYPE;
   used: boolean;
 }
 
@@ -57,7 +54,7 @@ export const _raidReader = ({message}: IRaidReader) => {
       const used = worker.disabled;
       workers.push({
         used,
-        type: type!
+        type
       });
     }
   }

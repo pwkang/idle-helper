@@ -37,6 +37,17 @@ export const _playerRaidHelper = async ({
   }
 
   let raidInfo = messageReaders.raid({message});
+
+  if (raidInfo.workers.some((worker) => worker.type && !userWorkers[worker.type])) {
+    return djsMessageHelper.send({
+      client,
+      channelId,
+      options: {
+        content: 'It seems like you have new workers, please register them first'
+      }
+    });
+  }
+
   const totalEnemy = raidInfo.enemyFarms.length;
   let prevWorkers = [...raidInfo.workers];
 
@@ -48,7 +59,8 @@ export const _playerRaidHelper = async ({
     })),
     workers: raidInfo.workers
       .filter((worker) => !worker.used)
-      .map((worker) => userWorkers[worker.type])
+      .map((worker) => worker.type && userWorkers[worker.type])
+      .filter(Boolean)
   });
 
   let shouldSelect = solution.solution.filter((type) =>
@@ -105,7 +117,8 @@ export const _playerRaidHelper = async ({
         })),
         workers: raidInfo.workers
           .filter((worker) => !worker.used)
-          .map((worker) => userWorkers[worker.type])
+          .map((worker) => worker.type && userWorkers[worker.type])
+          .filter(Boolean)
       });
     }
 
@@ -187,6 +200,7 @@ export const generateEmbed = ({
 
     const workersInfo: string[] = [];
     for (const {type} of workers) {
+      if (!type) continue;
       const workerInfo = userWorkers[type];
       if (!workerInfo) continue;
       const power = calcWorkerPower({
@@ -253,8 +267,10 @@ export const generateComponents = ({
     const row = new ActionRowBuilder<ButtonBuilder>();
     for (let j = i; j < i + 4; j++) {
       if (!workers[j]) break;
+      const workerType = workers[j].type;
+      if (!workerType) continue;
       const isUsed = workers[j].used;
-      const solutionIndex = solution.solution.indexOf(workers[j].type);
+      const solutionIndex = solution.solution.indexOf(workerType);
       const isSolution = solutionIndex !== -1;
       const isNextMove = nextMove === workers[j].type;
       const buttonStyle = isNextMove
@@ -262,8 +278,8 @@ export const generateComponents = ({
         : ButtonStyle.Secondary;
       const disabled = isUsed || !isNextMove;
       const button = new ButtonBuilder()
-        .setCustomId(workers[j].type)
-        .setEmoji(BOT_EMOJI.worker[workers[j].type])
+        .setCustomId(workerType)
+        .setEmoji(BOT_EMOJI.worker[workerType])
         .setLabel(isSolution ? `${solutionIndex + 1}` : '\u200b')
         .setStyle(buttonStyle)
         .setDisabled(disabled);
@@ -296,7 +312,7 @@ const generateBruteForceSolution = ({
   enemies
 }: IGenerateBruteForceSolution) => {
   const possibilities = permute(
-    workers.map((worker) => worker?.type).filter(Boolean),
+    workers.map((worker) => worker?.type),
     workers.length
   );
   const bestSolution: IBestSolution = {
