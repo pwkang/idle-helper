@@ -1,6 +1,6 @@
 import {djsMessageHelper} from '../../../discordjs/message';
 import type {Client, Message} from 'discord.js';
-import { EmbedBuilder} from 'discord.js';
+import {EmbedBuilder} from 'discord.js';
 import type {IUser} from '@idle-helper/models';
 import messageReaders from '../../../idle-farm/message-readers';
 import {BOT_COLOR, BOT_EMOJI} from '@idle-helper/constants';
@@ -35,6 +35,18 @@ export const _playerRaidGuide = async ({
 
   const userWorker = userAccount.workers;
   const raidMessage = message;
+
+  const raidInfo = messageReaders.raid({message: raidMessage});
+
+  if (raidInfo.workers.some((worker) => worker.type && !userWorkers[worker.type])) {
+    return djsMessageHelper.send({
+      client,
+      channelId,
+      options: {
+        content: 'It seems like you have new workers, please register them first'
+      }
+    });
+  }
 
   const guideEmbed = generateEmbed({
     userWorkers: userWorker,
@@ -78,6 +90,7 @@ const generateEmbed = ({userWorkers, raidMessage}: IGenerateEmbed) => {
   const embed = new EmbedBuilder().setColor(BOT_COLOR.embed);
   const workersInfo: string[] = [];
   for (const {type} of workers) {
+    if (!type) continue;
     const workerInfo = userWorkers[type];
     if (!workerInfo) continue;
     const power = calcWorkerPower({
