@@ -1,9 +1,5 @@
-import type {
-  IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
-import {
-  IDLE_FARM_WORKER_ID,
-  IDLE_FARM_WORKER_STATS
-} from '@idle-helper/constants';
+import type {IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import {IDLE_FARM_WORKER_ID, IDLE_FARM_WORKER_STATS} from '@idle-helper/constants';
 
 interface ICalcWorkerPower {
   type: ValuesOf<typeof IDLE_FARM_WORKER_TYPE>;

@@ -28,7 +28,7 @@ export const IDLE_FARM_WORKER_ID = {
   [IDLE_FARM_WORKER_TYPE.wise]: 5,
   [IDLE_FARM_WORKER_TYPE.expert]: 6,
   [IDLE_FARM_WORKER_TYPE.masterful]: 7,
-  [IDLE_FARM_WORKER_TYPE.spooky]: 8
+  [IDLE_FARM_WORKER_TYPE.spooky]: 1
 } as const;
 
 export const IDLE_FARM_WORKER_STATS = {
