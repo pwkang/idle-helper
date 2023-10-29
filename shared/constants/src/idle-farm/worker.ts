@@ -91,5 +91,6 @@ export const IDLE_FARM_WORKERS_LEVEL_AMOUNT: Record<number, number> = {
   14: 5000,
   15: 8000,
   16: 12000,
-  17: 18000
+  17: 18000,
+  18: 25000
 } as const;
