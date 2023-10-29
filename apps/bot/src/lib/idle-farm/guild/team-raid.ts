@@ -1,5 +1,5 @@
 import type {Client, Embed, Message, User} from 'discord.js';
-import { EmbedBuilder} from 'discord.js';
+import {EmbedBuilder} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import {userService} from '../../../services/database/user.service';
 import type {IUser} from '@idle-helper/models';
@@ -141,7 +141,7 @@ export const generateConfirmationEmbed = ({
 
   for (const author of authors) {
     const user = users.find((user) => user.userId === author.id);
-    if (user?.workers) {
+    if (user?.lastUpdated.workers) {
       const top3Workers = typedObjectEntries(user.workers)
         .filter(([, worker]) => worker)
         .map(([type, worker]) => ({

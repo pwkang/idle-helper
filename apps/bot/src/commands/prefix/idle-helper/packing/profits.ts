@@ -16,13 +16,11 @@ export default <PrefixCommand>{
     userNotRegistered: USER_NOT_REGISTERED_ACTIONS.askToRegister
   },
   execute: async (client, message, args) => {
-    const container = args.includes('-c');
     const multiplier = args.includes('-m') ? args[args.indexOf('-m') + 1] : undefined;
     const isF2P = args.includes('-f2p');
     const isP2W = args.includes('-p2w');
     const messageOptions = await commandHelper.packing.showProfits({
       author: message.author,
-      container,
       multiplier: isNaN(Number(multiplier)) ? undefined : Number(multiplier),
       taxValue: isF2P ? TAX_RATE_BOX['non-donor'] : isP2W ? TAX_RATE_BOX['wise'] : undefined
     });
