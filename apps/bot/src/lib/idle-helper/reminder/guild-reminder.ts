@@ -1,6 +1,7 @@
 import type {Client} from 'discord.js';
 import {guildService} from '../../../services/database/guild.service';
 import {djsMessageHelper} from '../../discordjs/message';
+import toggleGuildChecker from '../toggle-checker/guild';
 
 interface IGuildReminderTimesUp {
   client: Client;
@@ -18,6 +19,11 @@ export const guildReminderTimesUp = async ({
     roleId: guildRoleId
   });
   if (!guild) return;
+  const toggleGuild = await toggleGuildChecker({
+    guildRoleId,
+    serverId
+  });
+  if (!toggleGuild?.teamRaid?.reminder) return;
 
   await djsMessageHelper.send({
     client,
