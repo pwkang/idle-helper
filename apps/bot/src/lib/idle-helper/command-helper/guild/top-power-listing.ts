@@ -1,27 +1,15 @@
 import {guildService} from '../../../../services/database/guild.service';
-import type {
-  BaseInteraction,
-  BaseMessageOptions,
-  Client,
-  Guild} from 'discord.js';
-import {
-  EmbedBuilder
-} from 'discord.js';
+import type {BaseInteraction, BaseMessageOptions, Client, Guild} from 'discord.js';
+import {EmbedBuilder} from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
 import type {IGuild, IUser} from '@idle-helper/models';
-import type {
-  IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
-import {
-  BOT_COLOR,
-  BOT_EMOJI
-} from '@idle-helper/constants';
+import type {IDLE_FARM_WORKER_TYPE} from '@idle-helper/constants';
+import {BOT_COLOR} from '@idle-helper/constants';
 import {getTop3Power} from '../../../../utils/getTop3Power';
 import {getTop3Workers} from '../../../../utils/getTop3Workers';
 import messageFormatter from '../../../discordjs/message-formatter';
-import {generateNavigationRow} from '../../../../utils/pagination-row';
 
-const USERS_PER_FIELD = 5;
-const USERS_PER_PAGE = 25;
+const USERS_PER_FIELD = 15;
 
 interface ITopPowerListing {
   server: Guild;
@@ -50,13 +38,6 @@ export const _topPowerListing = async ({authorId}: ITopPowerListing) => {
           guild: userGuild,
           users,
           page: paginatePage
-        })
-      ],
-      components: [
-        generateNavigationRow({
-          total: userGuild?.membersId?.length ?? 0,
-          page: paginatePage,
-          itemsPerPage: USERS_PER_PAGE
         })
       ]
     };
@@ -100,7 +81,7 @@ const renderEmbed = ({users, guild, page}: IRenderEmbed) => {
   if (guild.membersId?.length) {
     for (const memberId of guild.membersId) {
       const user = users.find((user) => user.userId === memberId);
-      if (user) {
+      if (user?.workers) {
         const top3Power = getTop3Power(user);
         const top3Workers = getTop3Workers(user);
         userPowers.push({
@@ -121,28 +102,20 @@ const renderEmbed = ({users, guild, page}: IRenderEmbed) => {
   userPowers.sort((a, b) => b.power - a.power);
 
   if (userPowers.length) {
-    const currentPageUsers = userPowers.slice(
-      page * USERS_PER_PAGE,
-      (page + 1) * USERS_PER_PAGE
-    );
 
-    for (let i = 0; i < currentPageUsers.length; i += USERS_PER_FIELD) {
+    for (let i = 0; i < userPowers.length; i += USERS_PER_FIELD) {
       const rows: string[] = [];
       for (
         let j = 0;
-        j < currentPageUsers.slice(i, i + USERS_PER_FIELD).length;
+        j < userPowers.slice(i, i + USERS_PER_FIELD).length;
         j++
       ) {
-        const index = i + j + 1 + page * USERS_PER_PAGE;
-        const user = currentPageUsers[i + j];
+        const index = i + j + 1 + page;
+        const user = userPowers[i + j];
         const power = user.power.toFixed(2);
-        const workers = user.workers?.map((worker) => BOT_EMOJI.worker[worker]);
         const mentions = messageFormatter.user(user.userId);
-        const username = user.username ? `(${user.username})` : '';
         rows.push(
-          `\`[${index}]\` **${power}** | ${
-            workers?.length ? `${workers?.join('')} | ` : ''
-          }${mentions} ${username}`
+          `\`[${index}]\` **${power}** | ${mentions}`
         );
       }
 
@@ -163,7 +136,7 @@ const renderEmbed = ({users, guild, page}: IRenderEmbed) => {
   const registeredUser = userPowers.filter((user) => user.power > 0);
   const avg = registeredUser.length
     ? registeredUser.reduce((acc, user) => acc + user.power, 0) /
-      registeredUser.length
+    registeredUser.length
     : 0;
 
   const description = [
