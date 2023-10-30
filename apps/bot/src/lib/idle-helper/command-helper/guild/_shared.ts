@@ -31,12 +31,6 @@ export const verifyGuild = async ({userId, client, server}: IVerifyGuild) => {
       roleId: guildRole.id
     });
 
-    if (userGuild?.roleId !== guildRole.id)
-      await guildService.registerUsersToGuild({
-        usersId: [userId],
-        serverId: server.id,
-        roleId: guildRole.id
-      });
     if (guild) finalGuild = guild;
   }
 

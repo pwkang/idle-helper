@@ -1,5 +1,5 @@
 import type {ClientOptions, Message} from 'discord.js';
-import { IntentsBitField, Options} from 'discord.js';
+import {IntentsBitField, Options} from 'discord.js';
 import {IDLE_FARM_ID} from '@idle-helper/constants';
 import ms from 'ms';
 
@@ -16,7 +16,8 @@ export const DiscordClientConfig: ClientOptions = {
   intents: new IntentsBitField().add([
     IntentsBitField.Flags.Guilds,
     IntentsBitField.Flags.GuildMessages,
-    IntentsBitField.Flags.MessageContent
+    IntentsBitField.Flags.MessageContent,
+    IntentsBitField.Flags.GuildMembers
   ]),
   sweepers: {
     messages: {
