@@ -1,10 +1,11 @@
-import type {Embed} from 'discord.js';
+import type {Embed, Guild} from 'discord.js';
 
 interface IGuildListReader {
   embed: Embed;
+  guild: Guild;
 }
 
-export const _guildListReader = ({embed}: IGuildListReader) => {
+export const _guildListReader = ({embed, guild}: IGuildListReader) => {
   const guildName =
     embed.fields[0].name.match(/^\*\*(.*)\*\* members$/)?.[1] ?? '';
   const userList = embed.fields.flatMap((field) =>
@@ -17,9 +18,13 @@ export const _guildListReader = ({embed}: IGuildListReader) => {
   const ids = userList
     .filter((user) => user.startsWith('ID:'))
     .map((user) => user.match(/^ID: \*\*(\d+)\*\*$/)?.[1] ?? '');
+
+  const members = guild.members.cache.filter((member) =>
+    usernames.includes(member.user.username)
+  ).map((member) => member.user.id);
+
   return {
     guildName,
-    usernames,
-    ids
+    ids: [...ids, ...members]
   };
 };

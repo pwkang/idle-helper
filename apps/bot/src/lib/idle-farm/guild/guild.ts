@@ -51,11 +51,6 @@ export const idleGuild = async ({
         guildServerId: userGuild.serverId,
         isSlashCommand
       });
-      await guildService.registerUsersToGuild({
-        serverId: message.guild.id,
-        roleId: guildRoleId,
-        usersId: [author.id]
-      });
       event?.stop();
     }
   });

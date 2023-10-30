@@ -4,6 +4,8 @@ import messageReaders from '../message-readers';
 import commandHelper from '../../idle-helper/command-helper';
 import {djsMessageHelper} from '../../discordjs/message';
 import {guildService} from '../../../services/database/guild.service';
+import {djsMemberHelper} from '../../discordjs/member';
+import {djsServerHelper} from '../../discordjs/server';
 
 interface IIdleGuild {
   client: Client;
@@ -49,7 +51,9 @@ export const idleGuildList = async ({
         embed,
         guildRoleId: userGuild.roleId,
         guildServerId: userGuild.serverId,
-        author
+        author,
+        client,
+        serverId: message.guild.id
       });
     }
   });
@@ -64,19 +68,33 @@ interface IIdleGuildSuccess {
   guildRoleId: string;
   guildServerId: string;
   author: User;
+  client: Client;
+  serverId: string;
 }
 
 const idleGuildListSuccess = async ({
   embed,
   guildRoleId,
-  author,
-  guildServerId
+  guildServerId,
+  client,
+  serverId
 }: IIdleGuildSuccess) => {
-  const guildInfo = messageReaders.guildList({embed});
+  if (serverId !== guildServerId) return;
+  await djsMemberHelper.fetchAllMembers({
+    client,
+    serverId
+  });
+  const server = await djsServerHelper.getServer({
+    serverId,
+    client
+  });
+  if (!server) return;
+  const guildInfo = messageReaders.guildList({embed, guild: server});
+
   await guildService.registerUsersToGuild({
     serverId: guildServerId,
     roleId: guildRoleId,
-    usersId: [author.id, ...guildInfo.ids]
+    usersId: guildInfo.ids
   });
 };
 

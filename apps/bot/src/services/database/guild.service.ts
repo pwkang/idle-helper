@@ -1,5 +1,5 @@
 import type {UpdateQuery} from 'mongoose';
-import type { IGuild} from '@idle-helper/models';
+import type {IGuild} from '@idle-helper/models';
 import {guildSchema} from '@idle-helper/models';
 import {mongoClient} from '@idle-helper/services';
 import {redisGuildReminder} from '../redis/guild-reminder.redis';
@@ -254,7 +254,7 @@ const registerUsersToGuild = async ({
 }: IRegisterToGuild) => {
   await dbGuild.findOneAndUpdate(
     {serverId, roleId},
-    {$addToSet: {membersId: {$each: usersId}}},
+    {$set: {membersId: usersId}},
     {new: true}
   );
   await dbGuild.findOneAndUpdate(
