@@ -84,23 +84,17 @@ const idleGuildListSuccess = async ({
     client,
     serverId
   });
-  const guildInfo = messageReaders.guildList({embed});
   const server = await djsServerHelper.getServer({
     serverId,
     client
   });
   if (!server) return;
-  const members = server.members.cache.filter((member) =>
-    guildInfo.usernames.includes(member.user.username)
-  );
+  const guildInfo = messageReaders.guildList({embed, guild: server});
 
   await guildService.registerUsersToGuild({
     serverId: guildServerId,
     roleId: guildRoleId,
-    usersId: [
-      ...members.map((member) => member.user.id),
-      ...guildInfo.ids.map((id) => id)
-    ]
+    usersId: guildInfo.ids
   });
 };
 
