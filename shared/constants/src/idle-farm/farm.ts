@@ -27,6 +27,7 @@ export const IDLE_FARM_FARM_TYPE = {
   yoghurtFactory: 'yoghurt factory',
   cheeseFactory: 'cheese factory',
   glassFactory: 'glass factory',
+  residueRecycler: 'residue recycler',
 
   fabricMill: 'fabric mill',
   chairFactory: 'chair factory',

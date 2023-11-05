@@ -230,6 +230,7 @@ export const BOT_EMOJI = {
     yoghurtFactory: ITEMS.yoghurt,
     cheeseFactory: ITEMS.cheese,
     glassFactory: ITEMS.glass,
+    residueRecycler: ITEMS.dusirtIngot,
     fabricMill: ITEMS.fabric,
     chairFactory: ITEMS.chair,
     wireFactory: ITEMS.wire,
