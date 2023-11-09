@@ -435,6 +435,7 @@ async function sendNextCommand({
     client,
     channelId,
     options: {
+      content: nextCommand,
       embeds: [embed]
     }
   });
