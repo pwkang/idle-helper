@@ -25,7 +25,8 @@ export const IDLE_FARM_ITEMS_MATERIAL = {
   meat: 'meat',
   leather: 'leather',
   horn: 'horn',
-  sawdust: 'sawdust'
+  sawdust: 'sawdust',
+  sugar: 'sugar'
 } as const;
 
 export const IDLE_FARM_ITEMS_REFINED = {
@@ -107,7 +108,8 @@ export const IDLE_FARM_ITEMS_BOX = {
   meatBox: 'meat box',
   leatherBox: 'leather box',
   hornBox: 'horn box',
-  sawdustBox: 'sawdust box'
+  sawdustBox: 'sawdust box',
+  sugarBox: 'sugar box'
 } as const;
 
 export const IDLE_FARM_ITEMS_CONTAINER = {
@@ -179,7 +181,8 @@ export const IDLE_FARM_ITEMS_BOX_TYPE = {
   meat: 'meatBox',
   leather: 'leatherBox',
   horn: 'hornBox',
-  sawdust: 'sawdustBox'
+  sawdust: 'sawdustBox',
+  sugar: 'sugarBox'
 } as const;
 
 

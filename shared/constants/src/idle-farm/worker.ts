@@ -6,7 +6,8 @@ export const IDLE_FARM_WORKER_TYPE = {
   wise: 'wise',
   expert: 'expert',
   masterful: 'masterful',
-  spooky: 'spooky'
+  spooky: 'spooky',
+  snowy: 'snowy'
 } as const;
 
 export const IDLE_FARM_WORKER_LABEL = {
@@ -17,7 +18,8 @@ export const IDLE_FARM_WORKER_LABEL = {
   [IDLE_FARM_WORKER_TYPE.wise]: 'wise',
   [IDLE_FARM_WORKER_TYPE.expert]: 'expert',
   [IDLE_FARM_WORKER_TYPE.masterful]: 'masterful',
-  [IDLE_FARM_WORKER_TYPE.spooky]: 'spooky'
+  [IDLE_FARM_WORKER_TYPE.spooky]: 'spooky',
+  [IDLE_FARM_WORKER_TYPE.snowy]: 'snowy'
 };
 
 export const IDLE_FARM_WORKER_ID = {
@@ -28,7 +30,8 @@ export const IDLE_FARM_WORKER_ID = {
   [IDLE_FARM_WORKER_TYPE.wise]: 5,
   [IDLE_FARM_WORKER_TYPE.expert]: 6,
   [IDLE_FARM_WORKER_TYPE.masterful]: 7,
-  [IDLE_FARM_WORKER_TYPE.spooky]: 1
+  [IDLE_FARM_WORKER_TYPE.spooky]: 1,
+  [IDLE_FARM_WORKER_TYPE.snowy]: 2
 } as const;
 
 export const IDLE_FARM_WORKER_STATS = {
@@ -71,6 +74,11 @@ export const IDLE_FARM_WORKER_STATS = {
     speed: 5,
     strength: 6,
     intelligence: 5
+  },
+  [IDLE_FARM_WORKER_TYPE.snowy]: {
+    speed: 5,
+    strength: 5,
+    intelligence: 6
   }
 } as const;
 
