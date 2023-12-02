@@ -51,6 +51,11 @@ const getEmbed = ({userAccount, author}: IGetEmbed) => {
   });
 
   const workers: string[] = [];
+  const totalPower = getTop3Power(userAccount);
+
+  workers.push(`Total power: **${totalPower.toFixed(2)}** :boom:`);
+  workers.push('');
+
   if (userAccount.lastUpdated.workers) {
     for (const workerType of ORDER) {
       const worker = userAccount.workers[workerType];
@@ -71,10 +76,6 @@ const getEmbed = ({userAccount, author}: IGetEmbed) => {
       }
     }
 
-    const totalPower = getTop3Power(userAccount);
-
-    workers.push('');
-    workers.push(`Total power: **${totalPower.toFixed(2)}** :boom:`);
   } else {
     workers.push('No workers registered');
   }
