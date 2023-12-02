@@ -70,7 +70,8 @@ export const userSchema = new Schema<IUser>({
     wise: workerSchema,
     expert: workerSchema,
     masterful: workerSchema,
-    spooky: workerSchema
+    spooky: workerSchema,
+    snowy: workerSchema
   },
   farms: {
     lastClaimedAt: Date,

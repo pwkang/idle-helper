@@ -53,6 +53,9 @@ const fromRedis = (value: string): IInfo => {
       ),
       [IDLE_FARM_WORKER_TYPE.spooky]: transformWorkerPower(
         parsed?.workerPower?.spooky
+      ),
+      [IDLE_FARM_WORKER_TYPE.snowy]: transformWorkerPower(
+        parsed?.workerPower?.snowy
       )
     },
     market: typedObjectEntries(parsed?.market ?? {}).reduce(
@@ -70,7 +73,8 @@ const fromRedis = (value: string): IInfo => {
       [IDLE_FARM_WORKER_TYPE.wise]: parsed?.leaderboard?.wise ?? [],
       [IDLE_FARM_WORKER_TYPE.expert]: parsed?.leaderboard?.expert ?? [],
       [IDLE_FARM_WORKER_TYPE.masterful]: parsed?.leaderboard?.masterful ?? [],
-      [IDLE_FARM_WORKER_TYPE.spooky]: parsed?.leaderboard?.spooky ?? []
+      [IDLE_FARM_WORKER_TYPE.spooky]: parsed?.leaderboard?.spooky ?? [],
+      [IDLE_FARM_WORKER_TYPE.snowy]: parsed?.leaderboard?.snowy ?? []
     }
   };
 };

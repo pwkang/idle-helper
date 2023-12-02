@@ -5,6 +5,7 @@ export const IDLE_FARM_FARM_TYPE = {
   waterPond: 'water pond',
   potatoFarm: 'potato farm',
   wheatFarm: 'wheat farm',
+  sugarCaneFarm: 'sugar cane farm',
   desert: 'desert',
   cottonFarm: 'cotton farm',
 
@@ -35,7 +36,11 @@ export const IDLE_FARM_FARM_TYPE = {
 
   lootboxFarm: 'lootbox farm',
   pumpkinFarm: 'pumpkin farm',
-  pumpkinCarver: 'pumpkin carver'
+  pumpkinCarver: 'pumpkin carver',
+
+  candyBakery: 'candy bakery',
+  snowyFactory: 'snowy factory'
+
 } as const;
 
 export const IDLE_FARM_TIME_BOOSTER_DURATION = {
