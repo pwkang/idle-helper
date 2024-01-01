@@ -9,13 +9,15 @@ interface IIdleMarket {
   message: Message;
   author: User;
   isSlashCommand?: boolean;
+  toCheckItems?: boolean;
 }
 
 export const idleMarket = ({
   author,
   client,
   isSlashCommand,
-  message
+  message,
+  toCheckItems = true
 }: IIdleMarket) => {
   let event = createIdleFarmCommandListener({
     author,
@@ -26,7 +28,8 @@ export const idleMarket = ({
   event.on('embed', async (embed, collected) => {
     if (isMarketDaily({embed})) {
       idleMarketSuccess({
-        message: collected
+        message: collected,
+        toCheckItems
       });
       event?.stop();
     }
@@ -39,27 +42,29 @@ export const idleMarket = ({
 
 interface IIdleMarketSuccess {
   message: Message;
+  toCheckItems?: boolean;
 }
 
-const idleMarketSuccess = async ({message}: IIdleMarketSuccess) => {
+const idleMarketSuccess = async ({message, toCheckItems}: IIdleMarketSuccess) => {
   const event = await createMessageEditedListener({
     messageId: message.id
   });
   if (!event) return;
   event.on(message.id, (collected) => {
-    marketPageChanged({embed: collected.embeds[0]});
+    marketPageChanged({embed: collected.embeds[0], toCheckItems});
   });
 };
 
 interface IMarketPageChanged {
   embed: Embed;
+  toCheckItems?: boolean;
 }
 
-const marketPageChanged = ({embed}: IMarketPageChanged) => {
+const marketPageChanged = ({embed, toCheckItems}: IMarketPageChanged) => {
   const marketItems = messageReaders.market({
     embed
   });
-  marketItems.forEach((item) => {
+  marketItems.items.forEach((item) => {
     infoService.updateMarketItems({
       isOverstocked: item.isOverstocked,
       type: item.type,
@@ -67,7 +72,12 @@ const marketPageChanged = ({embed}: IMarketPageChanged) => {
       rate: item.priceRate
     });
   });
+  if (toCheckItems && marketItems.nonRegisteredItems.length) {
+    console.log(marketItems.nonRegisteredItems);
+
+  }
 };
+
 
 interface IChecker {
   embed: Embed;

@@ -15,6 +15,7 @@ interface IItem {
 
 export const _marketReader = ({embed}: IMarketReader) => {
   const items: IItem[] = [];
+  const nonRegisteredItems: string[] = [];
   const fields = embed.fields;
   for (const field of fields) {
     const name = typedObjectEntries(IDLE_FARM_ITEMS).find(([, value]) =>
@@ -25,7 +26,11 @@ export const _marketReader = ({embed}: IMarketReader) => {
       ?.replaceAll(',', '');
     const isOverstocked = field.name.includes('OVERSTOCKED');
     const priceRate = field.value.match(/`([+-]\d+)%`/)?.[1];
-    if (!name || !price) continue;
+    if (!name) {
+      const name = field.name.match(/\*\*(.+)\*\*/)?.[1];
+      if (name) nonRegisteredItems.push(name);
+      continue;
+    }
     items.push({
       type: name,
       priceRate: priceRate ? Number(priceRate) : 0,
@@ -33,5 +38,5 @@ export const _marketReader = ({embed}: IMarketReader) => {
       isOverstocked
     });
   }
-  return items;
+  return {items, nonRegisteredItems};
 };
