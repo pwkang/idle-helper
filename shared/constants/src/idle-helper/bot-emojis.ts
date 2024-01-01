@@ -55,6 +55,27 @@ const ITEMS = {
   wire: '<:wire:1140204803125952552>',
   wood: '<:wood:1140209888765681754>',
   yoghurt: '<:yoghurt:1140204801305620530>',
+  tomato: '<:tomato:1191407633983352944>',
+  siliconOre: '<:siliconOre:1191407630841815110>',
+  lithium: '<:lithium:1191407610210037801>',
+  salt: '<:salt:1191407625699606629>',
+  tomatoSauce: '<:tomatoSauce:1191407705798213772>',
+  siliconIngot: '<:siliconIngot:1191407628908249168>',
+  pasta: '<:pasta:1191407616996409355>',
+  particleboard: '<:particleboard:1191407615188668547>',
+  dirtyWater: '<:dirtyWater:1191407597392240710>',
+  oxygen: '<:oxygen:1191407612068110416>',
+  rope: '<:rope:1191407623896047676>',
+  gear: '<:gear:1191407605269151794>',
+  pizza: '<:pizza:1191407620221837353>',
+  lasagna: '<:lasagna:1191407607194325142>',
+  bulb: '<:blub:1191407589121077318>',
+  dirustMix: '<:dusirtMix:1191407600424722472>',
+  cpu: '<:cpu:1191407595559342160>',
+  battery: '<:battery:1191407587275591730>',
+  clock: '<:clock:1191407592312946708>',
+  flashlight: '<:flashlight:1191407601762713662>',
+
 
   woodBox: '<:box:1140206786134167562>',
   stickBox: '<:box:1140206786134167562>',
@@ -84,6 +105,10 @@ const ITEMS = {
   leatherBox: '<:box:1140206786134167562>',
   hornBox: '<:box:1140206786134167562>',
   sawdustBox: '<:box:1140206786134167562>',
+  tomatoBox: '<:box:1140206786134167562>',
+  siliconOreBox: '<:box:1140206786134167562>',
+  lithiumBox: '<:box:1140206786134167562>',
+  saltBox: '<:box:1140206786134167562>',
 
   plankContainer: '<:container:1166656974113476608>',
   threadContainer: '<:container:1166656974113476608>',
@@ -103,6 +128,12 @@ const ITEMS = {
   lavaContainer: '<:container:1166656974113476608>',
   glassContainer: '<:container:1166656974113476608>',
   brokenGlassContainer: '<:container:1166656974113476608>',
+  tomatoSauceContainer: '<:container:1166656974113476608>',
+  siliconIngotContainer: '<:container:1166656974113476608>',
+  pastaContainer: '<:container:1166656974113476608>',
+  particleboardContainer: '<:container:1166656974113476608>',
+  dirtyWaterContainer: '<:container:1166656974113476608>',
+  oxygenContainer: '<:container:1166656974113476608>',
 
   energyGalloon: '<:energygalloon:1153222727675691069>',
   timeCompressor: '<:timecompressor:1153222725607890944>',
@@ -222,34 +253,52 @@ export const BOT_EMOJI = {
     wheatFarm: ITEMS.wheat,
     sugarCaneFarm: ITEMS.sugar,
     desert: ITEMS.sand,
+
+    tomatoFarm: ITEMS.tomato,
     cottonFarm: ITEMS.cotton,
     coalCave: ITEMS.coal,
     ironCave: ITEMS.ironOre,
     copperCave: ITEMS.copperOre,
     aluminiumCave: ITEMS.aluminiumOre,
+
     cowsRanch: ITEMS.milk,
+    lithiumExtractor: ITEMS.lithium,
     sawMill: ITEMS.plank,
     textileMill: ITEMS.thread,
     bakery: ITEMS.bread,
+    pastaBakery: ITEMS.pasta,
+
     artificialVolcano: ITEMS.lava,
     ironSmelter: ITEMS.ironIngot,
     copperSmelter: ITEMS.copperIngot,
     aluminiumSmelter: ITEMS.aluminiumIngot,
+    siliconSmelter: ITEMS.siliconIngot,
     steelFoundry: ITEMS.steelIngot,
+
     goldSmelter: ITEMS.goldIngot,
+    algaePlantarium: ITEMS.algae,
     yoghurtFactory: ITEMS.yoghurt,
     cheeseFactory: ITEMS.cheese,
+    tomatoSaucinator: ITEMS.tomatoSauce,
     glassFactory: ITEMS.glass,
+
     residueRecycler: ITEMS.dusirtIngot,
+    sawdustRecycler: ITEMS.dirtIngot,
     fabricMill: ITEMS.fabric,
+    ropeFactory: ITEMS.rope,
     chairFactory: ITEMS.chair,
+    gearFactory: ITEMS.gear,
+
     wireFactory: ITEMS.wire,
+    pizzeria: ITEMS.pizza,
+    bulbFactory: ITEMS.bulb,
+
     lootboxFarm: ITEMS.uselessLootbox,
     pumpkinFarm: ITEMS.pumpkin,
     pumpkinCarver: ITEMS.carvedPumpkin,
+
     candyBakery: ITEMS.candyCane,
     snowyFactory: ITEMS.christmasSleigh
-
   }
 } as const;
 

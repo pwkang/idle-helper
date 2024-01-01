@@ -5,7 +5,7 @@ interface ICalcWorkerDmg {
 }
 
 const DAMAGE = {
-  player: 80,
+  player: 85,
   team: 100
 } as const;
 

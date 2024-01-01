@@ -34,4 +34,4 @@ interface IFormula {
 }
 
 const formula = ({intelligence, level, type, strength, speed}: IFormula) =>
-  (speed + strength + intelligence) * (1 + type / 3.25) * (1 + level / 1.25);
+  (speed + strength + intelligence) * (1 + type / 2.5) * (1 + level / 1.25);

@@ -26,7 +26,11 @@ export const IDLE_FARM_ITEMS_MATERIAL = {
   leather: 'leather',
   horn: 'horn',
   sawdust: 'sawdust',
-  sugar: 'sugar'
+  sugar: 'sugar',
+  tomato: 'tomato',
+  siliconOre: 'silicon ore',
+  lithium: 'lithium',
+  salt: 'salt'
 } as const;
 
 export const IDLE_FARM_ITEMS_REFINED = {
@@ -47,7 +51,13 @@ export const IDLE_FARM_ITEMS_REFINED = {
   burntFood: 'burnt food',
   lava: 'lava',
   glass: 'glass',
-  brokenGlass: 'broken glass'
+  brokenGlass: 'broken glass',
+  tomatoSauce: 'tomato sauce',
+  siliconIngot: 'silicon ingot',
+  pasta: 'pasta',
+  particleboard: 'particleboard',
+  dirtyWater: 'dirty water',
+  oxygen: 'oxygen'
 } as const;
 
 export const IDLE_FARM_ITEMS_PACKING_MATERIAL = {
@@ -58,7 +68,20 @@ export const IDLE_FARM_ITEMS_PACKING_MATERIAL = {
 export const IDLE_FARM_ITEMS_PRODUCT = {
   fabric: 'fabric',
   chair: 'chair',
-  wire: 'wire'
+  wire: 'wire',
+  rope: 'rope',
+  gear: 'gear',
+  pizza: 'pizza',
+  lasagna: 'lasagna',
+  bulb: 'bulb',
+  dirustMix: 'dirust mix',
+  cpu: 'cpu',
+  battery: 'battery'
+} as const;
+
+export const IDLE_FARM_ITEMS_ASSEMBLY = {
+  clock: 'clock',
+  flashlight: 'flashlight'
 } as const;
 
 export const IDLE_FARM_ITEMS_CONSUMABLE = {
@@ -109,7 +132,11 @@ export const IDLE_FARM_ITEMS_BOX = {
   leatherBox: 'leather box',
   hornBox: 'horn box',
   sawdustBox: 'sawdust box',
-  sugarBox: 'sugar box'
+  sugarBox: 'sugar box',
+  tomatoBox: 'tomato box',
+  siliconOreBox: 'silicon ore box',
+  lithiumBox: 'lithium box',
+  saltBox: 'salt box'
 } as const;
 
 export const IDLE_FARM_ITEMS_CONTAINER = {
@@ -130,7 +157,13 @@ export const IDLE_FARM_ITEMS_CONTAINER = {
   burntFoodContainer: 'burnt food container',
   lavaContainer: 'lava container',
   glassContainer: 'glass container',
-  brokenGlassContainer: 'broken glass container'
+  brokenGlassContainer: 'broken glass container',
+  tomatoSauceContainer: 'tomato sauce container',
+  siliconIngotContainer: 'silicon ingot container',
+  pastaContainer: 'pasta container',
+  particleboardContainer: 'particleboard container',
+  dirtyWaterContainer: 'dirty water container',
+  oxygenContainer: 'oxygen container'
 } as const;
 
 export const IDLE_FARM_ITEMS_PACKING_ITEMS = {
@@ -151,7 +184,8 @@ export const IDLE_FARM_ITEMS = {
   ...IDLE_FARM_ITEMS_PRODUCT,
   ...IDLE_FARM_ITEMS_CONSUMABLE,
   ...IDLE_FARM_ITEMS_BOX,
-  ...IDLE_FARM_ITEMS_CONTAINER
+  ...IDLE_FARM_ITEMS_CONTAINER,
+  ...IDLE_FARM_ITEMS_ASSEMBLY
 } as const;
 
 export const IDLE_FARM_ITEMS_BOX_TYPE = {
@@ -182,7 +216,11 @@ export const IDLE_FARM_ITEMS_BOX_TYPE = {
   leather: 'leatherBox',
   horn: 'hornBox',
   sawdust: 'sawdustBox',
-  sugar: 'sugarBox'
+  sugar: 'sugarBox',
+  tomato: 'tomatoBox',
+  siliconOre: 'siliconOreBox',
+  lithium: 'lithiumBox',
+  salt: 'saltBox'
 } as const;
 
 
@@ -204,7 +242,13 @@ export const IDLE_FARM_ITEMS_CONTAINER_TYPE = {
   burntFood: 'burntFoodContainer',
   lava: 'lavaContainer',
   glass: 'glassContainer',
-  brokenGlass: 'brokenGlassContainer'
+  brokenGlass: 'brokenGlassContainer',
+  tomatoSauce: 'tomatoSauceContainer',
+  siliconIngot: 'siliconIngotContainer',
+  pasta: 'pastaContainer',
+  particleboard: 'particleboardContainer',
+  dirtyWater: 'dirtyWaterContainer',
+  oxygen: 'oxygenContainer'
 } as const;
 
 export const IDLE_FARM_ITEMS_PACKING_PAIR = {
