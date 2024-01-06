@@ -14,10 +14,10 @@ export const _guildListReader = ({embed, guild}: IGuildListReader) => {
 
   const usernames = userList
     .filter((user) => !user.startsWith('ID:'))
-    .map((user) => user.match(/^\*\*(.*)\*\*$/)?.[1] ?? '');
+    .map((user) => user.match(/^\*\*(.*)\*\*/)?.[1] ?? '');
   const ids = userList
     .filter((user) => user.startsWith('ID:'))
-    .map((user) => user.match(/^ID: \*\*(\d+)\*\*$/)?.[1] ?? '');
+    .map((user) => user.match(/^ID: \*\*(\d+)\*\*/)?.[1] ?? '');
 
   const members = guild.members.cache.filter((member) =>
     usernames.includes(member.user.username)
