@@ -26,11 +26,6 @@ const user = (userToggle: IUserToggle): IToggleEmbedsInfo[] => {
           ]
         },
         {
-          value: userToggle.reminder.claim,
-          path: 'toggle.reminder.claim',
-          label: 'Claim Reminder'
-        },
-        {
           value: userToggle.calculator.all,
           path: 'toggle.calculator.all',
           label: 'Idlons Calculator',
@@ -51,6 +46,28 @@ const user = (userToggle: IUserToggle): IToggleEmbedsInfo[] => {
           value: userToggle.autoSend.profile,
           path: 'toggle.autoSend.profile',
           label: 'Send last-claim @ `idle p`'
+        }
+      ]
+    },
+    {
+      id: 'reminder',
+      title: 'Reminder',
+      inline: true,
+      children: [
+        {
+          value: userToggle.reminder.vote,
+          path: 'toggle.reminder.vote',
+          label: 'Vote Reminder'
+        },
+        {
+          value: userToggle.reminder.daily,
+          path: 'toggle.reminder.daily',
+          label: 'Daily Reminder'
+        },
+        {
+          value: userToggle.reminder.claim,
+          path: 'toggle.reminder.claim',
+          label: 'Claim Reminder'
         }
       ]
     }

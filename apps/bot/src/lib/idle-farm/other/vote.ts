@@ -2,6 +2,7 @@ import type {Client, Embed, Message, User} from 'discord.js';
 import {createIdleFarmCommandListener} from '../../../utils/idle-farm-command-listener';
 import messageReaders from '../message-readers';
 import {userReminderServices} from '../../../services/database/user-reminder.service';
+import toggleUserChecker from '../../idle-helper/toggle-checker/user';
 
 interface IIdleVote {
   client: Client;
@@ -43,6 +44,12 @@ interface IIdleMarketSuccess {
 }
 
 const idleVoteSuccess = async ({message, author}: IIdleMarketSuccess) => {
+  const toggleChecker = await toggleUserChecker({
+    userId: author.id
+  });
+
+  if (!toggleChecker?.reminder?.vote) return;
+
   const voteInfo = messageReaders.vote(message.embeds[0]);
   if (voteInfo.readyIn) {
     await userReminderServices.saveUserVoteCooldown({
