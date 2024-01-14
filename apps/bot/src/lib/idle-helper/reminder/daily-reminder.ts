@@ -3,6 +3,7 @@ import {redisDailyReminder} from '../../../services/redis/daily-reminder.redis';
 import {djsMessageHelper} from '../../discordjs/message';
 import messageFormatter from '../../discordjs/message-formatter';
 import {IDLE_FARM_CLICKABLE_SLASH_COMMANDS} from '@idle-helper/constants';
+import toggleUserChecker from '../toggle-checker/user';
 
 interface IDailyReminder {
   userId: string;
@@ -15,6 +16,13 @@ export const dailyReminder = async ({
   channelId,
   userId
 }: IDailyReminder) => {
+
+  const toggleChecker = await toggleUserChecker({
+    userId
+  });
+
+  if (!toggleChecker?.reminder?.daily) return;
+
   const isClaimed = await redisDailyReminder.isClaimed(userId);
   if (isClaimed) return;
   await djsMessageHelper.send({
