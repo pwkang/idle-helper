@@ -7,23 +7,17 @@ export default <PrefixCommand>{
   commands: ['help', 'h'],
   preCheck: {},
   type: PREFIX_COMMAND_TYPE.bot,
-  execute: async (client, message) => {
-    let botHelp = commandHelper.botInfo.help({
+  execute: async (client, message, args) => {
+    const messageOptions = await commandHelper.botInfo.help({
+      client,
+      search: args.slice(1).join(' ')
+    });
+    if (!messageOptions) return;
+    await djsMessageHelper.send({
       client,
       channelId: message.channel.id,
-      serverId: message.guild?.id
+      options: messageOptions
     });
-    const event = await djsMessageHelper.interactiveSend({
-      client,
-      options: botHelp.render(),
-      channelId: message.channel.id,
-      onEnd: () => {
-        botHelp = null as any;
-      }
-    });
-    if (!event) return;
-    event.every((interaction) => {
-      return botHelp.replyInteraction(interaction);
-    });
+
   }
 };

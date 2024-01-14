@@ -15,24 +15,16 @@ export default <SlashCommand>{
   },
   type: 'command',
   execute: async (client, interaction) => {
-    if (!interaction.inGuild()) return;
-    let botInfo = commandHelper.botInfo.help({
+    const search = interaction.options.getString('search') ?? undefined;
+    const messageOptions = await commandHelper.botInfo.help({
       client,
-      channelId: interaction.channelId,
-      serverId: interaction.guildId
+      search
     });
-    const event = await djsInteractionHelper.replyInteraction({
+    if (!messageOptions) return;
+    await djsInteractionHelper.replyInteraction({
       client,
-      options: botInfo.render(),
-      interaction,
-      interactive: true,
-      onStop: () => {
-        botInfo = null as any;
-      }
-    });
-    if (!event) return;
-    event.every((newInteraction) => {
-      return botInfo.replyInteraction(newInteraction);
+      options: messageOptions,
+      interaction
     });
   }
 };
