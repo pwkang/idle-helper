@@ -9,6 +9,7 @@ interface IMarketReader {
 interface IItem {
   type: keyof typeof IDLE_FARM_ITEMS;
   isOverstocked: boolean;
+  isOutOfStock: boolean;
   price: number;
   priceRate: number;
 }
@@ -25,6 +26,7 @@ export const _marketReader = ({embed}: IMarketReader) => {
       .match(/\*\*Price\*\*: ([\d,]+) <:idlons:/)?.[1]
       ?.replaceAll(',', '');
     const isOverstocked = field.name.includes('OVERSTOCKED');
+    const isOutOfStock = field.name.includes('OUT OF STOCK');
     const priceRate = field.value.match(/`([+-]\d+)%`/)?.[1];
     if (!name) {
       const name = field.name.match(/\*\*(.+)\*\*/)?.[1];
@@ -35,7 +37,8 @@ export const _marketReader = ({embed}: IMarketReader) => {
       type: name,
       priceRate: priceRate ? Number(priceRate) : 0,
       price: price ? Number(price) : 0,
-      isOverstocked
+      isOverstocked,
+      isOutOfStock
     });
   }
   return {items, nonRegisteredItems};

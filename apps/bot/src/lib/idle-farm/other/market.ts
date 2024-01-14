@@ -67,6 +67,7 @@ const marketPageChanged = ({embed, toCheckItems}: IMarketPageChanged) => {
   marketItems.items.forEach((item) => {
     infoService.updateMarketItems({
       isOverstocked: item.isOverstocked,
+      isOutOfStock: item.isOutOfStock,
       type: item.type,
       price: item.price,
       rate: item.priceRate

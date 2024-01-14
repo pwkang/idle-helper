@@ -77,6 +77,7 @@ const updateMarketItems = async ({
   type,
   price,
   isOverstocked,
+  isOutOfStock,
   rate
 }: IUpdateMarketItems) => {
   const marketItems = await getMarketItems();
@@ -94,6 +95,7 @@ const updateMarketItems = async ({
           price,
           lastUpdatedAt: new Date(),
           isOverstocked,
+          isOutOfStock,
           rate
         }
       }

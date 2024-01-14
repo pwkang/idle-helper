@@ -4,6 +4,7 @@ import type {IDLE_FARM_ITEMS, IDLE_FARM_WORKER_TYPE} from '@idle-helper/constant
 export interface IMarketItem {
   price: number;
   isOverstocked: boolean;
+  isOutOfStock: boolean;
   lastUpdatedAt: Date;
   rate: number;
 }

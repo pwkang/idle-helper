@@ -1,13 +1,8 @@
 import type {TMarketItems} from '@idle-helper/models/dist/info/info.type';
-import type { User} from 'discord.js';
+import type {User} from 'discord.js';
 import {EmbedBuilder} from 'discord.js';
 import type {IUser} from '@idle-helper/models';
-import {
-  BOT_COLOR,
-  BOT_EMOJI,
-  IDLE_FARM_DONOR_TIER,
-  IDLE_FARM_ITEMS
-} from '@idle-helper/constants';
+import {BOT_COLOR, BOT_EMOJI, IDLE_FARM_DONOR_TIER, IDLE_FARM_ITEMS} from '@idle-helper/constants';
 import {typedObjectEntries} from '@idle-helper/utils';
 
 export type IAllItems = Partial<Record<keyof typeof IDLE_FARM_ITEMS, number>>;
@@ -25,7 +20,9 @@ interface IItemInfo {
   name: string;
   totalPrice: number;
   isOverstocked: boolean;
+  isOutOfStock: boolean;
   lastUpdatedAt: Date;
+  rate: number;
 }
 
 export const generateEmbed = ({
@@ -41,7 +38,7 @@ export const generateEmbed = ({
   });
   const itemsInfo: IItemInfo[] = [];
   const taxRate = TAX_RATE[user.config.donorTier];
-  typedObjectEntries(items).map(([key, value]) => {
+  typedObjectEntries(items).forEach(([key, value]) => {
     if (!marketItems[key]) return;
     let totalPrice = (value ?? 0) * marketItems[key].price;
     if (totalPrice > 0) totalPrice *= taxRate;
@@ -51,12 +48,26 @@ export const generateEmbed = ({
       emoji: BOT_EMOJI.items[key],
       totalPrice,
       isOverstocked: marketItems[key].isOverstocked,
-      lastUpdatedAt: marketItems[key].lastUpdatedAt
+      isOutOfStock: marketItems[key].isOutOfStock,
+      lastUpdatedAt: marketItems[key].lastUpdatedAt,
+      rate: marketItems[key].rate
     });
   });
   itemsInfo.sort((a, b) => b.totalPrice - a.totalPrice);
-  const totalValue = Math.round(
-    itemsInfo.reduce((acc, item) => acc + item.totalPrice, 0)
+  const sellable = Math.round(
+    itemsInfo
+      .filter((item) => item.totalPrice > 0 && !item.isOverstocked)
+      .reduce((acc, item) => acc + item.totalPrice, 0)
+  );
+  const overstocked = Math.round(
+    itemsInfo
+      .filter((item) => item.totalPrice > 0 && item.isOverstocked)
+      .reduce((acc, item) => acc + item.totalPrice, 0)
+  );
+  const debt = Math.round(
+    itemsInfo
+      .filter((item) => item.totalPrice < 0 && !item.isOutOfStock)
+      .reduce((acc, item) => acc + item.totalPrice, 0)
   );
   for (let i = 0; i < itemsInfo.length; i += 15) {
     embed.addFields({
@@ -64,11 +75,10 @@ export const generateEmbed = ({
       value: itemsInfo
         .slice(i, i + 15)
         .map((item) => {
-          return `${item.emoji} **${
-            item.name
-          }**: \`${item.totalPrice.toLocaleString()}\`${
-            item.isOverstocked ? ' :warning:' : ''
-          }`;
+          const warning = item.isOverstocked || item.isOutOfStock ? ' :warning:' : '';
+          const price = item.totalPrice.toLocaleString();
+
+          return `${item.emoji} **${item.name}**: \`${price}\`${warning}`;
         })
         .join('\n'),
       inline: true
@@ -78,7 +88,11 @@ export const generateEmbed = ({
     (a, b) => a.lastUpdatedAt.getTime() - b.lastUpdatedAt.getTime()
   )[0]?.lastUpdatedAt;
   embed.setDescription(
-    `Total value: **${totalValue.toLocaleString()}** ${BOT_EMOJI.other.idlon} `
+    [
+      `Sellable: **${sellable.toLocaleString()}** ${BOT_EMOJI.other.idlon}`,
+      `Overstocked: **${overstocked.toLocaleString()}** ${BOT_EMOJI.other.idlon}`,
+      `Debts: **${debt.toLocaleString()}** ${BOT_EMOJI.other.idlon}`
+    ].join('\n')
   );
   embed.setFooter({
     text: `Tax: ${TAX_RATE_LABEL[user.config.donorTier]} | Last updated${
