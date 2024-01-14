@@ -18,6 +18,7 @@ export const infoSchema = new Schema<IInfo>({
     acc[key] = {
       price: Number,
       isOverstocked: Boolean,
+      isOutOfStock: Boolean,
       lastUpdatedAt: Date,
       rate: Number
     };

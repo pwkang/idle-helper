@@ -18,6 +18,10 @@ const transformMarketItem = (marketItem?: any): IMarketItem => {
       marketItem.isOverstocked === undefined
         ? false
         : Boolean(marketItem.isOverstocked),
+    isOutOfStock:
+      marketItem.isOutOfStock === undefined
+        ? false
+        : Boolean(marketItem.isOutOfStock),
     lastUpdatedAt:
       marketItem.lastUpdatedAt === undefined
         ? new Date()

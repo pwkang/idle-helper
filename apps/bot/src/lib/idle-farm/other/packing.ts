@@ -48,7 +48,7 @@ interface IIdlePackingSuccess {
 
 const idlePackingSuccess = async ({message, author}: IIdlePackingSuccess) => {
   const packingResult = messageReaders.packing(message);
-  if (packingResult.multiplier === 1) return;
+  if (packingResult.multiplier === 1 || packingResult.multiplier === 2) return;
   await userService.updatePackingMultiplier({
     userId: author.id,
     multiplier: packingResult.multiplier
