@@ -3,10 +3,9 @@ import {createMessageEditedListener} from '../../../../utils/message-edited-list
 import {djsMessageHelper} from '../../../discordjs/message';
 import {infoService} from '../../../../services/database/info.service';
 import {userService} from '../../../../services/database/user.service';
-import type { IAllItems} from './generate-idlons-embed';
+import type {IAllItems} from './generate-idlons-embed';
 import {generateIdlonsEmbed} from './generate-idlons-embed';
 import messageReaders from '../../../idle-farm/message-readers';
-import interaction from '../../../discordjs/interaction';
 
 interface IIdlonsCalculator {
   message: Message;
