@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
-    name: Deploy
+  validate:
+    name: Validate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -31,6 +31,31 @@ jobs:
       - name: Build Bot
         run: pnpm run build:bot
 
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+
+      - name: Delete src files
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd ${{ vars.BOT_DEPLOY_DIR }}
+            rm -rf apps/bot/src
+            rm -rf shared/**/src
+
       - name: Copy built files to server
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -38,11 +63,10 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
-          source: "apps/*,shared/*,package.json,ecosystem.config.js,pnpm-lock.yaml,pnpm-workspace.yaml,node_modules"
+          source: "apps/bot/*,shared/*,package.json,ecosystem.config.js,pnpm-lock.yaml,pnpm-workspace.yaml,turbo.json"
           target: ${{ vars.BOT_DEPLOY_DIR }}
-          rm: true
 
-      - name: Start server
+      - name: Build bot
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.HOST }}
@@ -52,4 +76,6 @@ jobs:
           script: |
             cd ${{ vars.BOT_DEPLOY_DIR }}
             cp ${{ vars.ENV_FILE_PATH }} ${{ vars.BOT_DEPLOY_DIR }}/.env
-            pm2 start ecosystem.config.js
+            pnpm install --frozen-lockfile
+            pnpm run build:shared
+            pnpm run build:bot
