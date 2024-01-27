@@ -1,7 +1,7 @@
 import type {Client, Message, User} from 'discord.js';
 import {userService} from '../../../../services/database/user.service';
 import {infoService} from '../../../../services/database/info.service';
-import {generateEmbed} from './generate-idlons-embed';
+import {generateIdlonsEmbed} from './generate-idlons-embed';
 import {djsMessageHelper} from '../../../discordjs/message';
 import messageReaders from '../../../idle-farm/message-readers';
 import {createIdleFarmCommandListener} from '../../../../utils/idle-farm-command-listener';
@@ -67,18 +67,19 @@ const generateAndSendEmbed = async ({
   });
 
   const marketItems = await infoService.getMarketItems();
-  const embed = generateEmbed({
-    items,
+  const {getMessageOptions, replyInteraction} = generateIdlonsEmbed({
     marketItems,
     author,
     user: userAccount,
     title: 'Claim Calculator'
   });
-  await djsMessageHelper.send({
-    options: {
-      embeds: [embed]
-    },
+  const event = await djsMessageHelper.interactiveSend({
+    options: getMessageOptions(items),
     client,
     channelId: message.channel.id
+  });
+  if (!event) return;
+  event.every(interaction => {
+    return replyInteraction(interaction, items);
   });
 };

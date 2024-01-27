@@ -4,8 +4,9 @@ import {djsMessageHelper} from '../../../discordjs/message';
 import {infoService} from '../../../../services/database/info.service';
 import {userService} from '../../../../services/database/user.service';
 import type { IAllItems} from './generate-idlons-embed';
-import {generateEmbed} from './generate-idlons-embed';
+import {generateIdlonsEmbed} from './generate-idlons-embed';
 import messageReaders from '../../../idle-farm/message-readers';
+import interaction from '../../../discordjs/interaction';
 
 interface IIdlonsCalculator {
   message: Message;
@@ -28,25 +29,21 @@ export const _inventoryCalculator = async ({
   allItems = {
     ...inventory
   };
-  const sentMessage = await djsMessageHelper.send({
-    options: {
-      embeds: [
-        generateEmbed({
-          items: allItems,
-          marketItems,
-          author,
-          user: userAccount,
-          title: 'Idlons Calculator'
-        })
-      ]
-    },
+  const invEmbed = generateIdlonsEmbed({
+    marketItems,
+    author,
+    user: userAccount,
+    title: 'Idlons Calculator'
+  });
+  const sentMessageEvent = await djsMessageHelper.interactiveSend({
+    options: invEmbed.getMessageOptions(allItems),
     client,
     channelId: message.channel.id
   });
   const event = await createMessageEditedListener({
     messageId: message.id
   });
-  if (!event || !sentMessage) return;
+  if (!event || !sentMessageEvent) return;
   event.on(message.id, (collected) => {
     const embed = collected.embeds[0];
     const updatedInventory = messageReaders.inventory({
@@ -56,19 +53,14 @@ export const _inventoryCalculator = async ({
       ...allItems,
       ...updatedInventory
     };
-    const updatedEmbed = generateEmbed({
-      items: allItems,
-      marketItems,
-      author,
-      user: userAccount,
-      title: 'Idlons Calculator'
-    });
+    const updatedEmbed = invEmbed.getMessageOptions(allItems);
     djsMessageHelper.edit({
-      options: {
-        embeds: [updatedEmbed]
-      },
+      options: updatedEmbed,
       client,
-      message: sentMessage
+      message: sentMessageEvent.message
     });
+  });
+  sentMessageEvent.every(interaction => {
+    return invEmbed.replyInteraction(interaction, allItems);
   });
 };

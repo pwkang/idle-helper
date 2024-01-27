@@ -1,18 +1,18 @@
 import type {TMarketItems} from '@idle-helper/models/dist/info/info.type';
-import type {User} from 'discord.js';
-import {EmbedBuilder} from 'discord.js';
+import type {BaseInteraction, User} from 'discord.js';
+import {ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder} from 'discord.js';
 import type {IUser} from '@idle-helper/models';
-import {BOT_COLOR, BOT_EMOJI, IDLE_FARM_DONOR_TIER, IDLE_FARM_ITEMS} from '@idle-helper/constants';
+import {BOT_COLOR, BOT_EMOJI, IDLE_FARM_DONOR_TIER, IDLE_FARM_ITEMS, TAX_RATE_COMMON} from '@idle-helper/constants';
 import {typedObjectEntries} from '@idle-helper/utils';
 
 export type IAllItems = Partial<Record<keyof typeof IDLE_FARM_ITEMS, number>>;
 
 interface IGenerateEmbed {
-  items: IAllItems;
   marketItems: TMarketItems;
   author: User;
   user: IUser;
   title?: string;
+  type?: 'idlons' | 'rate';
 }
 
 interface IItemInfo {
@@ -25,19 +25,86 @@ interface IItemInfo {
   rate: number;
 }
 
-export const generateEmbed = ({
+export const generateIdlonsEmbed = ({
+  marketItems,
+  author,
+  user,
+  title,
+  type = 'idlons'
+}: IGenerateEmbed) => {
+
+  const getMessageOptions = (items: IAllItems) => {
+    const embed = getEmbed({
+      items,
+      marketItems,
+      author,
+      user,
+      title,
+      type
+    });
+
+    const row = getComponents(type);
+
+    return {
+      embeds: [embed],
+      components: [row]
+    };
+  };
+
+  const replyInteraction = (interaction: BaseInteraction, items: IAllItems) => {
+    if (!interaction.isButton()) return null;
+    switch (interaction.customId) {
+      case 'idlons':
+        type = 'idlons';
+        break;
+      case 'rate':
+        type = 'rate';
+        break;
+    }
+    const embed = getEmbed({
+      items,
+      marketItems,
+      author,
+      user,
+      title,
+      type
+    });
+    const row = getComponents(type);
+
+    return {
+      embeds: [embed],
+      components: [row]
+    };
+  };
+
+  return {
+    getMessageOptions,
+    replyInteraction
+  };
+};
+
+const getEmbed = ({
   items,
   marketItems,
   author,
   user,
-  title
-}: IGenerateEmbed) => {
+  title,
+  type
+}: {
+  items: IAllItems;
+  marketItems: TMarketItems;
+  author: User;
+  user: IUser;
+  title?: string;
+  type: 'idlons' | 'rate';
+}) => {
   const embed = new EmbedBuilder().setColor(BOT_COLOR.embed).setAuthor({
     name: `${author.username} — ${title}`,
     iconURL: author.avatarURL() ?? undefined
   });
+
   const itemsInfo: IItemInfo[] = [];
-  const taxRate = TAX_RATE[user.config.donorTier];
+  const taxRate = TAX_RATE_COMMON[user.config.donorTier];
   typedObjectEntries(items).forEach(([key, value]) => {
     if (!marketItems[key]) return;
     let totalPrice = (value ?? 0) * marketItems[key].price;
@@ -77,8 +144,17 @@ export const generateEmbed = ({
         .map((item) => {
           const warning = item.isOverstocked || item.isOutOfStock ? ' :warning:' : '';
           const price = item.totalPrice.toLocaleString();
+          let data;
+          switch (type) {
+            case 'idlons':
+              data = `\`${price}\``;
+              break;
+            case 'rate':
+              data = `\`${Math.round(item.rate)}%\``;
+              break;
+          }
 
-          return `${item.emoji} **${item.name}**: \`${price}\`${warning}`;
+          return `${item.emoji} **${item.name}**: ${data}${warning}`;
         })
         .join('\n'),
       inline: true
@@ -100,15 +176,28 @@ export const generateEmbed = ({
     }`
   });
   if (oldestUpdatedDate) embed.setTimestamp(oldestUpdatedDate);
+
+
   return embed;
 };
 
-const TAX_RATE = {
-  [IDLE_FARM_DONOR_TIER.nonDonor]: 0.8,
-  [IDLE_FARM_DONOR_TIER.common]: 0.8,
-  [IDLE_FARM_DONOR_TIER.talented]: 0.8,
-  [IDLE_FARM_DONOR_TIER.wise]: 0.9
-} as const;
+const getComponents = (type: 'idlons' | 'rate') => {
+  return new ActionRowBuilder<ButtonBuilder>()
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId('idlons')
+        .setLabel('Idlons')
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(type === 'idlons')
+    )
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId('rate')
+        .setLabel('Rate')
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(type === 'rate')
+    );
+};
 
 const TAX_RATE_LABEL = {
   [IDLE_FARM_DONOR_TIER.nonDonor]: '20%',

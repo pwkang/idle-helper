@@ -20,7 +20,7 @@ export const _farmReader = ({embed}: IFarmReader) => {
   for (const field of embed.fields) {
     const worker = typedObjectEntries(IDLE_FARM_WORKER_TYPE).find(([, value]) => field.value.includes(value))?.[0];
     const farm = typedObjectEntries(IDLE_FARM_FARM_TYPE).find(([, value]) => field.name.includes(`> ${value} Lv`))?.[0];
-    const id = field.name.match(/\[ID: (\d+)]/)?.[1];
+    const id = field.name.match(/\[ID: ([a-zA-Z0-9]+)]/)?.[1];
     const itemsPerHour = field.value.match(/\*\*Items per hour\*\*: ([\d,]+)/)?.[1]?.replaceAll(',', '');
     const level = field.name.match(/Lv(\d+)/)?.[1];
     farms.push({
