@@ -4,6 +4,7 @@ import {redisHelpCommands} from '../redis/help-commands.redis';
 import {toHelpCommands} from '../transformer/help-commands.transformer';
 import {redisHelpCommandsGroup} from '../redis/help-commands-group.redis';
 import {toHelpCommandsGroup} from '../transformer/toHelpCommandsGroup.transformer';
+import {logger} from '@idle-helper/utils';
 
 export interface BotHelpSkeleton {
   contentTypeId: 'idleHelperCommand';
@@ -19,6 +20,13 @@ export interface BotHelpSkeleton {
 export const getAllCommands = async () => {
   const cachedData = await redisHelpCommands.get();
   if (cachedData) return toHelpCommands(cachedData);
+  if (!contentfulService) {
+    logger({
+      logLevel: 'warn',
+      message: 'Contentful service is not available'
+    });
+    return [];
+  }
 
   const data =
     await contentfulService.withoutUnresolvableLinks.getEntries<BotHelpSkeleton>(
@@ -46,6 +54,13 @@ export interface BotHelpGroupSkeleton {
 export const getAllCommandsGroup = async () => {
   const cachedData = await redisHelpCommandsGroup.get();
   if (cachedData) return toHelpCommandsGroup(cachedData);
+  if (!contentfulService) {
+    logger({
+      logLevel: 'warn',
+      message: 'Contentful service is not available'
+    });
+    return [];
+  }
 
   const data =
     await contentfulService.withoutUnresolvableLinks.getEntries<BotHelpGroupSkeleton>(
