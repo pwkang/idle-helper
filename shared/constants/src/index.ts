@@ -7,6 +7,7 @@ export * from './idle-helper/custom-message';
 export * from './idle-helper/donor';
 export * from './idle-helper/clickable-slash';
 export * from './idle-helper/random-events';
+export * from './idle-helper/help';
 
 export * from './idle-farm/clickable-slash';
 export * from './idle-farm/items';
